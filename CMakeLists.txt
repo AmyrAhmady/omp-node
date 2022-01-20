@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(omp-node LANGUAGES C CXX VERSION 0.0.1)
+project(NodeJS LANGUAGES C CXX VERSION 0.0.1)
 
 
 

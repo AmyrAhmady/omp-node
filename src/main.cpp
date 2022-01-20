@@ -2,7 +2,7 @@
 
 #include "nodeimpl.hpp"
 
-struct Main : IComponent, CoreEventHandler, PlayerEventHandler {
+struct Main : IComponent, CoreEventHandler {
 	PROVIDE_UUID(0x88f9172cc6eb78a3);
 
 	StringView componentName() const override {
@@ -21,7 +21,7 @@ struct Main : IComponent, CoreEventHandler, PlayerEventHandler {
 		// Cache core, player pool here
 		core = c;
 
-		ompnode::Log::Init(ompnode::LogLevel::LOG_FULL);
+		Log::Init(LogLevel::Debug);
 
 		ompnode::nodeImpl.Initialize(c);
 

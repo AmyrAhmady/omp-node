@@ -1,41 +1,30 @@
 #pragma once
 #include <sstream>
+#include "core.hpp"
 
-#define L_INFO ompnode::Log().Get(ompnode::LogLevel::LOG_INFO)
-#define L_DEBUG ompnode::Log().Get(ompnode::LogLevel::LOG_DEBUG)
-#define L_WARN ompnode::Log().Get(ompnode::LogLevel::LOG_WARN)
-#define L_ERROR ompnode::Log().Get(ompnode::LogLevel::LOG_ERROR)
+#define L_ERROR Log().Get(LogLevel::Error)
+#define L_WARN Log().Get(LogLevel::Warning)
+#define L_MESSAGE Log().Get(LogLevel::Message)
+#define L_DEBUG Log().Get(LogLevel::Debug)
 
-namespace ompnode {
+class Log {
+public:
+	static LogLevel logLevel;
 
-	enum class LogLevel {
-		LOG_ERROR = 0, // level 1
-		LOG_WARN = 1, // level 2
-		LOG_DEBUG = 2, // level 3
-		LOG_INFO = 3, // level 4
-		LOG_FULL = 4
-	};
+	static void Init(LogLevel level = logLevel);
 
-	class Log {
-	public:
-		static LogLevel logLevel;
+	Log();
 
-		static void Init(LogLevel level = logLevel);
+	virtual ~Log();
 
-		Log();
+	std::ostringstream &Get(LogLevel level = LogLevel::Message);
 
-		virtual ~Log();
+protected:
+	std::ostringstream os;
+private:
+	LogLevel currentLevel;
 
-		std::ostringstream &Get(LogLevel level = LogLevel::LOG_INFO);
+	std::string GetLevelName(LogLevel messageLevel);
 
-	protected:
-		std::ostringstream os;
-	private:
-		LogLevel currentLevel;
-
-		std::string GetLevelName(LogLevel messageLevel);
-
-		Log(const Log &);
-	};
-
-}
+	Log(const Log &);
+};

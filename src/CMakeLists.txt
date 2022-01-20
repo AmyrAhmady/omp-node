@@ -34,11 +34,9 @@ include_directories(
 
 link_directories(${NODE_PATH})
 
-file(GLOB OMPNODE_FILES
+file(GLOB_RECURSE OMPNODE_FILES
         *.hpp
         *.cpp
-        interface/*.hpp
-        interface/*.cpp
         )
 
 add_library(${PROJECT_NAME} SHARED ${OMPNODE_FILES})

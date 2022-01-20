@@ -39,7 +39,7 @@ struct PlayerOnConnect : PlayerEventHandler {
 		v8::Local<v8::Context> context = handler->CreationContext();
 		v8::Context::Scope contextScope(context);
 
-		auto playerObject = IPlayerToObject(context, &player);
+		auto playerObject = IPlayerToObject(&player, context);
 
 		v8::Local<v8::Value> args[1] = { playerObject };
 
@@ -77,7 +77,7 @@ struct PlayerOnDisconnect : PlayerEventHandler {
 		v8::Local<v8::Context> context = handler->CreationContext();
 		v8::Context::Scope contextScope(context);
 
-		auto playerObject = IPlayerToObject(context, &player);
+		auto playerObject = IPlayerToObject(&player, context);
 
 		v8::Local<v8::Value> args[1] = { playerObject };
 
