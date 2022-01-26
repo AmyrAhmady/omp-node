@@ -103,10 +103,10 @@ void count(const v8::FunctionCallbackInfo<v8::Value> &info) {
 void WrapPlayerEventDispatcher(HandleStorage &storage,
                                IEventDispatcher<PlayerEventHandler> *dispatcher,
                                v8::Local<v8::Context> context) {
-    ObjectMethods methods = {{"addEventHandler",    addEventHandler},
+    ObjectMethods methods = {{"addEventHandler", addEventHandler},
 //                             {"removeEventHandler", removeEventHandler},
 //                             {"hasEventHandler",    hasEventHandler},
-                             {"count",              count}};
+                             {"count",           count}};
 
     auto dispatcherHandle = InterfaceToObject(storage, dispatcher, context, methods);
 
