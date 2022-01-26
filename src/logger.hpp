@@ -9,22 +9,22 @@
 
 class Log {
 public:
-	static LogLevel logLevel;
+    static LogLevel logLevel;
 
-	static void Init(LogLevel level = logLevel);
+    static void Init(LogLevel level = logLevel);
 
-	Log();
+    Log();
 
-	virtual ~Log();
+    virtual ~Log();
 
-	std::ostringstream &Get(LogLevel level = LogLevel::Message);
+    std::ostringstream &Get(LogLevel level = LogLevel::Message);
 
 protected:
-	std::ostringstream os;
+    std::ostringstream os;
 private:
-	LogLevel currentLevel;
+    LogLevel currentLevel;
 
-	std::string GetLevelName(LogLevel messageLevel);
+    std::string GetLevelName(LogLevel messageLevel);
 
-	Log(const Log &);
+    Log(const Log &);
 };

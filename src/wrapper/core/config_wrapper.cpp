@@ -1,8 +1,7 @@
 #include "config_wrapper.hpp"
 #include "../../logger.hpp"
 
-void
-getInt(const v8::FunctionCallbackInfo<v8::Value> &info) {
+void getInt(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
     auto config = GetContextExternalPointer<IConfig>(info);
@@ -23,11 +22,8 @@ getInt(const v8::FunctionCallbackInfo<v8::Value> &info) {
     info.GetReturnValue().Set(resultHandle);
 }
 
-void
-WrapConfig(HandleStorage &storage, IConfig *config, v8::Local<v8::Context> context) {
-    ObjectMethods methods = {
-        {"getInt", getInt}
-    };
+void WrapConfig(HandleStorage &storage, IConfig *config, v8::Local<v8::Context> context) {
+    ObjectMethods methods = {{"getInt", getInt}};
     auto configHandle = InterfaceToObject(storage, config, context, methods);
 
     storage.set(config, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), configHandle));

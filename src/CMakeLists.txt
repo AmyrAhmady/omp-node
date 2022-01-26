@@ -4,17 +4,17 @@ add_definitions(-DBUILDING_NODE_EXTENSION=1 -DEXTERNAL_NAPI=1)
 
 # Node
 
-if(WIN32)
+if (WIN32)
     set(NODE_FILE "libnode.dll")
-else()
+else ()
     set(NODE_FILE "libnode.so.93")
-endif()
+endif ()
 
 if (WIN32)
     set(SYS_PATH win32)
-else()
+else ()
     set(SYS_PATH linux)
-endif()
+endif ()
 
 set(NODE_PATH "${PROJECT_SOURCE_DIR}/deps/node/lib/Release/${SYS_PATH}")
 
@@ -43,11 +43,11 @@ add_library(${PROJECT_NAME} SHARED ${OMPNODE_FILES})
 
 if (WIN32)
     set(LIBRARIES v8_libbase v8_libplatform libnode shlwapi dbghelp winmm)
-else()
+else ()
     target_link_libraries(${PROJECT_NAME} ${NODE_PATH}/libnode.so.93)
 
     set(LIBRARIES ${node} pthread dl m)
-endif()
+endif ()
 
 target_link_libraries(${PROJECT_NAME}
         ${LIBRARIES}

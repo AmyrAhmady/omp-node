@@ -13,39 +13,38 @@
 #include "sdk.hpp"
 #include "wrapper/utils.hpp"
 
-namespace ompnode
-{
-	class Resource
-	{
-	public:
-		Resource(std::string name, std::string path);
-		~Resource();
+namespace ompnode {
+    class Resource {
+    public:
+        Resource(std::string name, std::string path);
+        ~Resource();
 
-		void Init(const std::string& entry = "");
-		void Stop();
+        void Init(const std::string &entry = "");
+        void Stop();
 
-		inline v8::UniquePersistent<v8::Context>& GetContext()
-		{
-			return context;
-		}
+        inline v8::UniquePersistent<v8::Context> &GetContext() {
+            return context;
+        }
 
-		node::Environment* GetEnv()
-		{
-			return nodeEnvironment.get();
-		}
+        node::Environment *GetEnv() {
+            return nodeEnvironment.get();
+        }
 
-	private:
-		v8::UniquePersistent<v8::Context> context;
-		std::unique_ptr<node::Environment, decltype(&node::FreeEnvironment)> nodeEnvironment;
-		std::string path;
-		std::string name;
+    private:
+        v8::UniquePersistent<v8::Context> context;
+        std::unique_ptr<node::Environment, decltype(&node::FreeEnvironment)> nodeEnvironment;
+        std::string path;
+        std::string name;
         HandleStorage handleStorage;
-	};
+    };
 
-	namespace v8val
-	{
-		inline std::string to_string(v8::Isolate *isolate, const v8::Local<v8::Value>& val) { return utils::js_to_string(isolate, val); }
-		inline const char* to_cstring(v8::Isolate *isolate, const v8::Local<v8::Value>& val) { return utils::js_to_cstr(isolate, val); }
-		void add_definition(const std::string& name, const std::string& value, v8::Local<v8::ObjectTemplate>& global);
-	}
+    namespace v8val {
+        inline std::string to_string(v8::Isolate *isolate, const v8::Local<v8::Value> &val) {
+            return utils::js_to_string(isolate, val);
+        }
+        inline const char *to_cstring(v8::Isolate *isolate, const v8::Local<v8::Value> &val) {
+            return utils::js_to_cstr(isolate, val);
+        }
+        void add_definition(const std::string &name, const std::string &value, v8::Local<v8::ObjectTemplate> &global);
+    }
 }

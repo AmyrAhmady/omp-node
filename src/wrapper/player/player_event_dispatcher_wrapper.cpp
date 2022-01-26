@@ -2,12 +2,12 @@
 #include "../../logger.hpp"
 
 #define ENTER_HANDLER(isolate, handler) \
-	v8::Locker locker(isolate); \
-	v8::Isolate::Scope isolateScope(isolate); \
-	v8::HandleScope scope(isolate); \
+    v8::Locker locker(isolate); \
+    v8::Isolate::Scope isolateScope(isolate); \
+    v8::HandleScope scope(isolate); \
     auto func = handler.Get(isolate); \
-	v8::Local<v8::Context> context = func->GetCreationContext().ToLocalChecked(); \
-	v8::Context::Scope contextScope(context);
+    v8::Local<v8::Context> context = func->GetCreationContext().ToLocalChecked(); \
+    v8::Context::Scope contextScope(context);
 
 //struct PlayerEventHandler {
 //    virtual void onIncomingConnection(IPlayer& player, StringView ipAddress, unsigned short port) { }
@@ -51,9 +51,11 @@ struct PlayerNodeJSEventHandler : PlayerEventHandler {
 };
 
 struct PlayerIncomingConnectionHandler : PlayerNodeJSEventHandler {
-    explicit PlayerIncomingConnectionHandler(HandleStorage &_storage, v8::Local<v8::Function> _handler) : PlayerNodeJSEventHandler(_storage, _handler) {}
+    explicit PlayerIncomingConnectionHandler(HandleStorage &_storage, v8::Local<v8::Function> _handler)
+        : PlayerNodeJSEventHandler(_storage, _handler) {
+    }
 
-    void onIncomingConnection(IPlayer& player, StringView ipAddress, unsigned short port) override {
+    void onIncomingConnection(IPlayer &player, StringView ipAddress, unsigned short port) override {
         ENTER_HANDLER(isolate, handler);
 
         v8::Local<v8::Value> args[3];
@@ -98,13 +100,13 @@ void count(const v8::FunctionCallbackInfo<v8::Value> &info) {
     info.GetReturnValue().Set(result);
 }
 
-void WrapPlayerEventDispatcher(HandleStorage &storage, IEventDispatcher<PlayerEventHandler> *dispatcher, v8::Local<v8::Context> context) {
-    ObjectMethods methods = {
-        {"addEventHandler", addEventHandler},
+void WrapPlayerEventDispatcher(HandleStorage &storage,
+                               IEventDispatcher<PlayerEventHandler> *dispatcher,
+                               v8::Local<v8::Context> context) {
+    ObjectMethods methods = {{"addEventHandler", addEventHandler},
 //        {"removeEventHandler", removeEventHandler},
 //        {"hasEventHandler", hasEventHandler},
-        {"count", count}
-    };
+                             {"count", count}};
 
     auto dispatcherHandle = InterfaceToObject(storage, dispatcher, context, methods);
 

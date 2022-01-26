@@ -1,8 +1,7 @@
 #include "../player/player_pool_wrapper.hpp"
 #include "core_wrapper.hpp"
 
-void
-getVersion(const v8::FunctionCallbackInfo<v8::Value> &info) {
+void getVersion(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
     auto core = GetContextExternalPointer<ICore>(info);
@@ -25,8 +24,7 @@ getVersion(const v8::FunctionCallbackInfo<v8::Value> &info) {
     info.GetReturnValue().Set(returnObject.ToLocalChecked());
 }
 
-void
-getConfig(const v8::FunctionCallbackInfo<v8::Value> &info) {
+void getConfig(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
     auto storage = GetContextHandleStorage(info);
@@ -39,8 +37,7 @@ getConfig(const v8::FunctionCallbackInfo<v8::Value> &info) {
     info.GetReturnValue().Set(configHandle);
 }
 
-void
-getPlayers(const v8::FunctionCallbackInfo<v8::Value> &info) {
+void getPlayers(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
     auto storage = GetContextHandleStorage(info);
@@ -53,8 +50,7 @@ getPlayers(const v8::FunctionCallbackInfo<v8::Value> &info) {
     info.GetReturnValue().Set(playerPoolHandle);
 }
 
-void
-getTickCount(const v8::FunctionCallbackInfo<v8::Value> &info) {
+void getTickCount(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
     auto core = GetContextExternalPointer<ICore>(info);
@@ -66,8 +62,7 @@ getTickCount(const v8::FunctionCallbackInfo<v8::Value> &info) {
     info.GetReturnValue().Set(tickCountHandle);
 }
 
-void
-setGravity(const v8::FunctionCallbackInfo<v8::Value> &info) {
+void setGravity(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
     auto core = GetContextExternalPointer<ICore>(info);
@@ -77,15 +72,9 @@ setGravity(const v8::FunctionCallbackInfo<v8::Value> &info) {
     core->setGravity(gravity);
 }
 
-void
-WrapCore(HandleStorage &storage, ICore *core, v8::Local<v8::Context> context) {
-    ObjectMethods methods = {
-        {"getVersion", getVersion},
-        {"getPlayers", getPlayers},
-        {"getConfig", getConfig},
-        {"getTickCount", getTickCount},
-        {"setGravity", setGravity}
-    };
+void WrapCore(HandleStorage &storage, ICore *core, v8::Local<v8::Context> context) {
+    ObjectMethods methods = {{"getVersion", getVersion}, {"getPlayers", getPlayers}, {"getConfig", getConfig},
+                             {"getTickCount", getTickCount}, {"setGravity", setGravity}};
     auto coreHandle = InterfaceToObject(storage, core, context, methods);
 
     storage.set(core, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), coreHandle));
