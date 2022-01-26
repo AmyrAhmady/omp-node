@@ -2,8 +2,8 @@
 
 #include "nodeimpl.hpp"
 
-struct Main : IComponent, CoreEventHandler {
-	PROVIDE_UUID(0x88f9172cc6eb78a3);
+struct NodeJSComponent final : IComponent, CoreEventHandler {
+	PROVIDE_UID(0x88f9172cc6eb78a3);
 
 	StringView componentName() const override {
 		return "Count vehicles in rules";
@@ -37,19 +37,26 @@ struct Main : IComponent, CoreEventHandler {
 
 	}
 
+	void onFree(IComponent* component) override {
+	}
+
 	void onReady() override {
 		// Fire events here at earliest
 	}
 
-	~Main() {
+	void free() override {
+		delete this;
+	}
+
+	~NodeJSComponent() {
 		// Clean up what you did above
 		core->getEventDispatcher().removeEventHandler(this);
 		ompnode::nodeImpl.Stop();
 	}
 
 	ICore* core = nullptr;
-} component;
+};
 
 COMPONENT_ENTRY_POINT() {
-	return &component;
+	return new NodeJSComponent();
 }

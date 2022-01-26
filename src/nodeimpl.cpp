@@ -72,7 +72,7 @@ namespace ompnode
 
 	void NodeImpl::Initialize(ICore *c)
 	{
-		core = c;
+        core = c;
 
 		v8Platform = node::MultiIsolatePlatform::Create(4);
 		v8::V8::InitializePlatform(v8Platform.get());

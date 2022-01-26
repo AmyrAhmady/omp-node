@@ -11,6 +11,7 @@
 #include "utils.hpp"
 #include "logger.hpp"
 #include "sdk.hpp"
+#include "wrapper/utils.hpp"
 
 namespace ompnode
 {
@@ -38,6 +39,7 @@ namespace ompnode
 		std::unique_ptr<node::Environment, decltype(&node::FreeEnvironment)> nodeEnvironment;
 		std::string path;
 		std::string name;
+        HandleStorage handleStorage;
 	};
 
 	namespace v8val

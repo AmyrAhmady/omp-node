@@ -9,6 +9,7 @@
 #include "libplatform/libplatform.h"
 #include "resource.hpp"
 #include "uvloop.hpp"
+#include "wrapper/core/core_wrapper.hpp"
 
 namespace ompnode
 {
@@ -63,7 +64,7 @@ namespace ompnode
 		std::unique_ptr<node::ArrayBufferAllocator> arrayBufferAllocator;
 		std::unique_ptr<UvLoop> nodeLoop;
 		std::unordered_map<std::string, node::Environment*> resourceNamesPool;
-		ICore *core = nullptr;
+		ICore *core;
 	};
 
 	extern NodeImpl nodeImpl;

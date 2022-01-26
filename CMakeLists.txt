@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.19)
 project(NodeJS LANGUAGES C CXX VERSION 0.0.1)
 
-
-
 if(WIN32)
     add_definitions(
             -D_CRT_SECURE_NO_WARNINGS
