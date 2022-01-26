@@ -137,9 +137,11 @@ void WrapPlayerPool(HandleStorage &storage, IPlayerPool *playerPool, v8::Local<v
 
     playerPool->getEventDispatcher().addEventHandler(handler);
 
-    ObjectMethods methods =
-        {{"entries", entries}, {"players", players}, {"bots", bots}, {"getEventDispatcher", getEventDispatcher},
-         {"sendClientMessageToAll", sendClientMessageToAll}};
+    ObjectMethods methods = {{"entries",                entries},
+                             {"players",                players},
+                             {"bots",                   bots},
+                             {"getEventDispatcher",     getEventDispatcher},
+                             {"sendClientMessageToAll", sendClientMessageToAll}};
 
     auto playerPoolHandle = InterfaceToObject(storage, playerPool, context, methods);
     storage.set(playerPool, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), playerPoolHandle));

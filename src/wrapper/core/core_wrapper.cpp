@@ -73,8 +73,11 @@ void setGravity(const v8::FunctionCallbackInfo<v8::Value> &info) {
 }
 
 void WrapCore(HandleStorage &storage, ICore *core, v8::Local<v8::Context> context) {
-    ObjectMethods methods = {{"getVersion", getVersion}, {"getPlayers", getPlayers}, {"getConfig", getConfig},
-                             {"getTickCount", getTickCount}, {"setGravity", setGravity}};
+    ObjectMethods methods = {{"getVersion",   getVersion},
+                             {"getPlayers",   getPlayers},
+                             {"getConfig",    getConfig},
+                             {"getTickCount", getTickCount},
+                             {"setGravity",   setGravity}};
     auto coreHandle = InterfaceToObject(storage, core, context, methods);
 
     storage.set(core, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), coreHandle));

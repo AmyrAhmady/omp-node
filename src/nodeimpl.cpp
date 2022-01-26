@@ -90,8 +90,13 @@ namespace ompnode {
         v8::Locker locker(v8Isolate);
         v8::Isolate::Scope isolateScope(v8Isolate);
 
-        std::vector<std::string>
-            args{"--expose-internals", "--trace-uncaught", "--inspect", "--trace-warnings", "--enable-source-maps"};
+        std::vector<std::string> args{
+            "--expose-internals",
+            "--trace-uncaught",
+            "--inspect",
+            "--trace-warnings",
+            "--enable-source-maps"
+        };
         std::vector<std::string> exec_args;
         std::vector<std::string> errors;
 
@@ -106,16 +111,28 @@ namespace ompnode {
     bool NodeImpl::LoadResource(const std::string &name) {
         std::shared_ptr<Resource> resource = std::make_shared<Resource>("main", "no_resource");
         resource->Init();
-        resourcesPool.insert({resource->GetEnv(), resource});
-        resourceNamesPool.insert({name, resource->GetEnv()});
+        resourcesPool.insert({
+                                 resource->GetEnv(),
+                                 resource
+                             });
+        resourceNamesPool.insert({
+                                     name,
+                                     resource->GetEnv()
+                                 });
         return true;
     }
 
     bool NodeImpl::LoadResource(const std::string &name, const std::string &entryFile) {
         std::shared_ptr<Resource> resource = std::make_shared<Resource>(entryFile, "no_resource");
         resource->Init("./" + name);
-        resourcesPool.insert({resource->GetEnv(), resource});
-        resourceNamesPool.insert({name, resource->GetEnv()});
+        resourcesPool.insert({
+                                 resource->GetEnv(),
+                                 resource
+                             });
+        resourceNamesPool.insert({
+                                     name,
+                                     resource->GetEnv()
+                                 });
         return true;
     }
 

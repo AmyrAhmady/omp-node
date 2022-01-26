@@ -44,7 +44,10 @@ void getKeyData(const v8::FunctionCallbackInfo<v8::Value> &info) {
 }
 
 void WrapPlayer(HandleStorage &storage, IPlayer *player, v8::Local<v8::Context> context) {
-    ObjectMethods methods = {{"kick", kick}, {"ban", ban}, {"setHealth", setHealth}, {"getKeyData", getKeyData}};
+    ObjectMethods methods = {{"kick",       kick},
+                             {"ban",        ban},
+                             {"setHealth",  setHealth},
+                             {"getKeyData", getKeyData}};
 
     auto playerHandle = InterfaceToObject(storage, player, context, methods);
 
