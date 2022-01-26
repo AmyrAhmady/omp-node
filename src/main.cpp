@@ -50,8 +50,10 @@ struct NodeJSComponent final : IComponent, CoreEventHandler {
 
     ~NodeJSComponent() {
         // Clean up what you did above
-        core->getEventDispatcher().removeEventHandler(this);
-        ompnode::nodeImpl.Stop();
+        if (core != nullptr) {
+            core->getEventDispatcher().removeEventHandler(this);
+            ompnode::nodeImpl.Stop();
+        }
     }
 
     ICore *core = nullptr;
