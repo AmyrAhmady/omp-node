@@ -11,13 +11,13 @@ void getVersion(const v8::FunctionCallbackInfo<v8::Value> &info) {
     auto versionObjectTemplate = v8::ObjectTemplate::New(isolate);
 
     versionObjectTemplate->Set(v8::String::NewFromUtf8(isolate, "major").ToLocalChecked(),
-                               v8::Integer::New(isolate, version.major));
+                               v8::Integer::NewFromUnsigned(isolate, version.major));
     versionObjectTemplate->Set(v8::String::NewFromUtf8(isolate, "minor").ToLocalChecked(),
-                               v8::Integer::New(isolate, version.minor));
+                               v8::Integer::NewFromUnsigned(isolate, version.minor));
     versionObjectTemplate->Set(v8::String::NewFromUtf8(isolate, "patch").ToLocalChecked(),
-                               v8::Integer::New(isolate, version.patch));
+                               v8::Integer::NewFromUnsigned(isolate, version.patch));
     versionObjectTemplate->Set(v8::String::NewFromUtf8(isolate, "prerel").ToLocalChecked(),
-                               v8::Integer::New(isolate, version.prerel));
+                               v8::Integer::NewFromUnsigned(isolate, version.prerel));
 
     auto returnObject = versionObjectTemplate->NewInstance(context);
 
@@ -57,7 +57,7 @@ void getTickCount(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto tickCount = core->getTickCount();
 
-    auto tickCountHandle = IntToJS(tickCount, isolate);
+    auto tickCountHandle = UIntToJS(tickCount, isolate);
 
     info.GetReturnValue().Set(tickCountHandle);
 }
@@ -136,7 +136,7 @@ void tickRate(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto tickRate = core->tickRate();
 
-    auto tickRateHandle = IntToJS(tickRate, isolate);
+    auto tickRateHandle = UIntToJS(tickRate, isolate);
 
     info.GetReturnValue().Set(tickRateHandle);
 }

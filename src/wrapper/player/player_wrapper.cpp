@@ -1,10 +1,24 @@
 #include "player_wrapper.hpp"
 #include "../../logger.hpp"
 
+IPlayer *GetPlayerFromContext(const v8::FunctionCallbackInfo<v8::Value> &info) {
+    auto player = GetContextExternalPointer<IPlayer>(info);
+
+    if (player == nullptr) {
+        info.GetIsolate()->ThrowException(v8::Exception::ReferenceError(v8::String::NewFromUtf8(info.GetIsolate(),
+                                                                                                "The player is not connected").ToLocalChecked()));
+    }
+
+    return player;
+}
+
 void kick(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
-    auto player = GetContextExternalPointer<IPlayer>(info);
+    auto player = GetPlayerFromContext(info);
+
+    if (!player)
+        return;
 
     player->kick();
 }
@@ -12,7 +26,10 @@ void kick(const v8::FunctionCallbackInfo<v8::Value> &info) {
 void ban(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
-    auto player = GetContextExternalPointer<IPlayer>(info);
+    auto player = GetPlayerFromContext(info);
+
+    if (!player)
+        return;
 
     StringView reason;
 
@@ -26,7 +43,10 @@ void ban(const v8::FunctionCallbackInfo<v8::Value> &info) {
 void setHealth(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
-    auto player = GetContextExternalPointer<IPlayer>(info);
+    auto player = GetPlayerFromContext(info);
+
+    if (!player)
+        return;
 
     float health = JSToFloat(info[0], context);
 
@@ -36,7 +56,10 @@ void setHealth(const v8::FunctionCallbackInfo<v8::Value> &info) {
 void getKeyData(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
-    auto player = GetContextExternalPointer<IPlayer>(info);
+    auto player = GetPlayerFromContext(info);
+
+    if (!player)
+        return;
 
     auto keyData = player->getKeyData();
 

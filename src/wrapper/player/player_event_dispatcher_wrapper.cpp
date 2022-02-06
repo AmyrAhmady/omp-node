@@ -43,7 +43,7 @@ struct PlayerNodeJSEventHandler : PlayerEventHandler {
     v8::Isolate *isolate;
     v8::UniquePersistent<v8::Function> handler;
 
-    explicit PlayerNodeJSEventHandler(HandleStorage &_storage, v8::Local<v8::Function> _handler) {
+    PlayerNodeJSEventHandler(HandleStorage &_storage, v8::Local<v8::Function> _handler) {
         storage = &_storage;
         isolate = _handler->GetIsolate();
         handler = v8::UniquePersistent<v8::Function>(isolate, _handler);
@@ -51,7 +51,7 @@ struct PlayerNodeJSEventHandler : PlayerEventHandler {
 };
 
 struct PlayerIncomingConnectionHandler : PlayerNodeJSEventHandler {
-    explicit PlayerIncomingConnectionHandler(HandleStorage &_storage, v8::Local<v8::Function> _handler)
+    PlayerIncomingConnectionHandler(HandleStorage &_storage, v8::Local<v8::Function> _handler)
         : PlayerNodeJSEventHandler(_storage, _handler) {
     }
 
@@ -62,7 +62,7 @@ struct PlayerIncomingConnectionHandler : PlayerNodeJSEventHandler {
 
         args[0] = storage->get(&player)->Get(isolate);
         args[1] = StringViewToJS(ipAddress, isolate);
-        args[2] = IntToJS(port, isolate);
+        args[2] = UIntToJS(port, isolate);
 
         func->Call(context, context->Global(), 3, args).ToLocalChecked();
     }
@@ -97,7 +97,9 @@ void count(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto result = dispatcher->count();
 
-    info.GetReturnValue().Set(result);
+    auto resultHandle = UIntToJS(result, isolate);
+
+    info.GetReturnValue().Set(resultHandle);
 }
 
 void WrapPlayerEventDispatcher(HandleStorage &storage,

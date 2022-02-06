@@ -31,10 +31,11 @@ struct NodeJSComponent final : IComponent, CoreEventHandler {
     void onInit(IComponentList *components) override {
         // Cache components, add event handlers here
 
+        ompnode::nodeImpl.SetComponentList(components);
+
         ompnode::nodeImpl.LoadResource("");
 
         core->getEventDispatcher().addEventHandler(this);
-
     }
 
     void onFree(IComponent *component) override {

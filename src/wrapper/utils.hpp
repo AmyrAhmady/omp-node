@@ -13,6 +13,7 @@
 
 struct HandleStorage {
     FlatHashMap<void *, v8::UniquePersistent<v8::Value> *> storageMap;
+    FlatHashMap<StringView, v8::UniquePersistent<v8::Value> *> constructorsMap;
 
     template<typename Key>
     void set(Key *key, v8::UniquePersistent<v8::Value> *value) {
@@ -32,8 +33,22 @@ struct HandleStorage {
 
     template<typename Key>
     void remove(Key *key) {
-        storageMap.erase(key);
+        auto value = get(key);
+
+        if (key != nullptr) {
+            delete value;
+
+            storageMap.erase(key);
+        }
     }
+
+    void setConstructor(StringView key, v8::UniquePersistent<v8::Value> *value);
+
+    v8::UniquePersistent<v8::Value> *getConstructor(StringView key);
+
+    void removeConstructor(StringView key);
+
+    ~HandleStorage();
 };
 
 typedef std::vector<std::pair<std::string, v8::FunctionCallback>> ObjectMethods;
@@ -104,21 +119,27 @@ float JSToFloat(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 int JSToInt(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 StringView JSToStringView(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 bool JSToBool(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
+Vector3 JSToVector3(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
+
+BanEntry JSToBanEntry(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 
 v8::Local<v8::Number> FloatToJS(float value, v8::Isolate *isolate);
 v8::Local<v8::Integer> IntToJS(int value, v8::Isolate *isolate);
+v8::Local<v8::Integer> UIntToJS(unsigned int value, v8::Isolate *isolate);
 v8::Local<v8::String> StringViewToJS(StringView str, v8::Isolate *isolate);
 v8::Local<v8::Boolean> BoolToJS(bool value, v8::Isolate *isolate);
 
 v8::Local<v8::Object> PlayerKeyDataToJS(PlayerKeyData &data, v8::Local<v8::Context>);
+v8::Local<v8::Object> BanEntryToJS(const BanEntry &entry, v8::Local<v8::Context>);
 
 template<typename EnumType>
-v8::Local<v8::Object> EnumToObject(std::vector<std::pair<std::string, EnumType>> values, v8::Local<v8::Context> context) {
+v8::Local<v8::Object> EnumToObject(std::vector<std::pair<std::string, EnumType>> values,
+                                   v8::Local<v8::Context> context) {
     auto isolate = context->GetIsolate();
 
     auto objectTemplate = v8::ObjectTemplate::New(isolate);
 
-    for (auto entry : values) {
+    for (auto entry: values) {
         auto name = v8::String::NewFromUtf8(isolate, entry.first.c_str()).ToLocalChecked();
         auto val = IntToJS((int)entry.second, isolate);
         auto valString = val->ToString(context).ToLocalChecked();

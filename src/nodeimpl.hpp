@@ -47,6 +47,14 @@ namespace ompnode {
             return core;
         }
 
+        inline void SetComponentList(IComponentList *list) {
+            componentList = list;
+        }
+
+        inline IComponentList *GetComponentList() {
+            return componentList;
+        }
+
         void Tick();
 
         void Stop();
@@ -59,6 +67,7 @@ namespace ompnode {
         std::unique_ptr<UvLoop> nodeLoop;
         std::unordered_map<std::string, node::Environment *> resourceNamesPool;
         ICore *core;
+        IComponentList *componentList;
     };
 
     extern NodeImpl nodeImpl;

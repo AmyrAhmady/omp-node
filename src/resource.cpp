@@ -3,6 +3,8 @@
 #include "wrapper/utils.hpp"
 #include "wrapper/core/settable_core_data_wrapper.hpp"
 #include "wrapper/core/player_weapon_wrapper.hpp"
+#include "wrapper/core/config_option_type_wrapper.hpp"
+#include "wrapper/vehicle/vehicle_pool_wrapper.hpp"
 
 v8::Isolate *GetV8Isolate() {
     return ompnode::nodeImpl.GetIsolate();
@@ -87,6 +89,22 @@ namespace ompnode {
         _context->Global()->Set(_context,
                                 v8::String::NewFromUtf8(GetV8Isolate(), "PlayerWeapon").ToLocalChecked(),
                                 playerWeaponTypeHandle).Check();
+
+        auto configOptionTypeHandle = WrapConfigOptionType(_context);
+        _context->Global()->Set(_context,
+                                v8::String::NewFromUtf8(GetV8Isolate(), "ConfigOptionType").ToLocalChecked(),
+                                configOptionTypeHandle).Check();
+
+        /**/
+        auto componentList = ompnode::nodeImpl.GetComponentList();
+        auto vehiclesComponent = componentList->queryComponent<IVehiclesComponent>();
+
+        WrapVehiclePool(handleStorage, vehiclesComponent, _context);
+        auto vehiclePoolHandle = handleStorage.get(vehiclesComponent)->Get(GetV8Isolate());
+
+        _context->Global()->Set(_context,
+                                v8::String::NewFromUtf8(GetV8Isolate(), "vehicles").ToLocalChecked(),
+                                vehiclePoolHandle).Check();
 
         node::EnvironmentFlags::Flags flags = node::EnvironmentFlags::kOwnsProcessState;
 

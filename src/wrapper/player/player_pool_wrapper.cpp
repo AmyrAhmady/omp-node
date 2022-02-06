@@ -122,9 +122,13 @@ struct PlayerEntryHandler : PlayerEventHandler {
 
         v8::Context::Scope contextScope(_context);
 
-        auto playerHandle = storage->get(&player);
+        auto playerPersistentHandle = storage->get(&player);
 
-        if (playerHandle != nullptr) {
+        if (playerPersistentHandle != nullptr) {
+            auto playerHandle = playerPersistentHandle->Get(isolate);
+
+            playerHandle.As<v8::Object>()->SetInternalField(1, v8::External::New(isolate, nullptr));
+
             storage->remove(&player);
         }
     }
