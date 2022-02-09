@@ -74,7 +74,7 @@ void addEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
     auto storage = GetContextHandleStorage(info);
     auto dispatcher = GetContextExternalPointer<IEventDispatcher<PlayerEventHandler>>(info);
 
-    auto event = JSToStringView(info[0], context);
+    auto event = JSToString(info[0], context);
     auto handler = info[1].As<v8::Function>();
 
     PlayerEventHandler *handlerObj; // todo: store this somewhere

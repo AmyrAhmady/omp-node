@@ -13,7 +13,7 @@
 
 struct HandleStorage {
     FlatHashMap<void *, v8::UniquePersistent<v8::Value> *> storageMap;
-    FlatHashMap<StringView, v8::UniquePersistent<v8::Value> *> constructorsMap;
+    FlatHashMap<String, v8::UniquePersistent<v8::Value> *> constructorsMap;
 
     template<typename Key>
     void set(Key *key, v8::UniquePersistent<v8::Value> *value) {
@@ -117,7 +117,8 @@ Interface *GetContextExternalPointer(const v8::FunctionCallbackInfo<v8::Value> &
 
 float JSToFloat(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 int JSToInt(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
-StringView JSToStringView(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
+String JSToString(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
+WorldTimePoint JSToWorldTimePoint(v8::Local<v8::Value> value);
 bool JSToBool(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 Vector3 JSToVector3(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 
@@ -127,6 +128,7 @@ v8::Local<v8::Number> FloatToJS(float value, v8::Isolate *isolate);
 v8::Local<v8::Integer> IntToJS(int value, v8::Isolate *isolate);
 v8::Local<v8::Integer> UIntToJS(unsigned int value, v8::Isolate *isolate);
 v8::Local<v8::String> StringViewToJS(StringView str, v8::Isolate *isolate);
+v8::Local<v8::Date> WorldTimePointToJS(WorldTimePoint point, v8::Local<v8::Context> context);
 v8::Local<v8::Boolean> BoolToJS(bool value, v8::Isolate *isolate);
 
 v8::Local<v8::Object> PlayerKeyDataToJS(PlayerKeyData &data, v8::Local<v8::Context>);

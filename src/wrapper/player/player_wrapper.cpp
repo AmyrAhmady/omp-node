@@ -31,10 +31,10 @@ void ban(const v8::FunctionCallbackInfo<v8::Value> &info) {
     if (!player)
         return;
 
-    StringView reason;
+    String reason;
 
     if (!info[0]->IsUndefined()) {
-        reason = JSToStringView(info[0], context);
+        reason = JSToString(info[0], context);
     }
 
     player->ban(reason);

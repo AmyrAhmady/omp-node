@@ -83,7 +83,7 @@ void sendClientMessageToAll(const v8::FunctionCallbackInfo<v8::Value> &info) {
     auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
 
     int colorRGBA = JSToInt(info[0], context);
-    auto message = JSToStringView(info[1], context);
+    auto message = JSToString(info[1], context);
 
     Colour color = Colour::FromRGBA(colorRGBA);
 

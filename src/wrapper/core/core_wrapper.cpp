@@ -110,7 +110,7 @@ void setData(const v8::FunctionCallbackInfo<v8::Value> &info) {
     auto core = GetContextExternalPointer<ICore>(info);
 
     auto data = JSToInt(info[0], context);
-    auto value = JSToStringView(info[1], context);
+    auto value = JSToString(info[1], context);
 
     core->setData((SettableCoreDataType)data, value);
 }

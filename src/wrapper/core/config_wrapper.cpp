@@ -6,7 +6,7 @@ void getString(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto config = GetContextExternalPointer<IConfig>(info);
 
-    auto key = JSToStringView(info[0], context);
+    auto key = JSToString(info[0], context);
 
     auto type = config->getType(key);
 
@@ -29,7 +29,7 @@ void getInt(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto config = GetContextExternalPointer<IConfig>(info);
 
-    auto key = JSToStringView(info[0], context);
+    auto key = JSToString(info[0], context);
 
     auto type = config->getType(key);
 
@@ -52,7 +52,7 @@ void getFloat(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto config = GetContextExternalPointer<IConfig>(info);
 
-    auto key = JSToStringView(info[0], context);
+    auto key = JSToString(info[0], context);
 
     auto type = config->getType(key);
 
@@ -75,7 +75,7 @@ void getStrings(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto config = GetContextExternalPointer<IConfig>(info);
 
-    auto key = JSToStringView(info[0], context);
+    auto key = JSToString(info[0], context);
 
     auto type = config->getType(key);
 
@@ -108,7 +108,7 @@ void getStringsCount(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto config = GetContextExternalPointer<IConfig>(info);
 
-    auto key = JSToStringView(info[0], context);
+    auto key = JSToString(info[0], context);
 
     auto type = config->getType(key);
 
@@ -131,7 +131,7 @@ void getType(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto config = GetContextExternalPointer<IConfig>(info);
 
-    auto key = JSToStringView(info[0], context);
+    auto key = JSToString(info[0], context);
 
     auto type = config->getType(key);
 
@@ -145,7 +145,7 @@ void get(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto config = GetContextExternalPointer<IConfig>(info);
 
-    auto key = JSToStringView(info[0], context);
+    auto key = JSToString(info[0], context);
 
     auto type = config->getType(key);
 

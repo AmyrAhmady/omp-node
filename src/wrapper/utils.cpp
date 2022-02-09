@@ -60,16 +60,23 @@ int JSToInt(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
 
 #include "../logger.hpp"
 
-StringView JSToStringView(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
+String JSToString(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     auto isolate = context->GetIsolate();
 
     if (value->IsUndefined()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
                                                                                  "A value is required").ToLocalChecked()));
-        return StringView();
+        return String();
     }
 
-    return StringView(utils::js_to_cstr(isolate, value));
+    return utils::js_to_string(isolate, value);
+}
+
+WorldTimePoint JSToWorldTimePoint(v8::Local<v8::Value> value) {
+    auto msCount = static_cast<long long>(value.As<v8::Date>()->ValueOf());
+    auto ms = Milliseconds(msCount);
+
+    return WorldTimePoint(ms);
 }
 
 bool JSToBool(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
@@ -134,38 +141,14 @@ BanEntry JSToBanEntry(v8::Local<v8::Value> value, v8::Local<v8::Context> context
         return BanEntry("");
     }
 
-    auto address = JSToStringView(addressHandle.ToLocalChecked(), context);
-
-    L_DEBUG << "address " << address << " " << address.size() << " \"" << address.data() << "\"";
-
-    auto msCount = static_cast<long long>(timeHandle.ToLocalChecked().As<v8::Date>()->ValueOf());
-    auto ms = Milliseconds(msCount);
-    WorldTimePoint time = WorldTimePoint(ms);
-
-    auto name = JSToStringView(nameHandle.ToLocalChecked(), context);
-    auto reason = JSToStringView(reasonHandle.ToLocalChecked(), context);
-
-//    WHY
-//    [01/02/2022 - 02:13:14] -> [DEBUG]: address 123 3 "123"
-//    [01/02/2022 - 02:13:14] -> [DEBUG]: address be   45 3
-//    [01/02/2022 - 02:13:14] -> [DEBUG]: address to js
-//        {
-//            ban: {
-//                address: ' \x003',
-//                time: 2022-01-31T23:13:14.089Z,
-//                name: ' ',
-//                reason: ' '
-//            }
-//        }
-
+    auto address = JSToString(addressHandle.ToLocalChecked(), context);
+    auto time = JSToWorldTimePoint(timeHandle.ToLocalChecked());
+    auto name = JSToString(nameHandle.ToLocalChecked(), context);
+    auto reason = JSToString(reasonHandle.ToLocalChecked(), context);
 
     // todo: consider default and missing parameters
 
-    auto be = BanEntry(address, name, reason, time);
-
-    L_DEBUG << "address be " << be.address.data() << " " << be.address.UsableStaticSize << " " << be.address.length();
-
-    return be;
+    return BanEntry(address, name, reason, time);
 }
 
 v8::Local<v8::Number> FloatToJS(float value, v8::Isolate *isolate) {
@@ -182,6 +165,16 @@ v8::Local<v8::Integer> UIntToJS(unsigned int value, v8::Isolate *isolate) {
 
 v8::Local<v8::String> StringViewToJS(StringView str, v8::Isolate *isolate) {
     return v8::String::NewFromUtf8(isolate, str.data(), v8::NewStringType::kNormal, str.size()).ToLocalChecked();
+}
+
+v8::Local<v8::Date> WorldTimePointToJS(WorldTimePoint point, v8::Local<v8::Context> context) {
+    auto sinceEpoch = point.time_since_epoch();
+
+    auto ms = duration_cast<Milliseconds>(sinceEpoch);
+
+    v8::Local<v8::Date> date = v8::Date::New(context, static_cast<double>(ms.count())).ToLocalChecked().As<v8::Date>();
+
+    return date;
 }
 
 v8::Local<v8::Boolean> BoolToJS(bool value, v8::Isolate *isolate) {
@@ -212,17 +205,13 @@ v8::Local<v8::Object> BanEntryToJS(const BanEntry &entry, v8::Local<v8::Context>
 
     auto object = dataTemplate->NewInstance(context).ToLocalChecked();
 
-    L_DEBUG << "address to js " << entry.address.data();
-
     object->Set(context,
                 v8::String::NewFromUtf8(isolate, "address").ToLocalChecked(),
                 StringViewToJS(entry.address, isolate)).Check();
 
-    auto sinceEpoch = entry.time.time_since_epoch();
-    auto ms = std::chrono::duration_cast<Milliseconds>(sinceEpoch);
-    auto date = v8::Date::New(context, static_cast<double>(ms.count())).ToLocalChecked();
-
-    object->Set(context, v8::String::NewFromUtf8(isolate, "time").ToLocalChecked(), date).Check();
+    object->Set(context,
+                v8::String::NewFromUtf8(isolate, "time").ToLocalChecked(),
+                WorldTimePointToJS(entry.time, context)).Check();
 
     object->Set(context,
                 v8::String::NewFromUtf8(isolate, "name").ToLocalChecked(),
