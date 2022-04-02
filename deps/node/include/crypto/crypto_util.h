@@ -7,6 +7,7 @@
 #include "async_wrap.h"
 #include "allocated_buffer.h"
 #include "node_errors.h"
+#include "node_external_reference.h"
 #include "node_internals.h"
 #include "util.h"
 #include "v8.h"
@@ -88,6 +89,7 @@ extern int VerifyCallback(int preverify_ok, X509_STORE_CTX* ctx);
 
 bool ProcessFipsOptions();
 
+bool InitCryptoOnce(v8::Isolate* isolate);
 void InitCryptoOnce();
 
 void InitCrypto(v8::Local<v8::Object> target);
@@ -257,6 +259,8 @@ class ByteSource {
 
   v8::Local<v8::ArrayBuffer> ToArrayBuffer(Environment* env);
 
+  v8::MaybeLocal<v8::Uint8Array> ToBuffer(Environment* env);
+
   void reset();
 
   // Allows an Allocated ByteSource to be truncated.
@@ -423,6 +427,12 @@ class CryptoJob : public AsyncWrap, public ThreadPoolWork {
     env->SetConstructorFunction(target, CryptoJobTraits::JobName, job);
   }
 
+  static void RegisterExternalReferences(v8::FunctionCallback new_fn,
+                                         ExternalReferenceRegistry* registry) {
+    registry->Register(new_fn);
+    registry->Register(Run);
+  }
+
  private:
   const CryptoJobMode mode_;
   CryptoErrorStore errors_;
@@ -455,6 +465,10 @@ class DeriveBitsJob final : public CryptoJob<DeriveBitsTraits> {
       Environment* env,
       v8::Local<v8::Object> target) {
     CryptoJob<DeriveBitsTraits>::Initialize(New, env, target);
+  }
+
+  static void RegisterExternalReferences(ExternalReferenceRegistry* registry) {
+    CryptoJob<DeriveBitsTraits>::RegisterExternalReferences(New, registry);
   }
 
   DeriveBitsJob(
@@ -550,9 +564,12 @@ struct EnginePointer {
 
   inline void reset(ENGINE* engine_ = nullptr, bool finish_on_exit_ = false) {
     if (engine != nullptr) {
-      if (finish_on_exit)
-        ENGINE_finish(engine);
-      ENGINE_free(engine);
+      if (finish_on_exit) {
+        // This also does the equivalent of ENGINE_free.
+        CHECK_EQ(ENGINE_finish(engine), 1);
+      } else {
+        CHECK_EQ(ENGINE_free(engine), 1);
+      }
     }
     engine = engine_;
     finish_on_exit = finish_on_exit_;
@@ -727,6 +744,7 @@ v8::Maybe<bool> SetEncodedValue(
 
 namespace Util {
 void Initialize(Environment* env, v8::Local<v8::Object> target);
+void RegisterExternalReferences(ExternalReferenceRegistry* registry);
 }  // namespace Util
 
 }  // namespace crypto

@@ -283,7 +283,7 @@ class ThreadPoolWork {
 
 #if defined(__POSIX__) && !defined(__ANDROID__) && !defined(__CloudABI__)
 #define NODE_IMPLEMENTS_POSIX_CREDENTIALS 1
-#endif  // __POSIX__ && !defined(__ANDROID__) && !defined(__CloudABI__)
+#endif  // defined(__POSIX__) && !defined(__ANDROID__) && !defined(__CloudABI__)
 
 namespace credentials {
 bool SafeGetenv(const char* key, std::string* text, Environment* env = nullptr);
@@ -320,12 +320,13 @@ enum InitializationSettingsFlags : uint64_t {
 };
 
 // TODO(codebytere): eventually document and expose to embedders.
-InitializationResult InitializeOncePerProcess(int argc, char** argv);
-InitializationResult InitializeOncePerProcess(
+InitializationResult NODE_EXTERN InitializeOncePerProcess(int argc, char** argv);
+InitializationResult NODE_EXTERN InitializeOncePerProcess(
   int argc,
   char** argv,
-  InitializationSettingsFlags flags);
-void TearDownOncePerProcess();
+  InitializationSettingsFlags flags,
+  ProcessFlags::Flags process_flags = ProcessFlags::kNoFlags);
+void NODE_EXTERN TearDownOncePerProcess();
 void SetIsolateErrorHandlers(v8::Isolate* isolate, const IsolateSettings& s);
 void SetIsolateMiscHandlers(v8::Isolate* isolate, const IsolateSettings& s);
 void SetIsolateCreateParamsForNode(v8::Isolate::CreateParams* params);
