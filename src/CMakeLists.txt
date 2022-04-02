@@ -42,9 +42,9 @@ file(GLOB_RECURSE OMPNODE_FILES
 add_library(${PROJECT_NAME} SHARED ${OMPNODE_FILES})
 
 if (WIN32)
-    set(LIBRARIES v8_libbase v8_libplatform libnode shlwapi dbghelp winmm)
+    set(LIBRARIES ${NODE_FILE} shlwapi dbghelp winmm)
 else ()
-    target_link_libraries(${PROJECT_NAME} ${NODE_PATH}/libnode.so.93)
+    target_link_libraries(${PROJECT_NAME} ${NODE_PATH}/${NODE_FILE})
 
     set(LIBRARIES ${node} pthread dl m)
 endif ()
