@@ -94,14 +94,14 @@ void setWorldTime(const v8::FunctionCallbackInfo<v8::Value> &info) {
     core->setWorldTime(hours);
 }
 
-void toggleStuntBonus(const v8::FunctionCallbackInfo<v8::Value> &info) {
+void useStuntBonuses(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
     auto core = GetContextExternalPointer<ICore>(info);
 
     auto toggle = JSToBool(info[0], context);
 
-    core->toggleStuntBonus(toggle);
+    core->useStuntBonuses(toggle);
 }
 
 void setData(const v8::FunctionCallbackInfo<v8::Value> &info) {
@@ -142,17 +142,17 @@ void tickRate(const v8::FunctionCallbackInfo<v8::Value> &info) {
 }
 
 void WrapCore(HandleStorage &storage, ICore *core, v8::Local<v8::Context> context) {
-    ObjectMethods methods = {{"getVersion",       getVersion},
-                             {"getPlayers",       getPlayers},
-                             {"getConfig",        getConfig},
-                             {"getTickCount",     getTickCount},
-                             {"setGravity",       setGravity},
-                             {"setWeather",       setWeather},
-                             {"setWorldTime",     setWorldTime},
-                             {"toggleStuntBonus", toggleStuntBonus},
-                             {"setData",          setData},
-                             {"getWeaponName",    getWeaponName},
-                             {"tickRate",    tickRate}};
+    ObjectMethods methods = {{"getVersion",    getVersion},
+                             {"getPlayers",    getPlayers},
+                             {"getConfig",     getConfig},
+                             {"getTickCount",  getTickCount},
+                             {"setGravity",    setGravity},
+                             {"setWeather",    setWeather},
+                             {"setWorldTime",  setWorldTime},
+                             {"useStuntBonuses", useStuntBonuses},
+                             {"setData",       setData},
+                             {"getWeaponName", getWeaponName},
+                             {"tickRate",      tickRate}};
     auto coreHandle = InterfaceToObject(storage, core, context, methods);
 
     storage.set(core, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), coreHandle));

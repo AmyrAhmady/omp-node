@@ -112,7 +112,7 @@ struct PlayerEntryHandler : PlayerEventHandler {
         WrapPlayer(*storage, &player, _context);
     }
 
-    void onDisconnect(IPlayer &player, PeerDisconnectReason reason) override {
+    void onPlayerDisconnect(IPlayer &player, PeerDisconnectReason reason) override {
         v8::Locker locker(isolate);
         v8::Isolate::Scope isolateScope(isolate);
 

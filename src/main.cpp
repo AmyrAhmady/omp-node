@@ -45,6 +45,10 @@ struct NodeJSComponent final : IComponent, CoreEventHandler {
         // Fire events here at earliest
     }
 
+    void reset() override {
+        free();
+    }
+
     void free() override {
         delete this;
     }

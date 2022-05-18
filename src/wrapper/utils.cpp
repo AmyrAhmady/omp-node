@@ -60,13 +60,13 @@ int JSToInt(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
 
 #include "../logger.hpp"
 
-String JSToString(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
+Impl::String JSToString(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     auto isolate = context->GetIsolate();
 
     if (value->IsUndefined()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
                                                                                  "A value is required").ToLocalChecked()));
-        return String();
+        return Impl::String();
     }
 
     return utils::js_to_string(isolate, value);
