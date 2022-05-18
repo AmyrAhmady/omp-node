@@ -1,29 +1,5 @@
 #include "utils.hpp"
 
-void HandleStorage::setConstructor(StringView key, v8::UniquePersistent<v8::Value> *value) {
-    constructorsMap.emplace(key, value);
-}
-
-v8::UniquePersistent<v8::Value> *HandleStorage::getConstructor(StringView key) {
-    auto pair = constructorsMap.find(key);
-
-    if (pair != constructorsMap.end()) {
-        return pair->second;
-    }
-
-    return nullptr; // todo: don't return nullptr
-}
-
-void HandleStorage::removeConstructor(StringView key) {
-    auto value = getConstructor(key);
-
-    if (key != nullptr) {
-        delete value;
-
-        constructorsMap.erase(key);
-    }
-}
-
 HandleStorage::~HandleStorage() {
     for (auto pair: storageMap) {
         delete pair.second;

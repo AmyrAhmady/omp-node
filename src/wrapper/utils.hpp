@@ -42,12 +42,6 @@ struct HandleStorage {
         }
     }
 
-    void setConstructor(StringView key, v8::UniquePersistent<v8::Value> *value);
-
-    v8::UniquePersistent<v8::Value> *getConstructor(StringView key);
-
-    void removeConstructor(StringView key);
-
     ~HandleStorage();
 };
 
