@@ -11,6 +11,32 @@
     v8::Local<v8::Context> context = isolate->GetCurrentContext(); \
     v8::Context::Scope contextScope(context);
 
+#define WRAP_BASIC_CALL_RETURN(ExternalType, getFunction, ConversionToJSFunction, ...) \
+    void getFunction(const v8::FunctionCallbackInfo<v8::Value> &info) { \
+        ENTER_FUNCTION_CALLBACK(info); \
+        auto external = GetContextExternalPointer<ExternalType>(info); \
+        auto value = external->getFunction(__VA_ARGS__); \
+        auto valueHandle = ConversionToJSFunction(value, isolate); \
+        info.GetReturnValue().Set(valueHandle); \
+    }
+
+#define WRAP_HANDLE_STORAGE_GET(ExternalType, getFunction) \
+    void getFunction(const v8::FunctionCallbackInfo<v8::Value> &info) { \
+        ENTER_FUNCTION_CALLBACK(info) \
+        auto storage = GetContextHandleStorage(info); \
+        auto external = GetContextExternalPointer<ExternalType>(info); \
+        auto value = &external->getFunction(); \
+        auto valueHandle = storage->get(value)->Get(isolate); \
+        info.GetReturnValue().Set(valueHandle); \
+    }
+
+#define WRAP_BASIC_CALL(ExternalType, setFunction, ...) \
+    void setFunction(const v8::FunctionCallbackInfo<v8::Value> &info) { \
+        ENTER_FUNCTION_CALLBACK(info); \
+        auto external = GetContextExternalPointer<ExternalType>(info); \
+        external->setFunction(__VA_ARGS__); \
+    }
+
 struct HandleStorage {
     FlatHashMap<void *, v8::UniquePersistent<v8::Value> *> storageMap;
     FlatHashMap<Impl::String, v8::UniquePersistent<v8::Value> *> constructorsMap;

@@ -24,134 +24,26 @@ void getVersion(const v8::FunctionCallbackInfo<v8::Value> &info) {
     info.GetReturnValue().Set(returnObject.ToLocalChecked());
 }
 
-void getConfig(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
+WRAP_HANDLE_STORAGE_GET(ICore, getConfig)
+WRAP_HANDLE_STORAGE_GET(ICore, getPlayers)
 
-    auto storage = GetContextHandleStorage(info);
-    auto core = GetContextExternalPointer<ICore>(info);
+WRAP_BASIC_CALL_RETURN(ICore, getTickCount, UIntToJS)
 
-    auto config = &core->getConfig();
+WRAP_BASIC_CALL(ICore, setGravity, JSToFloat(info[0], context))
 
-    auto configHandle = storage->get(config)->Get(isolate);
+WRAP_BASIC_CALL_RETURN(ICore, getGravity, FloatToJS)
 
-    info.GetReturnValue().Set(configHandle);
-}
+WRAP_BASIC_CALL(ICore, setWeather, JSToInt(info[0], context))
 
-void getPlayers(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
+WRAP_BASIC_CALL(ICore, setWorldTime, Hours(JSToInt(info[0], context)))
 
-    auto storage = GetContextHandleStorage(info);
-    auto core = GetContextExternalPointer<ICore>(info);
+WRAP_BASIC_CALL(ICore, useStuntBonuses, JSToBool(info[0], context))
 
-    auto playerPool = &core->getPlayers();
+WRAP_BASIC_CALL(ICore, setData, (SettableCoreDataType)JSToInt(info[0], context), JSToString(info[1], context))
 
-    auto playerPoolHandle = storage->get(playerPool)->Get(isolate);
+WRAP_BASIC_CALL_RETURN(ICore, getWeaponName, StringViewToJS, static_cast<PlayerWeapon>(JSToInt(info[0], context)))
 
-    info.GetReturnValue().Set(playerPoolHandle);
-}
-
-void getTickCount(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto core = GetContextExternalPointer<ICore>(info);
-
-    auto tickCount = core->getTickCount();
-
-    auto tickCountHandle = UIntToJS(tickCount, isolate);
-
-    info.GetReturnValue().Set(tickCountHandle);
-}
-
-void setGravity(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto core = GetContextExternalPointer<ICore>(info);
-
-    auto gravity = JSToFloat(info[0], context);
-
-    core->setGravity(gravity);
-}
-
-void getGravity(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info);
-
-    auto core = GetContextExternalPointer<ICore>(info);
-
-    auto gravity = core->getGravity();
-
-    auto gravityHandle = FloatToJS(gravity, isolate);
-
-    info.GetReturnValue().Set(gravityHandle);
-}
-
-void setWeather(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto core = GetContextExternalPointer<ICore>(info);
-
-    auto weather = JSToInt(info[0], context);
-
-    core->setWeather(weather);
-}
-
-void setWorldTime(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto core = GetContextExternalPointer<ICore>(info);
-
-    auto hoursCount = JSToInt(info[0], context);
-
-    Hours hours(hoursCount);
-
-    core->setWorldTime(hours);
-}
-
-void useStuntBonuses(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto core = GetContextExternalPointer<ICore>(info);
-
-    auto toggle = JSToBool(info[0], context);
-
-    core->useStuntBonuses(toggle);
-}
-
-void setData(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto core = GetContextExternalPointer<ICore>(info);
-
-    auto data = JSToInt(info[0], context);
-    auto value = JSToString(info[1], context);
-
-    core->setData((SettableCoreDataType)data, value);
-}
-
-void getWeaponName(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto core = GetContextExternalPointer<ICore>(info);
-
-    auto playerWeapon = JSToInt(info[0], context);
-
-    auto weaponName = core->getWeaponName(static_cast<PlayerWeapon>(playerWeapon));
-
-    auto weaponNameHandle = StringViewToJS(weaponName, isolate);
-
-    info.GetReturnValue().Set(weaponNameHandle);
-}
-
-void tickRate(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto core = GetContextExternalPointer<ICore>(info);
-
-    auto tickRate = core->tickRate();
-
-    auto tickRateHandle = UIntToJS(tickRate, isolate);
-
-    info.GetReturnValue().Set(tickRateHandle);
-}
+WRAP_BASIC_CALL_RETURN(ICore, tickRate, UIntToJS)
 
 void WrapCore(HandleStorage &storage, ICore *core, v8::Local<v8::Context> context) {
     ObjectMethods methods = {{"getVersion",      getVersion},
