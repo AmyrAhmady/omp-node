@@ -35,7 +35,6 @@ namespace ompnode {
         std::unique_ptr<node::Environment, decltype(&node::FreeEnvironment)> nodeEnvironment;
         std::string path;
         std::string name;
-        HandleStorage handleStorage;
     };
 
     namespace v8val {

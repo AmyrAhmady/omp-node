@@ -4,4 +4,4 @@
 #include "v8.h"
 #include "../utils.hpp"
 
-void WrapVehicle(HandleStorage &storage, IVehicle *vehicle, v8::Local<v8::Context> context);
+void WrapVehicle(IVehicle *vehicle, v8::Local<v8::Context> context);

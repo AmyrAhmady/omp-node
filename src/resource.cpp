@@ -72,9 +72,11 @@ namespace ompnode {
         context.Reset(GetV8Isolate(), _context);
         v8::Context::Scope scope(_context);
 
+        L_DEBUG << 1;
+
         auto core = ompnode::nodeImpl.GetCore();
-        WrapCore(handleStorage, core, _context);
-        auto coreHandle = handleStorage.get(core)->Get(GetV8Isolate());
+        WrapCore(core, _context);
+        auto coreHandle = GetHandleStorageExtension(core)->get();
 
         _context->Global()->Set(_context,
                                 v8::String::NewFromUtf8(GetV8Isolate(), "core").ToLocalChecked(),
@@ -99,8 +101,8 @@ namespace ompnode {
         auto componentList = ompnode::nodeImpl.GetComponentList();
         auto vehiclesComponent = componentList->queryComponent<IVehiclesComponent>();
 
-        WrapVehiclePool(handleStorage, vehiclesComponent, _context);
-        auto vehiclePoolHandle = handleStorage.get(vehiclesComponent)->Get(GetV8Isolate());
+        WrapVehiclePool(vehiclesComponent, _context);
+        auto vehiclePoolHandle = GetHandleStorageExtension(vehiclesComponent)->get();
 
         _context->Global()->Set(_context,
                                 v8::String::NewFromUtf8(GetV8Isolate(), "vehicles").ToLocalChecked(),

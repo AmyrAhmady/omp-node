@@ -221,7 +221,7 @@ void writeBans(const v8::FunctionCallbackInfo<v8::Value> &info) {
     config->writeBans();
 }
 
-void WrapConfig(HandleStorage &storage, IConfig *config, v8::Local<v8::Context> context) {
+void WrapConfig(IConfig *config, v8::Local<v8::Context> context) {
     ObjectMethods methods = {{"getString",       getString},
                              {"getInt",          getInt},
                              {"getFloat",        getFloat},
@@ -235,7 +235,7 @@ void WrapConfig(HandleStorage &storage, IConfig *config, v8::Local<v8::Context> 
                              {"removeBan",       removeBan},
                              {"writeBans",       writeBans},
     };
-    auto configHandle = InterfaceToObject(storage, config, context, methods);
+    auto configHandle = InterfaceToObject(config, context, methods);
 
-    storage.set(config, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), configHandle));
+    config->addExtension(new IHandleStorage(context->GetIsolate(), configHandle), true);
 }

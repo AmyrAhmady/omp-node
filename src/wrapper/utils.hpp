@@ -2,6 +2,7 @@
 #include "sdk.hpp"
 #include "v8.h"
 #include "../utils.hpp"
+#include "../logger.hpp"
 
 #define ENTER_FUNCTION_CALLBACK(info) \
     auto isolate = (info).GetIsolate(); \
@@ -23,10 +24,9 @@
 #define WRAP_HANDLE_STORAGE_GET(ExternalType, getFunction) \
     void getFunction(const v8::FunctionCallbackInfo<v8::Value> &info) { \
         ENTER_FUNCTION_CALLBACK(info) \
-        auto storage = GetContextHandleStorage(info); \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         auto value = &external->getFunction(); \
-        auto valueHandle = storage->get(value)->Get(isolate); \
+        auto valueHandle = GetHandleStorageExtension(value)->get(); \
         info.GetReturnValue().Set(valueHandle); \
     }
 
@@ -37,53 +37,36 @@
         external->setFunction(__VA_ARGS__); \
     }
 
-struct HandleStorage {
-    FlatHashMap<void *, v8::UniquePersistent<v8::Value> *> storageMap;
-    FlatHashMap<Impl::String, v8::UniquePersistent<v8::Value> *> constructorsMap;
+static const UID HandleStorage_UID = UID(0x9f8d31e2f071cfff);
+struct IHandleStorage : public IExtension {
+    PROVIDE_EXT_UID(HandleStorage_UID);
 
-    template<typename Key>
-    void set(Key *key, v8::UniquePersistent<v8::Value> *value) {
-        storageMap.emplace(key, value);
-    }
+    v8::Isolate *isolate;
+    v8::UniquePersistent<v8::Value> storedValue;
 
-    template<typename Key>
-    v8::UniquePersistent<v8::Value> *get(Key *key) {
-        auto pair = storageMap.find(key);
+    IHandleStorage(v8::Isolate *isolate, v8::Local<v8::Value> value);
 
-        if (pair != storageMap.end()) {
-            return pair->second;
-        }
+    v8::Local<v8::Value> get();
 
-        return nullptr; // todo: don't return nullptr
-    }
+    void freeExtension() override;
 
-    template<typename Key>
-    void remove(Key *key) {
-        auto value = get(key);
-
-        if (key != nullptr) {
-            delete value;
-
-            storageMap.erase(key);
-        }
-    }
-
-    ~HandleStorage();
+    void reset() override;
 };
+
+IHandleStorage *GetHandleStorageExtension(IExtensible *extensible);
 
 typedef std::vector<std::pair<std::string, v8::FunctionCallback>> ObjectMethods;
 typedef std::vector<std::tuple<std::string, v8::FunctionCallback, v8::FunctionCallback>> ObjectAccessors;
 
 template<class Interface>
-v8::Local<v8::Object> InterfaceToObject(HandleStorage &storage,
-                                        Interface *pointer,
+v8::Local<v8::Object> InterfaceToObject(Interface *pointer,
                                         v8::Local<v8::Context> context,
                                         const ObjectMethods &methods) {
     auto isolate = context->GetIsolate();
 
     auto objectTemplate = v8::ObjectTemplate::New(isolate);
 
-    objectTemplate->SetInternalFieldCount(2);
+    objectTemplate->SetInternalFieldCount(1);
 
     for (auto &entry: methods) {
         objectTemplate->Set(v8::String::NewFromUtf8(isolate,
@@ -94,22 +77,20 @@ v8::Local<v8::Object> InterfaceToObject(HandleStorage &storage,
 
     auto object = objectTemplate->NewInstance(context).ToLocalChecked();
 
-    object->SetInternalField(0, v8::External::New(isolate, &storage));
-    object->SetInternalField(1, v8::External::New(isolate, pointer));
+    object->SetInternalField(0, v8::External::New(isolate, pointer));
 
     return object;
 }
 
 template<class Interface>
-v8::Local<v8::Object> MutableToObject(HandleStorage &storage,
-                                      Interface *pointer,
+v8::Local<v8::Object> MutableToObject(Interface *pointer,
                                       v8::Local<v8::Context> context,
                                       const ObjectAccessors &accessors) {
     auto isolate = context->GetIsolate();
 
     auto objectTemplate = v8::ObjectTemplate::New(isolate);
 
-    objectTemplate->SetInternalFieldCount(2);
+    objectTemplate->SetInternalFieldCount(1);
 
     for (auto &entry: accessors) {
         objectTemplate->SetAccessorProperty(v8::String::NewFromUtf8(isolate,
@@ -120,17 +101,14 @@ v8::Local<v8::Object> MutableToObject(HandleStorage &storage,
 
     auto object = objectTemplate->NewInstance(context).ToLocalChecked();
 
-    object->SetInternalField(0, v8::External::New(isolate, &storage));
-    object->SetInternalField(1, v8::External::New(isolate, pointer));
+    object->SetInternalField(0, v8::External::New(isolate, pointer));
 
     return object;
 }
 
-HandleStorage *GetContextHandleStorage(const v8::FunctionCallbackInfo<v8::Value> &info);
-
 template<class Interface>
 Interface *GetContextExternalPointer(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(info.This()->GetInternalField(1));
+    v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(info.This()->GetInternalField(0));
 
     return static_cast<Interface *>( pointer->Value());
 }

@@ -20,9 +20,7 @@ void create(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto vehicle = vehiclePool->create(isStatic, modelId, position, z, col1, col2, respawnDelay, addSiren);
 
-    auto storage = GetContextHandleStorage(info);
-
-    auto vehicleHandle = storage->get(vehicle)->Get(isolate);
+    auto vehicleHandle = GetHandleStorageExtension(vehicle)->get();
 
     info.GetReturnValue().Set(vehicleHandle);
 }
@@ -30,12 +28,11 @@ void create(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
 
 struct VehicleEntryHandler : PoolEventHandler<IVehicle> {
-    HandleStorage *storage;
     v8::Isolate *isolate;
     v8::UniquePersistent<v8::Context> context;
 
-    VehicleEntryHandler(HandleStorage &_storage, v8::Local<v8::Context> _context)
-        : storage(&_storage), isolate(_context->GetIsolate()), context(_context->GetIsolate(), _context) {
+    VehicleEntryHandler(v8::Local<v8::Context> _context)
+        : isolate(_context->GetIsolate()), context(_context->GetIsolate(), _context) {
     }
 
     /// Called right after a new entry was constructed
@@ -50,7 +47,7 @@ struct VehicleEntryHandler : PoolEventHandler<IVehicle> {
 
         v8::Context::Scope contextScope(_context);
 
-        WrapVehicle(*storage, &entry, _context);
+        WrapVehicle(&entry, _context);
     };
 
     /// Called just before an entry is destructed
@@ -64,22 +61,20 @@ struct VehicleEntryHandler : PoolEventHandler<IVehicle> {
 
         v8::Context::Scope contextScope(_context);
 
-        auto entryPersistentHandle = storage->get(&entry);
+        auto handleStorage = GetHandleStorageExtension(&entry);
 
-        if (entryPersistentHandle != nullptr) {
-            auto entryHandle = entryPersistentHandle->Get(isolate);
+        if (handleStorage != nullptr) {
+            auto entryHandle = handleStorage->get();
 
-            entryHandle.As<v8::Object>()->SetInternalField(1, v8::External::New(isolate, nullptr));
-
-            storage->remove(&entry);
+            entryHandle.As<v8::Object>()->SetInternalField(0, v8::External::New(isolate, nullptr));
         }
     };
 };
 
 VehicleEntryHandler *handler;
 
-void WrapVehiclePool(HandleStorage &storage, IVehiclesComponent *vehiclePool, v8::Local<v8::Context> context) {
-    handler = new VehicleEntryHandler(storage, context); // todo: store somewhere to delete later
+void WrapVehiclePool(IVehiclesComponent *vehiclePool, v8::Local<v8::Context> context) {
+    handler = new VehicleEntryHandler(context); // todo: store somewhere to delete later
 
     vehiclePool->getPoolEventDispatcher().addEventHandler(handler);
 
@@ -89,6 +84,7 @@ void WrapVehiclePool(HandleStorage &storage, IVehiclesComponent *vehiclePool, v8
                              },
     };
 
-    auto vehiclePoolHandle = InterfaceToObject(storage, vehiclePool, context, methods);
-    storage.set(vehiclePool, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), vehiclePoolHandle));
+    auto vehiclePoolHandle = InterfaceToObject(vehiclePool, context, methods);
+
+    vehiclePool->addExtension(new IHandleStorage(context->GetIsolate(), vehiclePoolHandle), true);
 }

@@ -45,7 +45,7 @@ WRAP_BASIC_CALL_RETURN(ICore, getWeaponName, StringViewToJS, static_cast<PlayerW
 
 WRAP_BASIC_CALL_RETURN(ICore, tickRate, UIntToJS)
 
-void WrapCore(HandleStorage &storage, ICore *core, v8::Local<v8::Context> context) {
+void WrapCore(ICore *core, v8::Local<v8::Context> context) {
     ObjectMethods methods = {{"getVersion",      getVersion},
                              {"getPlayers",      getPlayers},
                              {"getConfig",       getConfig},
@@ -58,10 +58,10 @@ void WrapCore(HandleStorage &storage, ICore *core, v8::Local<v8::Context> contex
                              {"setData",         setData},
                              {"getWeaponName",   getWeaponName},
                              {"tickRate",        tickRate}};
-    auto coreHandle = InterfaceToObject(storage, core, context, methods);
+    auto coreHandle = InterfaceToObject(core, context, methods);
 
-    storage.set(core, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), coreHandle));
+    core->addExtension(new IHandleStorage(context->GetIsolate(), coreHandle), true);
 
-    WrapConfig(storage, &core->getConfig(), context);
-    WrapPlayerPool(storage, &core->getPlayers(), context);
+    WrapConfig(&core->getConfig(), context);
+    WrapPlayerPool(&core->getPlayers(), context);
 }

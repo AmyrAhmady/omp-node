@@ -53,6 +53,19 @@ void setHealth(const v8::FunctionCallbackInfo<v8::Value> &info) {
     player->setHealth(health);
 }
 
+void getHealth(const v8::FunctionCallbackInfo<v8::Value> &info) {
+    ENTER_FUNCTION_CALLBACK(info)
+
+    auto player = GetPlayerFromContext(info);
+
+    if (!player)
+        return;
+
+    auto health = player->getHealth();
+
+    info.GetReturnValue().Set(FloatToJS(health, isolate));
+}
+
 void getKeyData(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
@@ -66,13 +79,14 @@ void getKeyData(const v8::FunctionCallbackInfo<v8::Value> &info) {
     info.GetReturnValue().Set(PlayerKeyDataToJS(keyData, context));
 }
 
-void WrapPlayer(HandleStorage &storage, IPlayer *player, v8::Local<v8::Context> context) {
+void WrapPlayer(IPlayer *player, v8::Local<v8::Context> context) {
     ObjectMethods methods = {{"kick",       kick},
                              {"ban",        ban},
                              {"setHealth",  setHealth},
+                             {"getHealth",  getHealth},
                              {"getKeyData", getKeyData}};
 
-    auto playerHandle = InterfaceToObject(storage, player, context, methods);
+    auto playerHandle = InterfaceToObject(player, context, methods);
 
-    storage.set(player, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), playerHandle));
+    player->addExtension(new IHandleStorage(context->GetIsolate(), playerHandle), true);
 }

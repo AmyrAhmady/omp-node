@@ -1,13 +1,28 @@
 #include "utils.hpp"
 
-HandleStorage::~HandleStorage() {
-    for (auto pair: storageMap) {
-        delete pair.second;
-    }
+IHandleStorage *GetHandleStorageExtension(IExtensible *extensible) {
+    return queryExtension<IHandleStorage>(extensible);
+}
 
-    for (auto pair: constructorsMap) {
-        delete pair.second;
-    }
+IHandleStorage::IHandleStorage(v8::Isolate *isolate, v8::Local<v8::Value> value)
+    : isolate(isolate), storedValue(isolate, value) {
+    L_DEBUG << "constructed";
+}
+
+v8::Local<v8::Value> IHandleStorage::get() {
+    v8::EscapableHandleScope hs(isolate);
+    return hs.Escape(storedValue.Get(isolate));
+}
+
+void IHandleStorage::freeExtension() {
+    isolate = nullptr;
+    storedValue.Reset();
+    IExtension::freeExtension();
+    L_DEBUG << "freed";
+}
+
+void IHandleStorage::reset() {
+    L_DEBUG << "reset";
 }
 
 float JSToFloat(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
@@ -199,10 +214,4 @@ v8::Local<v8::Object> BanEntryToJS(const BanEntry &entry, v8::Local<v8::Context>
     // todo: add real checking (error handling)
 
     return object;
-}
-
-HandleStorage *GetContextHandleStorage(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(info.This()->GetInternalField(0));
-
-    return static_cast<HandleStorage *>( pointer->Value());
 }

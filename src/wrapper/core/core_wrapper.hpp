@@ -5,4 +5,4 @@
 #include "../../logger.hpp"
 #include "../utils.hpp"
 
-void WrapCore(HandleStorage &storage, ICore *core, v8::Local<v8::Context> context);
+void WrapCore(ICore *core, v8::Local<v8::Context> context);

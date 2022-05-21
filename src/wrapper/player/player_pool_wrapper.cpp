@@ -5,7 +5,6 @@
 void entries(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
-    auto storage = GetContextHandleStorage(info);
     auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
 
     auto entries = playerPool->entries();
@@ -15,7 +14,7 @@ void entries(const v8::FunctionCallbackInfo<v8::Value> &info) {
     unsigned index = 0;
 
     for (auto entry: entries) {
-        auto playerHandle = storage->get(entry)->Get(isolate);
+        auto playerHandle = GetHandleStorageExtension(entry)->get();
 
         array->Set(context, index++, playerHandle).Check();
     }
@@ -25,7 +24,6 @@ void entries(const v8::FunctionCallbackInfo<v8::Value> &info) {
 void players(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
-    auto storage = GetContextHandleStorage(info);
     auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
 
     auto entries = playerPool->players();
@@ -36,7 +34,7 @@ void players(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     for (auto entry: entries) {
 
-        auto playerHandle = storage->get(entry)->Get(isolate);
+        auto playerHandle = GetHandleStorageExtension(entry)->get();
 
         array->Set(context, index++, playerHandle).Check();
     }
@@ -46,7 +44,6 @@ void players(const v8::FunctionCallbackInfo<v8::Value> &info) {
 void bots(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
-    auto storage = GetContextHandleStorage(info);
     auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
 
     auto entries = playerPool->bots();
@@ -57,7 +54,7 @@ void bots(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     for (auto entry: entries) {
 
-        auto playerHandle = storage->get(entry)->Get(isolate);
+        auto playerHandle = GetHandleStorageExtension(entry)->get();
 
         array->Set(context, index++, playerHandle).Check();
     }
@@ -67,12 +64,11 @@ void bots(const v8::FunctionCallbackInfo<v8::Value> &info) {
 void getEventDispatcher(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
-    auto storage = GetContextHandleStorage(info);
     auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
 
     auto dispatcher = &playerPool->getEventDispatcher();
 
-    auto dispatcherHandle = storage->get(dispatcher)->Get(isolate);
+    auto dispatcherHandle = WrapPlayerEventDispatcher(&playerPool->getEventDispatcher(), context);
 
     info.GetReturnValue().Set(dispatcherHandle);
 }
@@ -90,16 +86,17 @@ void sendClientMessageToAll(const v8::FunctionCallbackInfo<v8::Value> &info) {
     playerPool->sendClientMessageToAll(color, message);
 }
 
-struct PlayerEntryHandler : PlayerEventHandler {
-    HandleStorage *storage;
+struct PlayerEntryHandler : PoolEventHandler<IPlayer> {
     v8::Isolate *isolate;
     v8::UniquePersistent<v8::Context> context;
 
-    PlayerEntryHandler(HandleStorage &_storage, v8::Local<v8::Context> _context)
-        : storage(&_storage), isolate(_context->GetIsolate()), context(_context->GetIsolate(), _context) {
+    PlayerEntryHandler(v8::Local<v8::Context> _context)
+        : isolate(_context->GetIsolate()), context(_context->GetIsolate(), _context) {
     }
 
-    void onIncomingConnection(IPlayer &player, StringView ipAddress, unsigned short port) override {
+    /// Called right after a new entry was constructed
+    void onPoolEntryCreated(IPlayer &entry) override {
+        L_DEBUG << "onPoolEntryCreated";
         v8::Locker locker(isolate);
         v8::Isolate::Scope isolateScope(isolate);
 
@@ -109,10 +106,11 @@ struct PlayerEntryHandler : PlayerEventHandler {
 
         v8::Context::Scope contextScope(_context);
 
-        WrapPlayer(*storage, &player, _context);
-    }
+        WrapPlayer(&entry, _context);
+    };
 
-    void onPlayerDisconnect(IPlayer &player, PeerDisconnectReason reason) override {
+    /// Called just before an entry is destructed
+    void onPoolEntryDestroyed(IPlayer &entry) override {
         v8::Locker locker(isolate);
         v8::Isolate::Scope isolateScope(isolate);
 
@@ -122,24 +120,22 @@ struct PlayerEntryHandler : PlayerEventHandler {
 
         v8::Context::Scope contextScope(_context);
 
-        auto playerPersistentHandle = storage->get(&player);
+        auto handleStorage = GetHandleStorageExtension(&entry);
 
-        if (playerPersistentHandle != nullptr) {
-            auto playerHandle = playerPersistentHandle->Get(isolate);
+        if (handleStorage != nullptr) {
+            auto entryHandle = handleStorage->get();
 
-            playerHandle.As<v8::Object>()->SetInternalField(1, v8::External::New(isolate, nullptr));
-
-            storage->remove(&player);
+            entryHandle.As<v8::Object>()->SetInternalField(0, v8::External::New(isolate, nullptr));
         }
-    }
+    };
 };
 
 PlayerEntryHandler *handler;
 
-void WrapPlayerPool(HandleStorage &storage, IPlayerPool *playerPool, v8::Local<v8::Context> context) {
-    handler = new PlayerEntryHandler(storage, context); // todo: store somewhere to delete later
+void WrapPlayerPool(IPlayerPool *playerPool, v8::Local<v8::Context> context) {
+    handler = new PlayerEntryHandler(context); // todo: store somewhere to delete later
 
-    playerPool->getEventDispatcher().addEventHandler(handler);
+    playerPool->getPoolEventDispatcher().addEventHandler(handler);
 
     ObjectMethods methods = {{"entries",                entries},
                              {"players",                players},
@@ -147,8 +143,7 @@ void WrapPlayerPool(HandleStorage &storage, IPlayerPool *playerPool, v8::Local<v
                              {"getEventDispatcher",     getEventDispatcher},
                              {"sendClientMessageToAll", sendClientMessageToAll}};
 
-    auto playerPoolHandle = InterfaceToObject(storage, playerPool, context, methods);
-    storage.set(playerPool, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), playerPoolHandle));
+    auto playerPoolHandle = InterfaceToObject(playerPool, context, methods);
 
-    WrapPlayerEventDispatcher(storage, &playerPool->getEventDispatcher(), context);
+    playerPool->addExtension(new IHandleStorage(context->GetIsolate(), playerPoolHandle), true);
 }

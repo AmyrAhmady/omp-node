@@ -3,4 +3,4 @@
 #include "v8.h"
 #include "../utils.hpp"
 
-void WrapPlayer(HandleStorage &storage, IPlayer *player, v8::Local<v8::Context> context);
+void WrapPlayer(IPlayer *player, v8::Local<v8::Context> context);

@@ -26,10 +26,10 @@ void setColour(const v8::FunctionCallbackInfo<v8::Value> &info) {
     vehicle->setColour(col1, col2);
 }
 
-void WrapVehicle(HandleStorage &storage, IVehicle *vehicle, v8::Local<v8::Context> context) {
+void WrapVehicle(IVehicle *vehicle, v8::Local<v8::Context> context) {
     ObjectMethods methods = {{"setColour",       setColour}};
 
-    auto vehicleHandle = InterfaceToObject(storage, vehicle, context, methods);
+    auto vehicleHandle = InterfaceToObject(vehicle, context, methods);
 
-    storage.set(vehicle, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), vehicleHandle));
+    vehicle->addExtension(new IHandleStorage(context->GetIsolate(), vehicleHandle), true);
 }

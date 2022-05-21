@@ -39,20 +39,18 @@
 //};
 
 struct PlayerNodeJSEventHandler : PlayerEventHandler {
-    HandleStorage *storage;
     v8::Isolate *isolate;
     v8::UniquePersistent<v8::Function> handler;
 
-    PlayerNodeJSEventHandler(HandleStorage &_storage, v8::Local<v8::Function> _handler) {
-        storage = &_storage;
+    PlayerNodeJSEventHandler(v8::Local<v8::Function> _handler) {
         isolate = _handler->GetIsolate();
         handler = v8::UniquePersistent<v8::Function>(isolate, _handler);
     }
 };
 
 struct PlayerIncomingConnectionHandler : PlayerNodeJSEventHandler {
-    PlayerIncomingConnectionHandler(HandleStorage &_storage, v8::Local<v8::Function> _handler)
-        : PlayerNodeJSEventHandler(_storage, _handler) {
+    PlayerIncomingConnectionHandler(v8::Local<v8::Function> _handler)
+        : PlayerNodeJSEventHandler(_handler) {
     }
 
     void onIncomingConnection(IPlayer &player, StringView ipAddress, unsigned short port) override {
@@ -60,7 +58,7 @@ struct PlayerIncomingConnectionHandler : PlayerNodeJSEventHandler {
 
         v8::Local<v8::Value> args[3];
 
-        args[0] = storage->get(&player)->Get(isolate);
+        args[0] = GetHandleStorageExtension(&player)->get();
         args[1] = StringViewToJS(ipAddress, isolate);
         args[2] = UIntToJS(port, isolate);
 
@@ -71,7 +69,6 @@ struct PlayerIncomingConnectionHandler : PlayerNodeJSEventHandler {
 void addEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)
 
-    auto storage = GetContextHandleStorage(info);
     auto dispatcher = GetContextExternalPointer<IEventDispatcher<PlayerEventHandler>>(info);
 
     auto event = JSToString(info[0], context);
@@ -80,7 +77,7 @@ void addEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
     PlayerEventHandler *handlerObj; // todo: store this somewhere
 
     if (event == "incomingConnection") {
-        handlerObj = new PlayerIncomingConnectionHandler(*storage, handler);
+        handlerObj = new PlayerIncomingConnectionHandler(handler);
     } else {
         handlerObj = new PlayerEventHandler();
     }
@@ -102,16 +99,16 @@ void count(const v8::FunctionCallbackInfo<v8::Value> &info) {
     info.GetReturnValue().Set(resultHandle);
 }
 
-void WrapPlayerEventDispatcher(HandleStorage &storage,
-                               IEventDispatcher<PlayerEventHandler> *dispatcher,
+v8::Local<v8::Value> WrapPlayerEventDispatcher(IEventDispatcher<PlayerEventHandler> *dispatcher,
                                v8::Local<v8::Context> context) {
     ObjectMethods methods = {{"addEventHandler", addEventHandler},
 //                             {"removeEventHandler", removeEventHandler},
 //                             {"hasEventHandler",    hasEventHandler},
                              {"count",           count}};
 
-    auto dispatcherHandle = InterfaceToObject(storage, dispatcher, context, methods);
+    v8::EscapableHandleScope hs(context->GetIsolate());
 
-    storage.set(dispatcher, new v8::UniquePersistent<v8::Value>(context->GetIsolate(), dispatcherHandle));
+    auto dispatcherHandle = InterfaceToObject(dispatcher, context, methods);
 
+    return hs.Escape(dispatcherHandle);
 }
