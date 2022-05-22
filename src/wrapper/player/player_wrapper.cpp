@@ -1,5 +1,8 @@
 #include "player_wrapper.hpp"
 #include "../../logger.hpp"
+#include "../primitive.hpp"
+#include "../types.hpp"
+#include "../player.hpp"
 
 IPlayer *GetPlayerFromContext(const v8::FunctionCallbackInfo<v8::Value> &info) {
     auto player = GetContextExternalPointer<IPlayer>(info);

@@ -1,6 +1,8 @@
 #include "../../logger.hpp"
 #include "vehicle_pool_wrapper.hpp"
 #include "vehicle_wrapper.hpp"
+#include "../primitive.hpp"
+#include "../types.hpp"
 
 IVehicle* create(bool isStatic, int modelID, Vector3 position, float Z = 0.0f, int colour1 = -1, int colour2 = -1, Seconds respawnDelay = Seconds(-1), bool addSiren = false);
 

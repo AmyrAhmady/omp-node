@@ -1,5 +1,7 @@
 #include "../player/player_pool_wrapper.hpp"
 #include "core_wrapper.hpp"
+#include "../primitive.hpp"
+#include "../types.hpp"
 
 WRAP_BASIC(ICore)
 
