@@ -19,7 +19,7 @@ void getString(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto result = config->getString(key);
 
-    auto resultHandle = StringViewToJS(result, isolate);
+    auto resultHandle = StringViewToJS(result, context);
 
     info.GetReturnValue().Set(resultHandle);
 }
@@ -42,7 +42,7 @@ void getInt(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto result = config->getInt(key);
 
-    auto resultHandle = IntToJS(*result, isolate);
+    auto resultHandle = IntToJS(*result, context);
 
     info.GetReturnValue().Set(resultHandle);
 }
@@ -65,7 +65,7 @@ void getFloat(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto result = config->getFloat(key);
 
-    auto resultHandle = FloatToJS(*result, isolate);
+    auto resultHandle = FloatToJS(*result, context);
 
     info.GetReturnValue().Set(resultHandle);
 }
@@ -95,7 +95,7 @@ void getStrings(const v8::FunctionCallbackInfo<v8::Value> &info) {
     v8::Local<v8::Value> values[count];
 
     for (int i = 0; i < count; i++) {
-        values[i] = StringViewToJS(strings[i], isolate);
+        values[i] = StringViewToJS(strings[i], context);
     }
 
     auto arrayHandle = v8::Array::New(isolate, values, count);
@@ -121,7 +121,7 @@ void getStringsCount(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto count = config->getStringsCount(key);
 
-    auto countHandle = UIntToJS(count, isolate);
+    auto countHandle = UIntToJS(count, context);
 
     info.GetReturnValue().Set(countHandle);
 }
@@ -135,7 +135,7 @@ void getType(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto type = config->getType(key);
 
-    auto typeHandle = IntToJS(type, isolate);
+    auto typeHandle = IntToJS(type, context);
 
     info.GetReturnValue().Set(typeHandle);
 }
@@ -170,7 +170,7 @@ void getBansCount(const v8::FunctionCallbackInfo<v8::Value> &info) {
 
     auto count = config->getBansCount();
 
-    auto countHandle = UIntToJS(count, isolate);
+    auto countHandle = UIntToJS(count, context);
 
     info.GetReturnValue().Set(countHandle);
 }

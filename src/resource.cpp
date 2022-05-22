@@ -1,9 +1,6 @@
 #include "resource.hpp"
 #include "nodeimpl.hpp"
 #include "wrapper/utils.hpp"
-#include "wrapper/core/settable_core_data_wrapper.hpp"
-#include "wrapper/core/player_weapon_wrapper.hpp"
-#include "wrapper/core/config_option_type_wrapper.hpp"
 #include "wrapper/vehicle/vehicle_pool_wrapper.hpp"
 
 v8::Isolate *GetV8Isolate() {
@@ -81,21 +78,6 @@ namespace ompnode {
         _context->Global()->Set(_context,
                                 v8::String::NewFromUtf8(GetV8Isolate(), "core").ToLocalChecked(),
                                 coreHandle).Check();
-
-        auto settableCoreDataTypeHandle = WrapSettableCoreData(_context);
-        _context->Global()->Set(_context,
-                                v8::String::NewFromUtf8(GetV8Isolate(), "SettableCoreDataType").ToLocalChecked(),
-                                settableCoreDataTypeHandle).Check();
-
-        auto playerWeaponTypeHandle = WrapPlayerWeapon(_context);
-        _context->Global()->Set(_context,
-                                v8::String::NewFromUtf8(GetV8Isolate(), "PlayerWeapon").ToLocalChecked(),
-                                playerWeaponTypeHandle).Check();
-
-        auto configOptionTypeHandle = WrapConfigOptionType(_context);
-        _context->Global()->Set(_context,
-                                v8::String::NewFromUtf8(GetV8Isolate(), "ConfigOptionType").ToLocalChecked(),
-                                configOptionTypeHandle).Check();
 
         /**/
         auto componentList = ompnode::nodeImpl.GetComponentList();
