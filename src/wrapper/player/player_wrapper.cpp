@@ -53,9 +53,9 @@ WRAP_BASIC_CALL(IPlayer,
 WRAP_BASIC_CALL_RETURN(IPlayer, setName, UIntToJS, JSToString(info[argn++], context))
 WRAP_BASIC_CALL_RETURN(IPlayer, getName, StringViewToJS)
 WRAP_BASIC_CALL_RETURN(IPlayer, getSerial, StringViewToJS)
-//WRAP_BASIC_CALL(IPlayer, giveWeapon, WeaponSlotData weapon)
-//WRAP_BASIC_CALL(IPlayer, setWeaponAmmo, WeaponSlotData data)
-//WRAP_BASIC_CALL_RETURN(IPlayer, getWeapons, WeaponSlots)
+WRAP_BASIC_CALL(IPlayer, giveWeapon, JSToWeaponSlotData(info[argn++], context))
+WRAP_BASIC_CALL(IPlayer, setWeaponAmmo, JSToWeaponSlotData(info[argn++], context))
+WRAP_BASIC_CALL_RETURN(IPlayer, getWeapons, WeaponSlotsToJS)
 WRAP_BASIC_CALL(IPlayer, resetWeapons)
 WRAP_BASIC_CALL(IPlayer, setArmedWeapon, JSToUInt(info[argn++], context))
 WRAP_BASIC_CALL_RETURN(IPlayer, getArmedWeapon, UIntToJS)
@@ -142,7 +142,11 @@ WRAP_BASIC_CALL_RETURN(IPlayer, getSkin, IntToJS)
 //WRAP_BASIC_CALL(IPlayer, sendClientMessage, const Colour& colour, JSToString(info[argn++], context))
 WRAP_BASIC_CALL(IPlayer, sendChatMessage, *JSToIPlayer(info[argn++], context), JSToString(info[argn++], context))
 WRAP_BASIC_CALL(IPlayer, sendCommand, JSToString(info[argn++], context))
-//WRAP_BASIC_CALL(IPlayer, sendGameText, JSToString(info[argn++], context), Milliseconds time, JSToInt(info[argn++], context))
+WRAP_BASIC_CALL(IPlayer,
+                sendGameText,
+                JSToString(info[0], context),
+                JSToMilliseconds(info[1], context),
+                JSToInt(info[2], context))
 WRAP_BASIC_CALL(IPlayer, setWeather, JSToInt(info[argn++], context))
 WRAP_BASIC_CALL_RETURN(IPlayer, getWeather, IntToJS)
 WRAP_BASIC_CALL(IPlayer, setWorldBounds, JSToVector4(info[argn++], context))

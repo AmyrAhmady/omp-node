@@ -17,6 +17,19 @@ WorldTimePoint JSToWorldTimePoint(v8::Local<v8::Value> value,
     return WorldTimePoint(ms);
 }
 
+Milliseconds JSToMilliseconds(v8::Local<v8::Value> value,
+                                  v8::Local<v8::Context> context,
+                              Milliseconds defaultValue) {
+    auto isolate = context->GetIsolate();
+
+    if (value->IsUndefined()) {
+        return defaultValue;
+    }
+
+    auto msCount = JSToInt(value, context);
+    return Milliseconds(msCount);
+}
+
 Vector2 JSToVector2(v8::Local<v8::Value> value, v8::Local<v8::Context> context, Vector2 defaultValue) {
     auto isolate = context->GetIsolate();
 
@@ -134,6 +147,19 @@ WorldTimePoint JSToWorldTimePoint(v8::Local<v8::Value> value, v8::Local<v8::Cont
     return WorldTimePoint(ms);
 }
 
+Milliseconds JSToMilliseconds(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
+    auto isolate = context->GetIsolate();
+
+    if (value->IsUndefined()) {
+        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
+                                                                                 "A value is required").ToLocalChecked()));
+        return Milliseconds();
+    }
+
+    auto msCount = JSToInt(value, context);
+    return Milliseconds(msCount);
+}
+
 Vector2 JSToVector2(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     auto isolate = context->GetIsolate();
 
@@ -233,6 +259,10 @@ v8::Local<v8::Date> WorldTimePointToJS(WorldTimePoint point, v8::Local<v8::Conte
     v8::Local<v8::Date> date = v8::Date::New(context, static_cast<double>(ms.count())).ToLocalChecked().As<v8::Date>();
 
     return date;
+}
+
+v8::Local<v8::Integer> MillisecondsToJS(Milliseconds ms, v8::Local<v8::Context> context) {
+    return IntToJS(ms.count(), context);
 }
 
 v8::Local<v8::Array> Vector2ToJS(Vector2 vector, v8::Local<v8::Context> context) {
