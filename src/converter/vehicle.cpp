@@ -41,6 +41,13 @@ OBJECT_CONVERTER_DEFINE(
     (int8_t, windowBackRight, Int8TToJS, JSToInt8T)
 )
 
+OBJECT_CONVERTER_DEFINE(
+    UnoccupiedVehicleUpdate,
+    (uint8_t, seat, UInt8TToJS, JSToUInt8T),
+    (Vector3, position, Vector3ToJS, JSToVector3),
+    (Vector3, velocity, Vector3ToJS, JSToVector3)
+)
+
 v8::Local<v8::Value> IVehicleToJS(IVehicle &vehicle, v8::Local<v8::Context> context) {
     auto ext = GetHandleStorageExtension(&vehicle);
 
@@ -66,27 +73,6 @@ v8::Local<v8::Array> CarriagesToJS(const StaticArray<IVehicle *, MAX_VEHICLE_CAR
     }
 
     return array;
-}
-
-v8::Local<v8::Object> UnoccupiedVehicleUpdateToJS(const UnoccupiedVehicleUpdate &data,
-                                                  v8::Local<v8::Context> context) { // todo: provide helper methods of the class to js somehow
-    auto isolate = context->GetIsolate();
-
-    auto dataTemplate = v8::ObjectTemplate::New(context->GetIsolate());
-
-    auto object = dataTemplate->NewInstance(context).ToLocalChecked();
-
-    object->Set(context, v8::String::NewFromUtf8(isolate, "seat").ToLocalChecked(), UIntToJS(data.seat, context));
-    object->Set(context,
-                v8::String::NewFromUtf8(isolate, "position").ToLocalChecked(),
-                Vector3ToJS(data.position, context));
-    object->Set(context,
-                v8::String::NewFromUtf8(isolate, "velocity").ToLocalChecked(),
-                Vector3ToJS(data.velocity, context));
-
-    // todo: add real checking (error handling)
-
-    return object;
 }
 
 v8::Local<v8::Array> VehicleColourToJS(const Pair<int, int> &vehicleColour, v8::Local<v8::Context> context) {
