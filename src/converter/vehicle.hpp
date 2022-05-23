@@ -15,4 +15,5 @@ v8::Local<v8::Array> CarriagesToJS(const StaticArray<IVehicle *, MAX_VEHICLE_CAR
                                    v8::Local<v8::Context> context);
 v8::Local<v8::Object> VehicleSpawnDataToJS(const VehicleSpawnData &data, v8::Local<v8::Context> context);
 v8::Local<v8::Object> VehicleParamsToJS(const VehicleParams &data, v8::Local<v8::Context> context);
+v8::Local<v8::Object> UnoccupiedVehicleUpdateToJS(const UnoccupiedVehicleUpdate &data, v8::Local<v8::Context> context);
 v8::Local<v8::Array> VehicleColourToJS(const Pair<int, int> &vehicleColour, v8::Local<v8::Context> context);

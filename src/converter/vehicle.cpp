@@ -237,6 +237,27 @@ v8::Local<v8::Object> VehicleParamsToJS(const VehicleParams &params,
     return object;
 }
 
+v8::Local<v8::Object> UnoccupiedVehicleUpdateToJS(const UnoccupiedVehicleUpdate &data,
+                                                  v8::Local<v8::Context> context) { // todo: provide helper methods of the class to js somehow
+    auto isolate = context->GetIsolate();
+
+    auto dataTemplate = v8::ObjectTemplate::New(context->GetIsolate());
+
+    auto object = dataTemplate->NewInstance(context).ToLocalChecked();
+
+    object->Set(context, v8::String::NewFromUtf8(isolate, "seat").ToLocalChecked(), UIntToJS(data.seat, context));
+    object->Set(context,
+                v8::String::NewFromUtf8(isolate, "position").ToLocalChecked(),
+                Vector3ToJS(data.position, context));
+    object->Set(context,
+                v8::String::NewFromUtf8(isolate, "velocity").ToLocalChecked(),
+                Vector3ToJS(data.velocity, context));
+
+    // todo: add real checking (error handling)
+
+    return object;
+}
+
 v8::Local<v8::Array> VehicleColourToJS(const Pair<int, int> &vehicleColour, v8::Local<v8::Context> context) {
     // Create a new empty array.
     v8::Local<v8::Array> array = v8::Array::New(context->GetIsolate(), 2);

@@ -5,177 +5,165 @@
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
 #include "../../converter/player.hpp"
+#include "../../converter/vehicle.hpp"
+#include "player_event_dispatcher_wrapper.hpp"
 
-#define ENTER_HANDLER(isolate, handler) \
-    v8::Locker locker(isolate); \
-    v8::Isolate::Scope isolateScope(isolate); \
-    v8::HandleScope scope(isolate); \
-    auto func = handler.Get(isolate); \
-    v8::Local<v8::Context> context = func->GetCreationContext().ToLocalChecked(); \
-    v8::Context::Scope contextScope(context);
+WRAP_BASIC(IPlayerEventDispatcher)
+WRAP_HANDLER_BASIC(NodeJSEventHandler<PlayerEventHandler>, NodeJSPlayerEventHandler)
 
-struct PlayerNodeJSEventHandler : PlayerEventHandler {
-    Impl::String event;
-    v8::Isolate *isolate;
-    v8::UniquePersistent<v8::Function> handler;
-
-    PlayerNodeJSEventHandler(Impl::String _event, v8::Local<v8::Function> _handler) {
-        event = std::move(_event);
-        isolate = _handler->GetIsolate();
-        handler = v8::UniquePersistent<v8::Function>(isolate, _handler);
-    }
-
-public:
-    Impl::String getEvent() const {
-        return event;
-    }
-
-    v8::Local<v8::Value> getHandler() {
-        v8::EscapableHandleScope hs(isolate);
-
-        return hs.Escape(handler.Get(isolate));
-    }
-};
-
-FlatPtrHashSet<PlayerNodeJSEventHandler> playerEventHandlers;
-
-#define HANDLER(returnType, handlerFunctionName, argsCount, codeBlock, returnValue, ...) \
-    struct H##_##handlerFunctionName : PlayerNodeJSEventHandler { \
-        H##_##handlerFunctionName(Impl::String _event, v8::Local<v8::Function> _handler) : PlayerNodeJSEventHandler( \
-            std::move(_event), \
-            _handler) { \
-        } \
-        returnType handlerFunctionName(IPlayer &player, ##__VA_ARGS__) override { \
-            ENTER_HANDLER(isolate, handler) \
-            v8::Local<v8::Value> args[(argsCount) + 1]; \
-            args[0] = GetHandleStorageExtension(&player)->get(); \
-            codeBlock \
-            auto cbReturnedValue = func->Call(context, context->Global(), (argsCount) + 1, args).ToLocalChecked();            \
-            returnValue; \
-        } \
-    };
-
-HANDLER(void, onIncomingConnection, 2, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onIncomingConnection, 3, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = StringViewToJS(ipAddress, context);
     args[2] = UIntToJS(port, context);
-}, return, StringView ipAddress, unsigned short port)
+}, return, IPlayer &player, StringView ipAddress, unsigned short port)
 
-HANDLER(void, onPlayerConnect, 0, {
-}, return)
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerConnect, 1, {
+    args[0] = GetHandleStorageExtension(&player)->get();
+}, return, IPlayer &player)
 
-HANDLER(void, onPlayerDisconnect, 1, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerDisconnect, 2, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = UIntToJS(reason, context);
-}, return, PeerDisconnectReason reason)
+}, return, IPlayer &player, PeerDisconnectReason reason)
 
-HANDLER(bool, onPlayerRequestSpawn, 0, {
-}, return JSToBool(cbReturnedValue, context))
+WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerRequestSpawn, 1, {
+    args[0] = GetHandleStorageExtension(&player)->get();
+}, return JSToBool(cbReturnedValue, context), IPlayer &player)
 
-HANDLER(void, onBeforePlayerSpawn, 0, {
-}, return)
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onBeforePlayerSpawn, 1, {
+    args[0] = GetHandleStorageExtension(&player)->get();
+}, return, IPlayer &player)
 
-HANDLER(void, onPlayerSpawn, 0, {
-}, return)
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerSpawn, 1, {
+    args[0] = GetHandleStorageExtension(&player)->get();
+}, return, IPlayer &player)
 
-HANDLER(void, onPlayerStreamIn, 1, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerStreamIn, 2, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = GetHandleStorageExtension(&forPlayer)->get();
-}, return, IPlayer &forPlayer)
+}, return, IPlayer &player, IPlayer &forPlayer)
 
-HANDLER(void, onPlayerStreamOut, 1, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerStreamOut, 2, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = GetHandleStorageExtension(&forPlayer)->get();
-}, return, IPlayer &forPlayer)
+}, return, IPlayer &player, IPlayer &forPlayer)
 
-HANDLER(bool, onPlayerText, 1, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerText, 2, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = StringViewToJS(message, context);
-}, return JSToBool(cbReturnedValue, context), StringView message)
+}, return JSToBool(cbReturnedValue, context), IPlayer &player, StringView message)
 
-HANDLER(bool, onPlayerCommandText, 1, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerCommandText, 2, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = StringViewToJS(message, context);
-}, return JSToBool(cbReturnedValue, context), StringView message)
+}, return JSToBool(cbReturnedValue, context), IPlayer &player, StringView message)
 
-HANDLER(bool, onPlayerShotMissed, 1, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerShotMissed, 2, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = PlayerBulletDataToJS(bulletData, context);
-}, return JSToBool(cbReturnedValue, context), const PlayerBulletData &bulletData)
+}, return JSToBool(cbReturnedValue, context), IPlayer &player, const PlayerBulletData &bulletData)
 
-HANDLER(bool, onPlayerShotPlayer, 2, {
-    args[1] = GetHandleStorageExtension(&target)->get();
+WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerShotPlayer, 3, {
+    args[0] = GetHandleStorageExtension(&player)->get();
+    args[1] = IPlayerToJS(target, context);
     args[2] = PlayerBulletDataToJS(bulletData, context);
-}, return JSToBool(cbReturnedValue, context), IPlayer &target, const PlayerBulletData &bulletData)
+}, return JSToBool(cbReturnedValue, context), IPlayer &player, IPlayer &target, const PlayerBulletData &bulletData)
 
-HANDLER(bool, onPlayerShotVehicle, 2, {
-    args[1] = GetHandleStorageExtension(&target)->get();
+WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerShotVehicle, 3, {
+    args[0] = GetHandleStorageExtension(&player)->get();
+    args[1] = IVehicleToJS(target, context);
     args[2] = PlayerBulletDataToJS(bulletData, context);
-}, return JSToBool(cbReturnedValue, context), IVehicle &target, const PlayerBulletData &bulletData)
+}, return JSToBool(cbReturnedValue, context), IPlayer &player, IVehicle &target, const PlayerBulletData &bulletData)
 
-HANDLER(bool, onPlayerShotObject, 2, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerShotObject, 3, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = v8::Boolean::New(isolate, false); // todo
     args[2] = PlayerBulletDataToJS(bulletData, context);
-}, return JSToBool(cbReturnedValue, context), IObject &target, const PlayerBulletData &bulletData)
+}, return JSToBool(cbReturnedValue, context), IPlayer &player, IObject &target, const PlayerBulletData &bulletData)
 
-HANDLER(bool, onPlayerShotPlayerObject, 2, {
-    args[1] = v8::Boolean::New(isolate, false); // todo
-    args[2] = PlayerBulletDataToJS(bulletData, context);
-}, return JSToBool(cbReturnedValue, context), IPlayerObject &target, const PlayerBulletData &bulletData)
+WRAP_HANDLER(NodeJSPlayerEventHandler,
+             bool,
+             onPlayerShotPlayerObject,
+             3,
+             {
+                 args[0] = GetHandleStorageExtension(&player)->get();
+                 args[1] = v8::Boolean::New(isolate, false); // todo
+                 args[2] = PlayerBulletDataToJS(bulletData, context);
+             },
+             return JSToBool(cbReturnedValue, context),
+             IPlayer &player,
+             IPlayerObject &target,
+             const PlayerBulletData &bulletData)
 
-HANDLER(void, onPlayerScoreChange, 1, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerScoreChange, 2, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = IntToJS(score, context);
-}, return, int score)
+}, return, IPlayer &player, int score)
 
-HANDLER(void, onPlayerNameChange, 1, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerNameChange, 2, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = StringViewToJS(oldName, context);
-}, return, StringView oldName)
+}, return, IPlayer &player, StringView oldName)
 
-HANDLER(void, onPlayerDeath, 2, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerDeath, 3, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = GetHandleStorageExtension(killer)->get();
     args[2] = IntToJS(reason, context);
-}, return, IPlayer *killer, int reason)
+}, return, IPlayer &player, IPlayer *killer, int reason)
 
-HANDLER(void, onPlayerTakeDamage, 4, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerTakeDamage, 5, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = GetHandleStorageExtension(from)->get();
     args[2] = FloatToJS(amount, context);
     args[3] = UIntToJS(weapon, context);
     args[4] = UIntToJS(part, context);
-}, return, IPlayer *from, float amount, unsigned weapon, BodyPart part)
+}, return, IPlayer &player, IPlayer *from, float amount, unsigned weapon, BodyPart part)
 
-HANDLER(void, onPlayerGiveDamage, 4, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerGiveDamage, 5, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = GetHandleStorageExtension(&to)->get();
     args[2] = FloatToJS(amount, context);
     args[3] = UIntToJS(weapon, context);
     args[4] = UIntToJS(part, context);
-}, return, IPlayer &to, float amount, unsigned weapon, BodyPart part)
+}, return, IPlayer &player, IPlayer &to, float amount, unsigned weapon, BodyPart part)
 
-HANDLER(void, onPlayerInteriorChange, 2, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerInteriorChange, 3, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = UIntToJS(newInterior, context);
     args[2] = UIntToJS(oldInterior, context);
-}, return, unsigned newInterior, unsigned oldInterior)
+}, return, IPlayer &player, unsigned newInterior, unsigned oldInterior)
 
-HANDLER(void, onPlayerStateChange, 2, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerStateChange, 3, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = UIntToJS(newState, context);
     args[2] = UIntToJS(oldState, context);
-}, return, PlayerState newState, PlayerState oldState)
+}, return, IPlayer &player, PlayerState newState, PlayerState oldState)
 
-HANDLER(void, onPlayerKeyStateChange, 2, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerKeyStateChange, 3, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = UIntToJS(newKeys, context);
     args[2] = UIntToJS(oldKeys, context);
-}, return, uint32_t newKeys, uint32_t oldKeys)
+}, return, IPlayer &player, uint32_t newKeys, uint32_t oldKeys)
 
-HANDLER(void, onPlayerClickMap, 1, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerClickMap, 2, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = Vector3ToJS(pos, context);
-}, return, Vector3 pos)
+}, return, IPlayer &player, Vector3 pos)
 
-HANDLER(void, onPlayerClickPlayer, 2, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerClickPlayer, 3, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = GetHandleStorageExtension(&clicked)->get();
     args[2] = UIntToJS(source, context);
-}, return, IPlayer &clicked, PlayerClickSource source)
+}, return, IPlayer &player, IPlayer &clicked, PlayerClickSource source)
 
-HANDLER(void, onClientCheckResponse, 3, {
+WRAP_HANDLER(NodeJSPlayerEventHandler, void, onClientCheckResponse, 4, {
+    args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = IntToJS(actionType, context);
     args[2] = IntToJS(address, context);
     args[3] = IntToJS(results, context);
-}, return, int actionType, int address, int results)
+}, return, IPlayer &player, int actionType, int address, int results)
 
-#define HANDLE(name) if (event == #name) { handlerObj = new H##_##name(event, handler); }
-
-void addEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
+WRAP_BASIC_CODE(IPlayerEventDispatcher, addEventHandler, {
     ENTER_FUNCTION_CALLBACK(info)
 
     auto dispatcher = GetContextExternalPointer<IEventDispatcher<PlayerEventHandler>>(info);
@@ -190,28 +178,28 @@ void addEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
         return;
     }
 
-    PlayerNodeJSEventHandler *handlerObj;
+    auto handlerObjGenerator = WRAPPED_HANDLER(NodeJSPlayerEventHandler, event);
 
-    HANDLE(onIncomingConnection) else HANDLE(onPlayerConnect) else HANDLE(onPlayerDisconnect) else HANDLE(
-        onPlayerRequestSpawn) else HANDLE(onBeforePlayerSpawn) else HANDLE(onPlayerSpawn) else HANDLE(onPlayerStreamIn) else HANDLE(
-        onPlayerStreamOut) else HANDLE(onPlayerText) else HANDLE(onPlayerCommandText) else HANDLE(onPlayerShotMissed) else HANDLE(
-        onPlayerShotPlayer) else HANDLE(onPlayerShotVehicle) else HANDLE(onPlayerShotObject) else HANDLE(
-        onPlayerShotPlayerObject) else HANDLE(onPlayerScoreChange) else HANDLE(onPlayerNameChange) else HANDLE(
-        onPlayerDeath) else HANDLE(onPlayerTakeDamage) else HANDLE(onPlayerGiveDamage) else HANDLE(
-        onPlayerInteriorChange) else HANDLE(onPlayerStateChange) else HANDLE(onPlayerKeyStateChange) else HANDLE(
-        onPlayerClickMap) else HANDLE(onPlayerClickPlayer) else HANDLE(onClientCheckResponse) else {
+    if (handlerObjGenerator == nullptr) {
         info.GetReturnValue().Set(false);
         return;
     }
 
+    auto handlerObj = handlerObjGenerator(event, handler);
+
     auto result = dispatcher->addEventHandler(handlerObj, (EventPriority)priority);
+
+    if (result) {
+        WRAPPED_HANDLERS(NodeJSPlayerEventHandler).emplace(handlerObj);
+    } else {
+        delete handlerObj;
+    }
 
     info.GetReturnValue().Set(result);
 
-    playerEventHandlers.emplace(handlerObj);
-}
+})
 
-void hasEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
+WRAP_BASIC_CODE(IPlayerEventDispatcher, hasEventHandler, {
     ENTER_FUNCTION_CALLBACK(info)
 
     auto dispatcher = GetContextExternalPointer<IEventDispatcher<PlayerEventHandler>>(info);
@@ -226,7 +214,7 @@ void hasEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
         return;
     }
 
-    for (auto handlerObj: playerEventHandlers) {
+    for (auto handlerObj: WRAPPED_HANDLERS(NodeJSPlayerEventHandler)) {
         if (handlerObj->getEvent() == event && handlerObj->getHandler() == handler) {
             auto result = dispatcher->hasEventHandler(handlerObj, priority);
 
@@ -237,9 +225,9 @@ void hasEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
     }
 
     info.GetReturnValue().Set(false);
-}
+})
 
-void removeEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
+WRAP_BASIC_CODE(IPlayerEventDispatcher, removeEventHandler, {
     ENTER_FUNCTION_CALLBACK(info)
 
     auto dispatcher = GetContextExternalPointer<IEventDispatcher<PlayerEventHandler>>(info);
@@ -253,14 +241,14 @@ void removeEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
         return;
     }
 
-    for (auto handlerObj: playerEventHandlers) {
+    for (auto handlerObj: WRAPPED_HANDLERS(NodeJSPlayerEventHandler)) {
         if (handlerObj->getEvent() == event && handlerObj->getHandler() == handler) {
             auto result = dispatcher->removeEventHandler(handlerObj);
 
             info.GetReturnValue().Set(result);
 
             if (result) {
-                playerEventHandlers.erase(handlerObj);
+                WRAPPED_HANDLERS(NodeJSPlayerEventHandler).erase(handlerObj);
             }
 
             return;
@@ -268,30 +256,16 @@ void removeEventHandler(const v8::FunctionCallbackInfo<v8::Value> &info) {
     }
 
     info.GetReturnValue().Set(false);
-}
+})
 
-void count(const v8::FunctionCallbackInfo<v8::Value> &info) {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto dispatcher = GetContextExternalPointer<IEventDispatcher<PlayerEventHandler>>(info);
-
-    auto result = dispatcher->count();
-
-    auto resultHandle = UIntToJS(result, context);
-
-    info.GetReturnValue().Set(resultHandle);
-}
+WRAP_BASIC_CALL_RETURN(IPlayerEventDispatcher, count, UIntToJS)
 
 v8::Local<v8::Value> WrapPlayerEventDispatcher(IEventDispatcher<PlayerEventHandler> *dispatcher,
                                                v8::Local<v8::Context> context) {
-    ObjectMethods methods = {{"addEventHandler",    addEventHandler},
-                             {"removeEventHandler", removeEventHandler},
-                             {"hasEventHandler",    hasEventHandler},
-                             {"count",              count}};
 
     v8::EscapableHandleScope hs(context->GetIsolate());
 
-    auto dispatcherHandle = InterfaceToObject(dispatcher, context, methods);
+    auto dispatcherHandle = InterfaceToObject(dispatcher, context, WRAPPED_METHODS(IPlayerEventDispatcher));
 
     return hs.Escape(dispatcherHandle);
 }
