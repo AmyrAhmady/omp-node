@@ -20,6 +20,16 @@ int JSToInt(v8::Local<v8::Value> value, v8::Local<v8::Context> context, int defa
     return static_cast<int>(value->ToInteger(context).ToLocalChecked()->Int32Value(context).ToChecked());
 }
 
+int8_t JSToInt8T(v8::Local<v8::Value> value, v8::Local<v8::Context> context, int8_t defaultValue) {
+    auto isolate = context->GetIsolate();
+
+    if (value->IsUndefined()) {
+        return defaultValue;
+    }
+
+    return static_cast<int8_t>(value->ToInteger(context).ToLocalChecked()->Int32Value(context).ToChecked());
+}
+
 unsigned int JSToUInt(v8::Local<v8::Value> value, v8::Local<v8::Context> context, int defaultValue) {
     auto isolate = context->GetIsolate();
 
@@ -74,6 +84,18 @@ int JSToInt(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     return static_cast<int>(value->ToInteger(context).ToLocalChecked()->Int32Value(context).ToChecked());
 }
 
+int8_t JSToInt8T(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
+    auto isolate = context->GetIsolate();
+
+    if (value->IsUndefined()) {
+        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
+                                                                                 "A value is required").ToLocalChecked()));
+        return {};
+    }
+
+    return static_cast<int8_t>(value->ToInteger(context).ToLocalChecked()->Int32Value(context).ToChecked());
+}
+
 unsigned int JSToUInt(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     auto isolate = context->GetIsolate();
 
@@ -115,6 +137,10 @@ v8::Local<v8::Number> FloatToJS(float value, v8::Local<v8::Context> context) {
 }
 
 v8::Local<v8::Integer> IntToJS(int value, v8::Local<v8::Context> context) {
+    return v8::Integer::New(context->GetIsolate(), value);
+}
+
+v8::Local<v8::Integer> Int8TToJS(int8_t value, v8::Local<v8::Context> context) {
     return v8::Integer::New(context->GetIsolate(), value);
 }
 
