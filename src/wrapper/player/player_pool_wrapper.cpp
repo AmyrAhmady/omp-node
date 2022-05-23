@@ -1,7 +1,7 @@
 #include "player_wrapper.hpp"
 #include "player_event_dispatcher_wrapper.hpp"
 #include "../../logger.hpp"
-#include "../primitive.hpp"
+#include "../../converter/primitive.hpp"
 
 void entries(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)

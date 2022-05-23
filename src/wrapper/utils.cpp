@@ -1,5 +1,5 @@
 #include "utils.hpp"
-#include "primitive.hpp"
+#include "../converter/primitive.hpp"
 
 IHandleStorage *GetHandleStorageExtension(IExtensible *extensible) {
     return queryExtension<IHandleStorage>(extensible);

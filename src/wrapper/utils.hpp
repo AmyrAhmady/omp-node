@@ -40,6 +40,12 @@
         AddObjectMethod AddObjectMethod##_##getFunction(#getFunction, getFunction); \
     }
 
+#define WRAP_BASIC_CODE(ExternalType, getFunction, Code) \
+    namespace wrapper##_##ExternalType { \
+        void getFunction(const v8::FunctionCallbackInfo<v8::Value> &info) Code \
+        AddObjectMethod AddObjectMethod##_##getFunction(#getFunction, getFunction); \
+    }
+
 #define WRAP_HANDLE_STORAGE_GET(ExternalType, getFunction) \
     namespace wrapper##_##ExternalType { \
         void getFunction(const v8::FunctionCallbackInfo<v8::Value> &info) { \

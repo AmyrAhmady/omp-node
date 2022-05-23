@@ -1,7 +1,7 @@
 #include "config_wrapper.hpp"
 #include "../../logger.hpp"
-#include "../primitive.hpp"
-#include "../network.hpp"
+#include "../../converter/primitive.hpp"
+#include "../../converter/network.hpp"
 
 void getString(const v8::FunctionCallbackInfo<v8::Value> &info) {
     ENTER_FUNCTION_CALLBACK(info)

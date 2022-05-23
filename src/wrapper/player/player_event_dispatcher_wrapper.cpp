@@ -2,9 +2,9 @@
 
 #include "player_wrapper.hpp"
 #include "../../logger.hpp"
-#include "../primitive.hpp"
-#include "../types.hpp"
-#include "../player.hpp"
+#include "../../converter/primitive.hpp"
+#include "../../converter/types.hpp"
+#include "../../converter/player.hpp"
 
 #define ENTER_HANDLER(isolate, handler) \
     v8::Locker locker(isolate); \

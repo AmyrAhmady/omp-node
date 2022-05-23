@@ -1,6 +1,6 @@
 #include "vehicle_wrapper.hpp"
 #include "../../logger.hpp"
-#include "../primitive.hpp"
+#include "../../converter/primitive.hpp"
 
 IVehicle *GetVehicleFromContext(const v8::FunctionCallbackInfo<v8::Value> &info) {
     auto vehicle = GetContextExternalPointer<IVehicle>(info);
