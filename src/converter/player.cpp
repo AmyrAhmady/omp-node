@@ -3,6 +3,12 @@
 #include "types.hpp"
 #include "../wrapper/utils.hpp"
 
+IPlayer *JSToIPlayer(v8::Local<v8::Value> value, v8::Local<v8::Context> context, IPlayer *defaultValue) {
+    v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(value.As<v8::Object>()->GetInternalField(0));
+
+    return static_cast<IPlayer *>( pointer->Value());
+}
+
 IPlayer *JSToIPlayer(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(value.As<v8::Object>()->GetInternalField(0));
 

@@ -386,8 +386,30 @@ v8::Local<v8::Date> WorldTimePointToJS(const WorldTimePoint &point, v8::Local<v8
     return date;
 }
 
+v8::Local<v8::Date> TimePointToJS(const TimePoint &point, v8::Local<v8::Context> context) {
+    auto sinceEpoch = point.time_since_epoch();
+
+    auto ms = duration_cast<Milliseconds>(sinceEpoch);
+
+    v8::Local<v8::Date> date = v8::Date::New(context, static_cast<double>(ms.count())).ToLocalChecked().As<v8::Date>();
+
+    return date;
+}
+
 v8::Local<v8::Integer> MillisecondsToJS(const Milliseconds &ms, v8::Local<v8::Context> context) {
     return IntToJS(ms.count(), context);
+}
+
+v8::Local<v8::Integer> SecondsToJS(const Seconds &s, v8::Local<v8::Context> context) {
+    return IntToJS(s.count(), context);
+}
+
+v8::Local<v8::Integer> MinutesToJS(const Minutes &m, v8::Local<v8::Context> context) {
+    return IntToJS(m.count(), context);
+}
+
+v8::Local<v8::Integer> HoursToJS(const Hours &h, v8::Local<v8::Context> context) {
+    return IntToJS(h.count(), context);
 }
 
 v8::Local<v8::Array> HoursMinutesToJS(const Pair<Hours, Minutes> &hoursMinutes, v8::Local<v8::Context> context) {

@@ -4,6 +4,7 @@
 #include "../utils.hpp"
 #include "../logger.hpp"
 
+IPlayer *JSToIPlayer(v8::Local<v8::Value> value, v8::Local<v8::Context> context, IPlayer *defaultValue);
 IPlayer *JSToIPlayer(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 WeaponSlotData JSToWeaponSlotData(v8::Local<v8::Value>, v8::Local<v8::Context> context);
 
