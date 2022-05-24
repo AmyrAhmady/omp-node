@@ -47,7 +47,7 @@ struct NodeJSEntryHandler : PoolEventHandler<Interface> {
         if (handleStorage != nullptr) {
             auto entryHandle = handleStorage->get();
 
-            entryHandle.As<v8::Object>()->SetInternalField(0, v8::External::New(isolate, nullptr));
+            entryHandle.template As<v8::Object>()->SetInternalField(0, v8::External::New(isolate, nullptr));
         }
     };
 };

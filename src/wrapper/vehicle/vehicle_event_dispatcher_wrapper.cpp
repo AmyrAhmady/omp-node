@@ -103,7 +103,7 @@ WRAP_BASIC_CODE(IVehicleEventDispatcher, addEventHandler, {
 
     auto event = JSToString(info[0], context);
     auto handler = info[1].As<v8::Function>();
-    auto priority = JSToInt(info[2], context, EventPriority_Default);
+    auto priority = JSToEnum(info[2], context, EventPriority_Default);
 
     if (!handler->IsFunction()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
@@ -120,7 +120,7 @@ WRAP_BASIC_CODE(IVehicleEventDispatcher, addEventHandler, {
 
     auto handlerObj = handlerObjGenerator(event, handler);
 
-    auto result = dispatcher->addEventHandler(handlerObj, (EventPriority)priority);
+    auto result = dispatcher->addEventHandler(handlerObj, priority);
 
     if (result) {
         WRAPPED_HANDLERS(NodeJSVehicleEventHandler).emplace(handlerObj);
@@ -139,7 +139,7 @@ WRAP_BASIC_CODE(IVehicleEventDispatcher, hasEventHandler, {
 
     auto event = JSToString(info[0], context);
     auto handler = info[1].As<v8::Function>();
-    event_order_t priority = JSToInt(info[2], context);
+    std::underlying_type_t<EventPriority> priority = JSToEnum<EventPriority>(info[2], context);
 
     if (!handler->IsFunction()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
@@ -191,7 +191,7 @@ WRAP_BASIC_CODE(IVehicleEventDispatcher, removeEventHandler, {
     info.GetReturnValue().Set(false);
 })
 
-WRAP_BASIC_CALL_RETURN(IVehicleEventDispatcher, count, UIntToJS)
+WRAP_BASIC_CALL_RETURN(IVehicleEventDispatcher, count, (size_t, UIntToJS))
 
 v8::Local<v8::Value> WrapVehicleEventDispatcher(IEventDispatcher<VehicleEventHandler> *dispatcher,
                                                 v8::Local<v8::Context> context) {

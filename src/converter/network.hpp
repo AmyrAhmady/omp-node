@@ -3,6 +3,6 @@
 #include "v8.h"
 #include "../utils.hpp"
 #include "../logger.hpp"
+#include "utils.hpp"
 
-BanEntry JSToBanEntry(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
-v8::Local<v8::Object> BanEntryToJS(const BanEntry &entry, v8::Local<v8::Context>);
+OBJECT_CONVERTER_DECLARE(BanEntry)

@@ -1,6 +1,7 @@
 #include "config_wrapper.hpp"
 #include "../../logger.hpp"
 #include "../../converter/primitive.hpp"
+#include "../../converter/types.hpp"
 #include "../../converter/network.hpp"
 
 WRAP_BASIC(IConfig)
@@ -86,7 +87,7 @@ WRAP_BASIC_CODE(IConfig, getType, {
     auto config = GetContextExternalPointer<IConfig>(info);
     auto key = JSToString(info[0], context);
     auto type = config->getType(key);
-    auto typeHandle = IntToJS(type, context);
+    auto typeHandle = EnumToJS(type, context);
     info.GetReturnValue().Set(typeHandle);
 })
 WRAP_BASIC_CODE(IConfig, get, {
@@ -107,11 +108,18 @@ WRAP_BASIC_CODE(IConfig, get, {
                                                                                                 "The key doesn't contain a value").ToLocalChecked()));
     }
 })
-WRAP_BASIC_CALL_RETURN(IConfig, getBansCount, UIntToJS)
-WRAP_BASIC_CALL_RETURN(IConfig, getBan, BanEntryToJS, JSToInt(info[0], context))
-WRAP_BASIC_CALL(IConfig, addBan, JSToBanEntry(info[0], context))
-WRAP_BASIC_CALL(IConfig, removeBan, JSToInt(info[0], context))
+
+WRAP_BASIC_CALL_RETURN(IConfig, getBansCount, (size_t, UIntToJS<size_t>))
+WRAP_BASIC_CALL_RETURN(IConfig, getBan, (const BanEntry&, TO_JS_FN(BanEntry)), (size_t, JSToUInt<size_t>, index))
+WRAP_BASIC_CALL(IConfig, addBan, (const BanEntry&, FROM_JS_FN(BanEntry), entry))
+WRAP_BASIC_CALL(IConfig, removeBan, (size_t, JSToUInt<size_t>, index))
+//WRAP_BASIC_CALL(IConfig, removeBan, (const BanEntry&, FROM_JS_FN(BanEntry), entry))
 WRAP_BASIC_CALL(IConfig, writeBans)
+WRAP_BASIC_CALL(IConfig, reloadBans)
+WRAP_BASIC_CALL(IConfig, clearBans)
+WRAP_BASIC_CALL_RETURN(IConfig, isBanned, (bool, BoolToJS), (const BanEntry&, FROM_JS_FN(BanEntry), entry))
+WRAP_BASIC_CALL_RETURN(IConfig, getNameFromAlias, (PairBoolStringView, TO_JS_FN(PairBoolStringView)), (Impl::String, FROM_JS_FN(String), alias))
+//WRAP_BASIC_CALL(IConfig, enumOptions, (OptionEnumeratorCallback&, FROM_JS_FN(OptionEnumeratorCallback), callback))
 
 void WrapConfig(IConfig *config, v8::Local<v8::Context> context) {
     auto configHandle = InterfaceToObject(config, context, WRAPPED_METHODS(IConfig));

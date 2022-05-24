@@ -62,108 +62,6 @@ Hours JSToHours(v8::Local<v8::Value> value, v8::Local<v8::Context> context, cons
     return Hours(hCount);
 }
 
-Vector2 JSToVector2(v8::Local<v8::Value> value, v8::Local<v8::Context> context, const Vector2 &defaultValue) {
-    auto isolate = context->GetIsolate();
-
-    if (value->IsUndefined()) {
-        return defaultValue;
-    }
-
-    if (!value->IsArray()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array is required").ToLocalChecked()));
-        return Vector2();
-    }
-
-    auto xHandle = value.As<v8::Array>()->Get(context, 0);
-    auto yHandle = value.As<v8::Array>()->Get(context, 1);
-
-    if (xHandle.IsEmpty() || yHandle.IsEmpty()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array must contain 2 numbers").ToLocalChecked()));
-        return Vector2();
-    }
-
-    auto x = JSToFloat(xHandle.ToLocalChecked(), context);
-    auto y = JSToFloat(yHandle.ToLocalChecked(), context);
-
-    return {
-        x,
-        y
-    };
-}
-
-Vector3 JSToVector3(v8::Local<v8::Value> value, v8::Local<v8::Context> context, const Vector3 &defaultValue) {
-    auto isolate = context->GetIsolate();
-
-    if (value->IsUndefined()) {
-        return defaultValue;
-    }
-
-    if (!value->IsArray()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array is required").ToLocalChecked()));
-        return Vector3();
-    }
-
-    auto xHandle = value.As<v8::Array>()->Get(context, 0);
-    auto yHandle = value.As<v8::Array>()->Get(context, 1);
-    auto zHandle = value.As<v8::Array>()->Get(context, 2);
-
-    if (xHandle.IsEmpty() || yHandle.IsEmpty() || zHandle.IsEmpty()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array must contain 3 numbers").ToLocalChecked()));
-        return Vector3();
-    }
-
-    auto x = JSToFloat(xHandle.ToLocalChecked(), context);
-    auto y = JSToFloat(yHandle.ToLocalChecked(), context);
-    auto z = JSToFloat(zHandle.ToLocalChecked(), context);
-
-    return {
-        x,
-        y,
-        z
-    };
-}
-
-Vector4 JSToVector4(v8::Local<v8::Value> value, v8::Local<v8::Context> context, const Vector4 &defaultValue) {
-    auto isolate = context->GetIsolate();
-
-    if (value->IsUndefined()) {
-        return defaultValue;
-    }
-
-    if (!value->IsArray()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array is required").ToLocalChecked()));
-        return Vector4();
-    }
-
-    auto xHandle = value.As<v8::Array>()->Get(context, 0);
-    auto yHandle = value.As<v8::Array>()->Get(context, 1);
-    auto zHandle = value.As<v8::Array>()->Get(context, 2);
-    auto wHandle = value.As<v8::Array>()->Get(context, 3);
-
-    if (xHandle.IsEmpty() || yHandle.IsEmpty() || zHandle.IsEmpty() || wHandle.IsEmpty()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array must contain 4 numbers").ToLocalChecked()));
-        return Vector4();
-    }
-
-    auto x = JSToFloat(xHandle.ToLocalChecked(), context);
-    auto y = JSToFloat(yHandle.ToLocalChecked(), context);
-    auto z = JSToFloat(zHandle.ToLocalChecked(), context);
-    auto w = JSToFloat(wHandle.ToLocalChecked(), context);
-
-    return {
-        x,
-        y,
-        z,
-        w
-    };
-}
-
 Colour JSToColour(v8::Local<v8::Value> value, v8::Local<v8::Context> context, const Colour &defaultValue) {
     auto isolate = context->GetIsolate();
 
@@ -171,7 +69,7 @@ Colour JSToColour(v8::Local<v8::Value> value, v8::Local<v8::Context> context, co
         return defaultValue;
     }
 
-    return Colour::FromRGBA(JSToUInt(value, context));
+    return Colour::FromRGBA(JSToUInt<uint32_t>(value, context));
 }
 
 WorldTimePoint JSToWorldTimePoint(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
@@ -241,96 +139,6 @@ Hours JSToHours(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     return Hours(hCount);
 }
 
-Vector2 JSToVector2(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
-    auto isolate = context->GetIsolate();
-
-    if (!value->IsArray()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array is required").ToLocalChecked()));
-        return Vector2();
-    }
-
-    auto xHandle = value.As<v8::Array>()->Get(context, 0);
-    auto yHandle = value.As<v8::Array>()->Get(context, 1);
-
-    if (xHandle.IsEmpty() || yHandle.IsEmpty()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array must contain 2 numbers").ToLocalChecked()));
-        return Vector2();
-    }
-
-    auto x = JSToFloat(xHandle.ToLocalChecked(), context);
-    auto y = JSToFloat(yHandle.ToLocalChecked(), context);
-
-    return {
-        x,
-        y
-    };
-}
-
-Vector3 JSToVector3(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
-    auto isolate = context->GetIsolate();
-
-    if (!value->IsArray()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array is required").ToLocalChecked()));
-        return Vector3();
-    }
-
-    auto xHandle = value.As<v8::Array>()->Get(context, 0);
-    auto yHandle = value.As<v8::Array>()->Get(context, 1);
-    auto zHandle = value.As<v8::Array>()->Get(context, 2);
-
-    if (xHandle.IsEmpty() || yHandle.IsEmpty() || zHandle.IsEmpty()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array must contain 3 numbers").ToLocalChecked()));
-        return Vector3();
-    }
-
-    auto x = JSToFloat(xHandle.ToLocalChecked(), context);
-    auto y = JSToFloat(yHandle.ToLocalChecked(), context);
-    auto z = JSToFloat(zHandle.ToLocalChecked(), context);
-
-    return {
-        x,
-        y,
-        z
-    };
-}
-
-Vector4 JSToVector4(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
-    auto isolate = context->GetIsolate();
-
-    if (!value->IsArray()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array is required").ToLocalChecked()));
-        return Vector4();
-    }
-
-    auto xHandle = value.As<v8::Array>()->Get(context, 0);
-    auto yHandle = value.As<v8::Array>()->Get(context, 1);
-    auto zHandle = value.As<v8::Array>()->Get(context, 2);
-    auto wHandle = value.As<v8::Array>()->Get(context, 3);
-
-    if (xHandle.IsEmpty() || yHandle.IsEmpty() || zHandle.IsEmpty() || wHandle.IsEmpty()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array must contain 4 numbers").ToLocalChecked()));
-        return Vector4();
-    }
-
-    auto x = JSToFloat(xHandle.ToLocalChecked(), context);
-    auto y = JSToFloat(yHandle.ToLocalChecked(), context);
-    auto z = JSToFloat(zHandle.ToLocalChecked(), context);
-    auto w = JSToFloat(wHandle.ToLocalChecked(), context);
-
-    return {
-        x,
-        y,
-        z,
-        w
-    };
-}
-
 GTAQuat JSToGTAQuat(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     auto isolate = context->GetIsolate();
 
@@ -373,7 +181,7 @@ Colour JSToColour(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
         return Colour();
     }
 
-    return Colour::FromRGBA(JSToUInt(value, context));
+    return Colour::FromRGBA(JSToUInt<uint32_t>(value, context));
 }
 
 v8::Local<v8::Date> WorldTimePointToJS(const WorldTimePoint &point, v8::Local<v8::Context> context) {
@@ -412,7 +220,7 @@ v8::Local<v8::Integer> HoursToJS(const Hours &h, v8::Local<v8::Context> context)
     return IntToJS(h.count(), context);
 }
 
-v8::Local<v8::Array> HoursMinutesToJS(const Pair<Hours, Minutes> &hoursMinutes, v8::Local<v8::Context> context) {
+v8::Local<v8::Array> HoursMinutesToJS(const HoursMinutes &hoursMinutes, v8::Local<v8::Context> context) {
     v8::EscapableHandleScope handle_scope(context->GetIsolate());
 
     // Create a new empty array.
@@ -423,13 +231,13 @@ v8::Local<v8::Array> HoursMinutesToJS(const Pair<Hours, Minutes> &hoursMinutes, 
         return v8::Local<v8::Array>();
 
     // Fill out the values
-    array->Set(context, 0, IntToJS(hoursMinutes.first.count(), context));
-    array->Set(context, 1, IntToJS(hoursMinutes.second.count(), context));
+    array->Set(context, 0, IntToJS(hoursMinutes.first.count(), context)).Check();
+    array->Set(context, 1, IntToJS(hoursMinutes.second.count(), context)).Check();
 
     return handle_scope.Escape(array);
 }
 
-v8::Local<v8::Array> Vector2ToJS(const Vector2 &vector, v8::Local<v8::Context> context) {
+v8::Local<v8::Array> PairBoolStringViewToJS(const PairBoolStringView &boolStringView, v8::Local<v8::Context> context) {
     v8::EscapableHandleScope handle_scope(context->GetIsolate());
 
     // Create a new empty array.
@@ -440,45 +248,8 @@ v8::Local<v8::Array> Vector2ToJS(const Vector2 &vector, v8::Local<v8::Context> c
         return v8::Local<v8::Array>();
 
     // Fill out the values
-    array->Set(context, 0, v8::Number::New(context->GetIsolate(), vector[0]));
-    array->Set(context, 1, v8::Number::New(context->GetIsolate(), vector[1]));
-
-    return handle_scope.Escape(array);
-}
-
-v8::Local<v8::Array> Vector3ToJS(const Vector3 &vector, v8::Local<v8::Context> context) {
-    v8::EscapableHandleScope handle_scope(context->GetIsolate());
-
-    // Create a new empty array.
-    v8::Local<v8::Array> array = v8::Array::New(context->GetIsolate(), 3);
-
-    // Return an empty result if there was an error creating the array.
-    if (array.IsEmpty())
-        return v8::Local<v8::Array>();
-
-    // Fill out the values
-    array->Set(context, 0, v8::Number::New(context->GetIsolate(), vector[0]));
-    array->Set(context, 1, v8::Number::New(context->GetIsolate(), vector[1]));
-    array->Set(context, 2, v8::Number::New(context->GetIsolate(), vector[2]));
-
-    return handle_scope.Escape(array);
-}
-
-v8::Local<v8::Array> Vector4ToJS(const Vector4 &vector, v8::Local<v8::Context> context) {
-    v8::EscapableHandleScope handle_scope(context->GetIsolate());
-
-    // Create a new empty array.
-    v8::Local<v8::Array> array = v8::Array::New(context->GetIsolate(), 4);
-
-    // Return an empty result if there was an error creating the array.
-    if (array.IsEmpty())
-        return v8::Local<v8::Array>();
-
-    // Fill out the values
-    array->Set(context, 0, v8::Number::New(context->GetIsolate(), vector[0]));
-    array->Set(context, 1, v8::Number::New(context->GetIsolate(), vector[1]));
-    array->Set(context, 2, v8::Number::New(context->GetIsolate(), vector[2]));
-    array->Set(context, 3, v8::Number::New(context->GetIsolate(), vector[3]));
+    array->Set(context, 0, BoolToJS(boolStringView.first, context)).Check();
+    array->Set(context, 1, StringViewToJS(boolStringView.second, context)).Check();
 
     return handle_scope.Escape(array);
 }
@@ -487,21 +258,8 @@ v8::Local<v8::Integer> ColourToJS(const Colour &colour, v8::Local<v8::Context> c
     return UIntToJS(colour.RGBA(), context);
 }
 
-v8::Local<v8::Object> SemanticVersionToJS(SemanticVersion &version, v8::Local<v8::Context> context) {
-    auto isolate = context->GetIsolate();
-
-    auto versionObjectTemplate = v8::ObjectTemplate::New(isolate);
-
-    versionObjectTemplate->Set(v8::String::NewFromUtf8(isolate, "major").ToLocalChecked(),
-                               v8::Integer::NewFromUnsigned(isolate, version.major));
-    versionObjectTemplate->Set(v8::String::NewFromUtf8(isolate, "minor").ToLocalChecked(),
-                               v8::Integer::NewFromUnsigned(isolate, version.minor));
-    versionObjectTemplate->Set(v8::String::NewFromUtf8(isolate, "patch").ToLocalChecked(),
-                               v8::Integer::NewFromUnsigned(isolate, version.patch));
-    versionObjectTemplate->Set(v8::String::NewFromUtf8(isolate, "prerel").ToLocalChecked(),
-                               v8::Integer::NewFromUnsigned(isolate, version.prerel));
-
-    auto object = versionObjectTemplate->NewInstance(context).ToLocalChecked();
-
-    return object;
-}
+OBJECT_CONVERTER_DEFINE_TO_JS(SemanticVersion,
+                        (uint8_t, major, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
+                        (uint8_t, minor, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
+                        (uint8_t, patch, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
+                        (uint16_t, prerel, UIntToJS<uint16_t>, JSToUInt<uint16_t>))

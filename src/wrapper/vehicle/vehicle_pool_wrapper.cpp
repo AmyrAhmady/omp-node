@@ -9,17 +9,19 @@
 
 WRAP_BASIC(IVehiclesComponent)
 
+WRAP_BASIC_CALL_RETURN(IVehiclesComponent, models, (VehicleModels & , TO_JS_FN(VehicleModels)))
+
 WRAP_BASIC_CALL_RETURN(IVehiclesComponent,
                        create,
-                       IVehicleToJS,
-                       JSToBool(info[0], context),
-                       JSToInt(info[1], context),
-                       JSToVector3(info[2], context),
-                       JSToFloat(info[3], context),
-                       JSToInt(info[4], context),
-                       JSToInt(info[5], context),
-                       JSToSeconds(info[6], context),
-                       JSToBool(info[7], context))
+                       (IVehicle * , TO_JS_FN(IVehicle)),
+                       (bool, JSToBool, isStatic),
+                       (int, JSToInt, modelID),
+                       (Vector3, JSToVector<Vector3>, position),
+                       (float, JSToFloat, Z, 0.0f),
+                       (int, JSToInt, colour1, -1),
+                       (int, JSToInt, colour2, -1),
+                       (Seconds, JSToSeconds, respawnDelay, Seconds(-1)),
+                       (bool, JSToBool, addSiren, false))
 
 WRAP_BASIC_CODE(IVehiclesComponent, getEventDispatcher, {
     ENTER_FUNCTION_CALLBACK(info)

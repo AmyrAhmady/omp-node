@@ -23,7 +23,7 @@ WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerConnect, 1, {
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerDisconnect, 2, {
     args[0] = GetHandleStorageExtension(&player)->get();
-    args[1] = UIntToJS(reason, context);
+    args[1] = EnumToJS(reason, context);
 }, return, IPlayer &player, PeerDisconnectReason reason)
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerRequestSpawn, 1, {
@@ -116,7 +116,7 @@ WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerTakeDamage, 5, {
     args[1] = GetHandleStorageExtension(from)->get();
     args[2] = FloatToJS(amount, context);
     args[3] = UIntToJS(weapon, context);
-    args[4] = UIntToJS(part, context);
+    args[4] = EnumToJS(part, context);
 }, return, IPlayer &player, IPlayer *from, float amount, unsigned weapon, BodyPart part)
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerGiveDamage, 5, {
@@ -124,7 +124,7 @@ WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerGiveDamage, 5, {
     args[1] = GetHandleStorageExtension(&to)->get();
     args[2] = FloatToJS(amount, context);
     args[3] = UIntToJS(weapon, context);
-    args[4] = UIntToJS(part, context);
+    args[4] = EnumToJS(part, context);
 }, return, IPlayer &player, IPlayer &to, float amount, unsigned weapon, BodyPart part)
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerInteriorChange, 3, {
@@ -135,8 +135,8 @@ WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerInteriorChange, 3, {
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerStateChange, 3, {
     args[0] = GetHandleStorageExtension(&player)->get();
-    args[1] = UIntToJS(newState, context);
-    args[2] = UIntToJS(oldState, context);
+    args[1] = EnumToJS(newState, context);
+    args[2] = EnumToJS(oldState, context);
 }, return, IPlayer &player, PlayerState newState, PlayerState oldState)
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerKeyStateChange, 3, {
@@ -147,13 +147,13 @@ WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerKeyStateChange, 3, {
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerClickMap, 2, {
     args[0] = GetHandleStorageExtension(&player)->get();
-    args[1] = Vector3ToJS(pos, context);
+    args[1] = VectorToJS<Vector3>(pos, context);
 }, return, IPlayer &player, Vector3 pos)
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerClickPlayer, 3, {
     args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = GetHandleStorageExtension(&clicked)->get();
-    args[2] = UIntToJS(source, context);
+    args[2] = EnumToJS(source, context);
 }, return, IPlayer &player, IPlayer &clicked, PlayerClickSource source)
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onClientCheckResponse, 4, {
@@ -170,7 +170,7 @@ WRAP_BASIC_CODE(IPlayerEventDispatcher, addEventHandler, {
 
     auto event = JSToString(info[0], context);
     auto handler = info[1].As<v8::Function>();
-    auto priority = JSToInt(info[2], context, EventPriority_Default);
+    auto priority = JSToEnum(info[2], context, EventPriority_Default);
 
     if (!handler->IsFunction()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
@@ -187,7 +187,7 @@ WRAP_BASIC_CODE(IPlayerEventDispatcher, addEventHandler, {
 
     auto handlerObj = handlerObjGenerator(event, handler);
 
-    auto result = dispatcher->addEventHandler(handlerObj, (EventPriority)priority);
+    auto result = dispatcher->addEventHandler(handlerObj, priority);
 
     if (result) {
         WRAPPED_HANDLERS(NodeJSPlayerEventHandler).emplace(handlerObj);
@@ -206,7 +206,7 @@ WRAP_BASIC_CODE(IPlayerEventDispatcher, hasEventHandler, {
 
     auto event = JSToString(info[0], context);
     auto handler = info[1].As<v8::Function>();
-    event_order_t priority = JSToInt(info[2], context);
+    std::underlying_type_t<EventPriority> priority = JSToEnum<EventPriority>(info[2], context);
 
     if (!handler->IsFunction()) {
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
@@ -258,7 +258,7 @@ WRAP_BASIC_CODE(IPlayerEventDispatcher, removeEventHandler, {
     info.GetReturnValue().Set(false);
 })
 
-WRAP_BASIC_CALL_RETURN(IPlayerEventDispatcher, count, UIntToJS)
+WRAP_BASIC_CALL_RETURN(IPlayerEventDispatcher, count, (size_t, UIntToJS))
 
 v8::Local<v8::Value> WrapPlayerEventDispatcher(IEventDispatcher<PlayerEventHandler> *dispatcher,
                                                v8::Local<v8::Context> context) {

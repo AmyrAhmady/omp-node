@@ -5,6 +5,7 @@
 #include "../logger.hpp"
 #include "methods.hpp"
 #include "handlers.hpp"
+#include "../converter/find_function.hpp"
 
 #define ENTER_FUNCTION_CALLBACK(info) \
     auto isolate = (info).GetIsolate(); \
