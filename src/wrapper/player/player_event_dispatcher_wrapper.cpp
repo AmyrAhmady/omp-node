@@ -9,7 +9,7 @@
 #include "player_event_dispatcher_wrapper.hpp"
 
 WRAP_BASIC(IPlayerEventDispatcher)
-WRAP_HANDLER_BASIC(NodeJSEventHandler<PlayerEventHandler>, NodeJSPlayerEventHandler)
+WRAP_HANDLER_BASIC(PlayerEventHandler, NodeJSPlayerEventHandler)
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onIncomingConnection, 3, {
     args[0] = GetHandleStorageExtension(&player)->get();
@@ -163,100 +163,11 @@ WRAP_HANDLER(NodeJSPlayerEventHandler, void, onClientCheckResponse, 4, {
     args[3] = IntToJS(results, context);
 }, return, IPlayer &player, int actionType, int address, int results)
 
-WRAP_BASIC_CODE(IPlayerEventDispatcher, addEventHandler, {
-    ENTER_FUNCTION_CALLBACK(info)
+WRAP_BASIC_CODE(IPlayerEventDispatcher, addEventHandler, WRAP_ADD_EVENT_HANDLER(NodeJSPlayerEventHandler))
 
-    auto dispatcher = GetContextExternalPointer<IEventDispatcher<PlayerEventHandler>>(info);
+WRAP_BASIC_CODE(IPlayerEventDispatcher, hasEventHandler, WRAP_HAS_EVENT_HANDLER(NodeJSPlayerEventHandler))
 
-    auto event = JSToString(info[0], context);
-    auto handler = info[1].As<v8::Function>();
-    auto priority = JSToEnum(info[2], context, EventPriority_Default);
-
-    if (!handler->IsFunction()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "A function is required").ToLocalChecked()));
-        return;
-    }
-
-    auto handlerObjGenerator = WRAPPED_HANDLER(NodeJSPlayerEventHandler, event);
-
-    if (handlerObjGenerator == nullptr) {
-        info.GetReturnValue().Set(false);
-        return;
-    }
-
-    auto handlerObj = handlerObjGenerator(event, handler);
-
-    auto result = dispatcher->addEventHandler(handlerObj, priority);
-
-    if (result) {
-        WRAPPED_HANDLERS(NodeJSPlayerEventHandler).emplace(handlerObj);
-    } else {
-        delete handlerObj;
-    }
-
-    info.GetReturnValue().Set(result);
-
-})
-
-WRAP_BASIC_CODE(IPlayerEventDispatcher, hasEventHandler, {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto dispatcher = GetContextExternalPointer<IEventDispatcher<PlayerEventHandler>>(info);
-
-    auto event = JSToString(info[0], context);
-    auto handler = info[1].As<v8::Function>();
-    std::underlying_type_t<EventPriority> priority = JSToEnum<EventPriority>(info[2], context);
-
-    if (!handler->IsFunction()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "A function is required").ToLocalChecked()));
-        return;
-    }
-
-    for (auto handlerObj: WRAPPED_HANDLERS(NodeJSPlayerEventHandler)) {
-        if (handlerObj->getEvent() == event && handlerObj->getHandler() == handler) {
-            auto result = dispatcher->hasEventHandler(handlerObj, priority);
-
-            info.GetReturnValue().Set(result);
-
-            return;
-        }
-    }
-
-    info.GetReturnValue().Set(false);
-})
-
-WRAP_BASIC_CODE(IPlayerEventDispatcher, removeEventHandler, {
-    ENTER_FUNCTION_CALLBACK(info)
-
-    auto dispatcher = GetContextExternalPointer<IEventDispatcher<PlayerEventHandler>>(info);
-
-    auto event = JSToString(info[0], context);
-    auto handler = info[1].As<v8::Function>();
-
-    if (!handler->IsFunction()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "A function is required").ToLocalChecked()));
-        return;
-    }
-
-    for (auto handlerObj: WRAPPED_HANDLERS(NodeJSPlayerEventHandler)) {
-        if (handlerObj->getEvent() == event && handlerObj->getHandler() == handler) {
-            auto result = dispatcher->removeEventHandler(handlerObj);
-
-            info.GetReturnValue().Set(result);
-
-            if (result) {
-                WRAPPED_HANDLERS(NodeJSPlayerEventHandler).erase(handlerObj);
-            }
-
-            return;
-        }
-    }
-
-    info.GetReturnValue().Set(false);
-})
+WRAP_BASIC_CODE(IPlayerEventDispatcher, removeEventHandler, WRAP_REMOVE_EVENT_HANDLER(NodeJSPlayerEventHandler))
 
 WRAP_BASIC_CALL_RETURN(IPlayerEventDispatcher, count, (size_t, UIntToJS))
 

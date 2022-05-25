@@ -2,6 +2,7 @@
 #include "nodeimpl.hpp"
 #include "wrapper/utils.hpp"
 #include "wrapper/vehicle/vehicle_pool_wrapper.hpp"
+#include "wrapper/pickup/pickup_pool_wrapper.hpp"
 
 v8::Isolate *GetV8Isolate() {
     return ompnode::nodeImpl.GetIsolate();
@@ -81,6 +82,7 @@ namespace ompnode {
 
         /**/
         auto componentList = ompnode::nodeImpl.GetComponentList();
+
         auto vehiclesComponent = componentList->queryComponent<IVehiclesComponent>();
 
         WrapVehiclePool(vehiclesComponent, _context);
@@ -89,6 +91,15 @@ namespace ompnode {
         _context->Global()->Set(_context,
                                 v8::String::NewFromUtf8(GetV8Isolate(), "vehicles").ToLocalChecked(),
                                 vehiclePoolHandle).Check();
+
+        auto pickupsComponent = componentList->queryComponent<IPickupsComponent>();
+
+        WrapPickupPool(pickupsComponent, _context);
+        auto pickupPoolHandle = GetHandleStorageExtension(pickupsComponent)->get();
+
+        _context->Global()->Set(_context,
+                                v8::String::NewFromUtf8(GetV8Isolate(), "pickups").ToLocalChecked(),
+                                pickupPoolHandle).Check();
 
         node::EnvironmentFlags::Flags flags = node::EnvironmentFlags::kOwnsProcessState;
 

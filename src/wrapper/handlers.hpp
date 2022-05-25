@@ -2,8 +2,9 @@
 #include "v8.h"
 
 #define WRAP_HANDLER_BASIC(FullType, TypeAlias) \
-    namespace handler_wrapper_##_##TypeAlias { \
-        typedef FullType TypeAlias; \
+    namespace handler_wrapper_##_##TypeAlias {  \
+        typedef FullType HandlerType;                                        \
+        typedef NodeJSEventHandler<FullType> TypeAlias; \
         using HandlerCreatorFunction = TypeAlias* (*)(Impl::String, v8::Local<v8::Function>); \
         typedef FlatHashMap<std::string, HandlerCreatorFunction> HandlerGenerators; \
         HandlerGenerators handlerGenerators; \
@@ -42,6 +43,76 @@
         }\
         AddObjectHandler AddObjectHandler##_##handlerFunctionName(#handlerFunctionName, generate_handler##_##handlerFunctionName); \
     }
+
+#define WRAP_ADD_EVENT_HANDLER(Type) { \
+    ENTER_FUNCTION_CALLBACK(info) \
+    auto dispatcher = GetContextExternalPointer<IEventDispatcher<handler_wrapper_##_##Type::HandlerType>>(info); \
+    auto event = JSToString(info[0], context); \
+    auto handler = info[1].As<v8::Function>(); \
+    std::underlying_type_t<EventPriority> priority = JSToEnum<EventPriority>(info[2], context, EventPriority_Default); \
+    if (!handler->IsFunction()) { \
+        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, \
+                                                                                 "A function is required").ToLocalChecked())); \
+        return; \
+    } \
+    auto handlerObjGenerator = WRAPPED_HANDLER(Type, event); \
+    if (handlerObjGenerator == nullptr) { \
+        info.GetReturnValue().Set(false); \
+        return; \
+    } \
+    auto handlerObj = handlerObjGenerator(event, handler); \
+    auto result = dispatcher->addEventHandler(handlerObj, priority); \
+    if (result) { \
+        WRAPPED_HANDLERS(Type).emplace(handlerObj); \
+    } else { \
+        delete handlerObj; \
+    } \
+    info.GetReturnValue().Set(result); \
+}
+
+#define WRAP_HAS_EVENT_HANDLER(Type) { \
+    ENTER_FUNCTION_CALLBACK(info) \
+    auto dispatcher = GetContextExternalPointer<IEventDispatcher<handler_wrapper_##_##Type::HandlerType>>(info); \
+    auto event = JSToString(info[0], context); \
+    auto handler = info[1].As<v8::Function>(); \
+    std::underlying_type_t<EventPriority> priority = JSToEnum<EventPriority>(info[2], context); \
+    if (!handler->IsFunction()) { \
+        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, \
+                                                                                 "A function is required").ToLocalChecked())); \
+        return; \
+    } \
+    for (auto handlerObj: WRAPPED_HANDLERS(Type)) { \
+        if (handlerObj->getEvent() == event && handlerObj->getHandler() == handler) { \
+            auto result = dispatcher->hasEventHandler(handlerObj, priority); \
+            info.GetReturnValue().Set(result); \
+            return; \
+        } \
+    } \
+    info.GetReturnValue().Set(false); \
+}
+
+#define WRAP_REMOVE_EVENT_HANDLER(Type) { \
+    ENTER_FUNCTION_CALLBACK(info) \
+    auto dispatcher = GetContextExternalPointer<IEventDispatcher<handler_wrapper_##_##Type::HandlerType>>(info); \
+    auto event = JSToString(info[0], context); \
+    auto handler = info[1].As<v8::Function>(); \
+    if (!handler->IsFunction()) { \
+        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, \
+                                                                                 "A function is required").ToLocalChecked())); \
+        return; \
+    } \
+    for (auto handlerObj: WRAPPED_HANDLERS(Type)) { \
+        if (handlerObj->getEvent() == event && handlerObj->getHandler() == handler) { \
+            auto result = dispatcher->removeEventHandler(handlerObj); \
+            info.GetReturnValue().Set(result); \
+            if (result) { \
+                WRAPPED_HANDLERS(Type).erase(handlerObj); \
+            } \
+            return; \
+        } \
+    } \
+    info.GetReturnValue().Set(false); \
+}
 
 #define WRAPPED_HANDLERS(Type) handler_wrapper_##_##Type::eventHandlers
 #define WRAPPED_HANDLER(Type, name) handler_wrapper_##_##Type::GetHandler(name)
