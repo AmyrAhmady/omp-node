@@ -1,5 +1,6 @@
 #include "player_wrapper.hpp"
 #include "player_event_dispatcher_wrapper.hpp"
+#include "player_update_event_dispatcher_wrapper.hpp"
 #include "../../logger.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/player.hpp"
@@ -29,6 +30,13 @@ WRAP_BASIC_CODE(IPlayerPool, getEventDispatcher, {
     auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
     auto dispatcher = &playerPool->getEventDispatcher();
     auto dispatcherHandle = WrapPlayerEventDispatcher(dispatcher, context);
+    info.GetReturnValue().Set(dispatcherHandle);
+})
+WRAP_BASIC_CODE(IPlayerPool, getPlayerUpdateDispatcher, {
+    ENTER_FUNCTION_CALLBACK(info)
+    auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
+    auto dispatcher = &playerPool->getPlayerUpdateDispatcher();
+    auto dispatcherHandle = WrapPlayerUpdateEventDispatcher(dispatcher, context);
     info.GetReturnValue().Set(dispatcherHandle);
 })
 

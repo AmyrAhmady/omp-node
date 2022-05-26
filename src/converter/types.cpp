@@ -194,14 +194,14 @@ v8::Local<v8::Date> WorldTimePointToJS(const WorldTimePoint &point, v8::Local<v8
     return date;
 }
 
-v8::Local<v8::Date> TimePointToJS(const TimePoint &point, v8::Local<v8::Context> context) {
+v8::Local<v8::Integer> TimePointToJS(const TimePoint &point, v8::Local<v8::Context> context) {
     auto sinceEpoch = point.time_since_epoch();
 
     auto ms = duration_cast<Milliseconds>(sinceEpoch);
 
-    v8::Local<v8::Date> date = v8::Date::New(context, static_cast<double>(ms.count())).ToLocalChecked().As<v8::Date>();
+    auto msCount = static_cast<long long>(ms.count());
 
-    return date;
+    return IntToJS<long long>(msCount, context);
 }
 
 v8::Local<v8::Integer> MillisecondsToJS(const Milliseconds &ms, v8::Local<v8::Context> context) {

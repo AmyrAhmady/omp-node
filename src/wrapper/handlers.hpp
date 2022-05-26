@@ -106,7 +106,8 @@
             auto result = dispatcher->removeEventHandler(handlerObj); \
             info.GetReturnValue().Set(result); \
             if (result) { \
-                WRAPPED_HANDLERS(Type).erase(handlerObj); \
+                WRAPPED_HANDLERS(Type).erase(handlerObj);                                                        \
+                delete handlerObj;                              \
             } \
             return; \
         } \
@@ -127,6 +128,12 @@ struct NodeJSEventHandler : EventHandlerBase {
         event = std::move(_event);
         isolate = _handler->GetIsolate();
         handler = v8::UniquePersistent<v8::Function>(isolate, _handler);
+    }
+
+    virtual ~NodeJSEventHandler() {
+        isolate = nullptr;
+        handler.Reset();
+        L_DEBUG << "~NodeJSEventHandler";
     }
 
 public:

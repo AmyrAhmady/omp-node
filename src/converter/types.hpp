@@ -87,7 +87,7 @@ GTAQuat JSToGTAQuat(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 Colour JSToColour(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 
 v8::Local<v8::Date> WorldTimePointToJS(const WorldTimePoint &point, v8::Local<v8::Context> context);
-v8::Local<v8::Date> TimePointToJS(const TimePoint &point, v8::Local<v8::Context> context);
+v8::Local<v8::Integer> TimePointToJS(const TimePoint &point, v8::Local<v8::Context> context);
 v8::Local<v8::Integer> MillisecondsToJS(const Milliseconds &ms, v8::Local<v8::Context> context);
 v8::Local<v8::Integer> SecondsToJS(const Seconds &s, v8::Local<v8::Context> context);
 v8::Local<v8::Integer> MinutesToJS(const Minutes &m, v8::Local<v8::Context> context);
