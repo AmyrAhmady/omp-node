@@ -7,6 +7,8 @@
 #include "../../converter/player.hpp"
 #include "../../converter/types.hpp"
 #include "../entry_handler.hpp"
+#include "../pool/read_only_pool_wrapper.hpp"
+#include "../pool/pool_wrapper.hpp"
 
 WRAP_BASIC(IPlayerPool)
 
@@ -47,6 +49,8 @@ WRAP_BASIC_CODE(IPlayerPool, getPoolEventDispatcher, {
     auto dispatcherHandle = WrapPlayerPoolEventDispatcher(dispatcher, context);
     info.GetReturnValue().Set(dispatcherHandle);
 })
+
+WRAP_READ_ONLY_POOL_METHODS(IPlayerPool, IPlayer, IPlayerToJS)
 
 NodeJSEntryHandler<IPlayer> *handler;
 

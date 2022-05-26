@@ -7,6 +7,8 @@
 #include "../../converter/types.hpp"
 #include "../../converter/pickup.hpp"
 #include "../entry_handler.hpp"
+#include "../pool/read_only_pool_wrapper.hpp"
+#include "../pool/pool_wrapper.hpp"
 
 WRAP_BASIC(IPickupsComponent)
 
@@ -26,13 +28,9 @@ WRAP_BASIC_CODE(IPickupsComponent, getEventDispatcher, {
     auto dispatcherHandle = WrapPickupEventDispatcher(dispatcher, context);
     info.GetReturnValue().Set(dispatcherHandle);
 })
-WRAP_BASIC_CODE(IPickupsComponent, getPoolEventDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
-    auto pool = GetContextExternalPointer<IPickupsComponent>(info);
-    auto dispatcher = &pool->getPoolEventDispatcher();
-    auto dispatcherHandle = WrapPickupPoolEventDispatcher(dispatcher, context);
-    info.GetReturnValue().Set(dispatcherHandle);
-})
+
+WRAP_READ_ONLY_POOL_METHODS(IPickupsComponent, IPickup, IPickupToJS)
+WRAP_POOL_METHODS(IPickupsComponent, WrapPickupPoolEventDispatcher)
 
 NodeJSEntryHandler<IPickup> *handler;
 

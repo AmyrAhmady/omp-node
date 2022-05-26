@@ -7,6 +7,8 @@
 #include "../entry_handler.hpp"
 #include "vehicle_event_dispatcher_wrapper.hpp"
 #include "vehicle_pool_event_dispatcher_wrapper.hpp"
+#include "../pool/read_only_pool_wrapper.hpp"
+#include "../pool/pool_wrapper.hpp"
 
 WRAP_BASIC(IVehiclesComponent)
 
@@ -31,13 +33,9 @@ WRAP_BASIC_CODE(IVehiclesComponent, getEventDispatcher, {
     auto dispatcherHandle = WrapVehicleEventDispatcher(dispatcher, context);
     info.GetReturnValue().Set(dispatcherHandle);
 })
-WRAP_BASIC_CODE(IVehiclesComponent, getPoolEventDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
-    auto pool = GetContextExternalPointer<IVehiclesComponent>(info);
-    auto dispatcher = &pool->getPoolEventDispatcher();
-    auto dispatcherHandle = WrapVehiclePoolEventDispatcher(dispatcher, context);
-    info.GetReturnValue().Set(dispatcherHandle);
-})
+
+WRAP_READ_ONLY_POOL_METHODS(IVehiclesComponent, IVehicle, IVehicleToJS)
+WRAP_POOL_METHODS(IVehiclesComponent, WrapVehiclePoolEventDispatcher)
 
 NodeJSEntryHandler<IVehicle> *handler;
 

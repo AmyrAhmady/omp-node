@@ -117,3 +117,21 @@ template<typename type = unsigned int>
 v8::Local<v8::Integer> UIntToJS(type value, v8::Local<v8::Context> context) {
     return v8::Integer::NewFromUnsigned(context->GetIsolate(), value);
 }
+
+template<typename type1 = int, typename type2 = int>
+v8::Local<v8::Array> PairIntToJS(Pair<type1, type2> value, v8::Local<v8::Context> context) {
+    v8::EscapableHandleScope handle_scope(context->GetIsolate());
+
+    // Create a new empty array.
+    v8::Local<v8::Array> array = v8::Array::New(context->GetIsolate(), 2);
+
+    // Return an empty result if there was an error creating the array.
+    if (array.IsEmpty())
+        return v8::Local<v8::Array>();
+
+    // Fill out the values
+    array->Set(context, 0, IntToJS<type1>(value.first, context)).Check();
+    array->Set(context, 1, IntToJS<type2>(value.second, context)).Check();
+
+    return handle_scope.Escape(array);
+}
