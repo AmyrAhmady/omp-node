@@ -83,7 +83,6 @@ VectorType JSToVector(v8::Local<v8::Value> value, v8::Local<v8::Context> context
     return vector;
 }
 
-GTAQuat JSToGTAQuat(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 Colour JSToColour(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 
 v8::Local<v8::Date> WorldTimePointToJS(const WorldTimePoint &point, v8::Local<v8::Context> context);
@@ -112,4 +111,5 @@ v8::Local<v8::Array> VectorToJS(const VectorType &vector, v8::Local<v8::Context>
 
 v8::Local<v8::Integer> ColourToJS(const Colour &colour, v8::Local<v8::Context> context);
 
+OBJECT_CONVERTER_DECLARE(GTAQuat)
 OBJECT_CONVERTER_DECLARE_TO_JS(SemanticVersion)

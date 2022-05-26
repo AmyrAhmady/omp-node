@@ -30,24 +30,4 @@ struct NodeJSEntryHandler : PoolEventHandler<Interface> {
 
         wrap(&entry, _context);
     };
-
-    /// Called just before an entry is destructed
-    void onPoolEntryDestroyed(Interface &entry) override {
-        v8::Locker locker(isolate);
-        v8::Isolate::Scope isolateScope(isolate);
-
-        v8::HandleScope scope(isolate);
-
-        auto _context = context.Get(isolate);
-
-        v8::Context::Scope contextScope(_context);
-
-        auto handleStorage = GetHandleStorageExtension(&entry);
-
-        if (handleStorage != nullptr) {
-            auto entryHandle = handleStorage->get();
-
-            entryHandle.template As<v8::Object>()->SetInternalField(0, v8::External::New(isolate, nullptr));
-        }
-    };
 };

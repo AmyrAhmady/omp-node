@@ -4,6 +4,7 @@
 #include "../../converter/types.hpp"
 #include "../../converter/player.hpp"
 #include "../../converter/vehicle.hpp"
+#include "../entity/entity_wrapper.hpp"
 
 WRAP_BASIC(IVehicle)
 
@@ -151,6 +152,8 @@ WRAP_BASIC_CALL_RETURN(IVehicle, getSirenState, (uint8_t, UIntToJS<uint8_t>))
 WRAP_BASIC_CALL_RETURN(IVehicle, getHydraThrustAngle, (uint32_t, UIntToJS))
 
 WRAP_BASIC_CALL_RETURN(IVehicle, getTrainSpeed, (float, FloatToJS));
+
+WRAP_ENTITY_METHODS(IVehicle)
 
 void WrapVehicle(IVehicle *vehicle, v8::Local<v8::Context> context) {
     auto vehicleHandle = InterfaceToObject(vehicle, context, WRAPPED_METHODS(IVehicle));

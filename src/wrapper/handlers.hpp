@@ -49,7 +49,6 @@
     auto dispatcher = GetContextExternalPointer<IEventDispatcher<handler_wrapper_##_##Type::HandlerType>>(info); \
     auto event = JSToString(info[0], context); \
     auto handler = info[1].As<v8::Function>(); \
-    std::underlying_type_t<EventPriority> priority = JSToEnum<EventPriority>(info[2], context, EventPriority_Default); \
     if (!handler->IsFunction()) { \
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, \
                                                                                  "A function is required").ToLocalChecked())); \
@@ -61,7 +60,7 @@
         return; \
     } \
     auto handlerObj = handlerObjGenerator(event, handler); \
-    auto result = dispatcher->addEventHandler(handlerObj, priority); \
+    auto result = dispatcher->addEventHandler(handlerObj, EventPriority_Lowest); \
     if (result) { \
         WRAPPED_HANDLERS(Type).emplace(handlerObj); \
     } else { \
@@ -75,15 +74,15 @@
     auto dispatcher = GetContextExternalPointer<IEventDispatcher<handler_wrapper_##_##Type::HandlerType>>(info); \
     auto event = JSToString(info[0], context); \
     auto handler = info[1].As<v8::Function>(); \
-    std::underlying_type_t<EventPriority> priority = JSToEnum<EventPriority>(info[2], context); \
     if (!handler->IsFunction()) { \
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, \
                                                                                  "A function is required").ToLocalChecked())); \
         return; \
     } \
+    std::underlying_type_t<EventPriority> priority; \
     for (auto handlerObj: WRAPPED_HANDLERS(Type)) { \
         if (handlerObj->getEvent() == event && handlerObj->getHandler() == handler) { \
-            auto result = dispatcher->hasEventHandler(handlerObj, priority); \
+            bool result = dispatcher->hasEventHandler(handlerObj, priority);                                     \
             info.GetReturnValue().Set(result); \
             return; \
         } \

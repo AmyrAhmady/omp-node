@@ -6,6 +6,7 @@
 #include "../../converter/vehicle.hpp"
 #include "../entry_handler.hpp"
 #include "vehicle_event_dispatcher_wrapper.hpp"
+#include "vehicle_pool_event_dispatcher_wrapper.hpp"
 
 WRAP_BASIC(IVehiclesComponent)
 
@@ -28,6 +29,13 @@ WRAP_BASIC_CODE(IVehiclesComponent, getEventDispatcher, {
     auto pool = GetContextExternalPointer<IVehiclesComponent>(info);
     auto dispatcher = &pool->getEventDispatcher();
     auto dispatcherHandle = WrapVehicleEventDispatcher(dispatcher, context);
+    info.GetReturnValue().Set(dispatcherHandle);
+})
+WRAP_BASIC_CODE(IVehiclesComponent, getPoolEventDispatcher, {
+    ENTER_FUNCTION_CALLBACK(info)
+    auto pool = GetContextExternalPointer<IVehiclesComponent>(info);
+    auto dispatcher = &pool->getPoolEventDispatcher();
+    auto dispatcherHandle = WrapVehiclePoolEventDispatcher(dispatcher, context);
     info.GetReturnValue().Set(dispatcherHandle);
 })
 

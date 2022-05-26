@@ -4,6 +4,7 @@
 #include "../../converter/player.hpp"
 #include "../../converter/vehicle.hpp"
 #include "../../converter/anim.hpp"
+#include "../entity/entity_wrapper.hpp"
 
 WRAP_BASIC(IPlayer)
 WRAP_BASIC_CALL(IPlayer, kick)
@@ -229,6 +230,8 @@ WRAP_BASIC_CALL(IPlayer,
 WRAP_BASIC_CALL(IPlayer, toggleGhostMode, (bool, JSToBool, toggle))
 WRAP_BASIC_CALL_RETURN(IPlayer, isGhostModeEnabled, (bool, BoolToJS))
 WRAP_BASIC_CALL_RETURN(IPlayer, getDefaultObjectsRemoved, (int, IntToJS))
+
+WRAP_ENTITY_METHODS(IPlayer)
 
 void WrapPlayer(IPlayer *player, v8::Local<v8::Context> context) {
     auto playerHandle = InterfaceToObject(player, context, WRAPPED_METHODS(IPlayer));

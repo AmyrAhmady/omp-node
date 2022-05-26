@@ -139,39 +139,6 @@ Hours JSToHours(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     return Hours(hCount);
 }
 
-GTAQuat JSToGTAQuat(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
-    auto isolate = context->GetIsolate();
-
-    if (!value->IsArray()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array is required").ToLocalChecked()));
-        return GTAQuat();
-    }
-
-    auto wHandle = value.As<v8::Array>()->Get(context, 0);
-    auto xHandle = value.As<v8::Array>()->Get(context, 1);
-    auto yHandle = value.As<v8::Array>()->Get(context, 2);
-    auto zHandle = value.As<v8::Array>()->Get(context, 3);
-
-    if (wHandle.IsEmpty() || xHandle.IsEmpty() || yHandle.IsEmpty() || zHandle.IsEmpty()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "An array must contain 4 numbers").ToLocalChecked()));
-        return GTAQuat();
-    }
-
-    auto w = JSToFloat(wHandle.ToLocalChecked(), context);
-    auto x = JSToFloat(xHandle.ToLocalChecked(), context);
-    auto y = JSToFloat(yHandle.ToLocalChecked(), context);
-    auto z = JSToFloat(zHandle.ToLocalChecked(), context);
-
-    return {
-        w,
-        x,
-        y,
-        z
-    };
-}
-
 Colour JSToColour(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     auto isolate = context->GetIsolate();
 
@@ -258,8 +225,14 @@ v8::Local<v8::Integer> ColourToJS(const Colour &colour, v8::Local<v8::Context> c
     return UIntToJS(colour.RGBA(), context);
 }
 
+OBJECT_CONVERTER_DEFINE(GTAQuat,
+                        (float, w, FloatToJS, JSToFloat, data.q.w),
+                        (float, x, FloatToJS, JSToFloat, data.q.x),
+                        (float, y, FloatToJS, JSToFloat, data.q.y),
+                        (float, z, FloatToJS, JSToFloat, data.q.z))
+
 OBJECT_CONVERTER_DEFINE_TO_JS(SemanticVersion,
-                        (uint8_t, major, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
-                        (uint8_t, minor, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
-                        (uint8_t, patch, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
-                        (uint16_t, prerel, UIntToJS<uint16_t>, JSToUInt<uint16_t>))
+                              (uint8_t, major, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
+                              (uint8_t, minor, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
+                              (uint8_t, patch, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
+                              (uint16_t, prerel, UIntToJS<uint16_t>, JSToUInt<uint16_t>))

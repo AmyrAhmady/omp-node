@@ -4,6 +4,7 @@
 #include "../../converter/types.hpp"
 #include "../../converter/player.hpp"
 #include "../../converter/vehicle.hpp"
+#include "../entity/entity_wrapper.hpp"
 
 WRAP_BASIC(IPickup)
 
@@ -26,6 +27,8 @@ WRAP_BASIC_CALL(IPickup, streamOutForPlayer, (IPlayer&, FROM_JS_FN(IPlayerRef), 
 WRAP_BASIC_CALL(IPickup, setPickupHiddenForPlayer, (IPlayer&, FROM_JS_FN(IPlayerRef), player), (bool, JSToBool, hidden))
 
 WRAP_BASIC_CALL_RETURN(IPickup, isPickupHiddenForPlayer, (bool, BoolToJS), (IPlayer&, FROM_JS_FN(IPlayerRef), player))
+
+WRAP_ENTITY_METHODS(IPickup)
 
 void WrapPickup(IPickup *pickup, v8::Local<v8::Context> context) {
     auto pickupHandle = InterfaceToObject(pickup, context, WRAPPED_METHODS(IPickup));
