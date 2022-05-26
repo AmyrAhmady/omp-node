@@ -5,7 +5,6 @@
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
 #include "../../converter/vehicle.hpp"
-#include "../../converter/vehicle.hpp"
 #include "vehicle_pool_event_dispatcher_wrapper.hpp"
 
 WRAP_BASIC(IVehiclePoolEventDispatcher)

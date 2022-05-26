@@ -2,6 +2,7 @@
 #include "pickup_pool_wrapper.hpp"
 #include "pickup_wrapper.hpp"
 #include "pickup_event_dispatcher_wrapper.hpp"
+#include "pickup_pool_event_dispatcher_wrapper.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
 #include "../../converter/pickup.hpp"
@@ -23,6 +24,13 @@ WRAP_BASIC_CODE(IPickupsComponent, getEventDispatcher, {
     auto pool = GetContextExternalPointer<IPickupsComponent>(info);
     auto dispatcher = &pool->getEventDispatcher();
     auto dispatcherHandle = WrapPickupEventDispatcher(dispatcher, context);
+    info.GetReturnValue().Set(dispatcherHandle);
+})
+WRAP_BASIC_CODE(IPickupsComponent, getPoolEventDispatcher, {
+    ENTER_FUNCTION_CALLBACK(info)
+    auto pool = GetContextExternalPointer<IPickupsComponent>(info);
+    auto dispatcher = &pool->getPoolEventDispatcher();
+    auto dispatcherHandle = WrapPickupPoolEventDispatcher(dispatcher, context);
     info.GetReturnValue().Set(dispatcherHandle);
 })
 

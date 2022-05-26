@@ -4,8 +4,6 @@
 #include "../../logger.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
-#include "../../converter/player.hpp"
-#include "../../converter/vehicle.hpp"
 #include "player_pool_event_dispatcher_wrapper.hpp"
 
 WRAP_BASIC(IPlayerPoolEventDispatcher)
