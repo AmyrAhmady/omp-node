@@ -231,6 +231,10 @@ WRAP_BASIC_CALL(IPlayer, toggleGhostMode, (bool, JSToBool, toggle))
 WRAP_BASIC_CALL_RETURN(IPlayer, isGhostModeEnabled, (bool, BoolToJS))
 WRAP_BASIC_CALL_RETURN(IPlayer, getDefaultObjectsRemoved, (int, IntToJS))
 
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getVehicle, (IVehicle*, IVehicleToJS))
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getSeat, (int, IntToJS))
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, isInModShop, (bool, BoolToJS))
+
 WRAP_ENTITY_METHODS(IPlayer)
 
 void WrapPlayer(IPlayer *player, v8::Local<v8::Context> context) {

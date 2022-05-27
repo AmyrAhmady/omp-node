@@ -23,6 +23,10 @@ v8::Local<v8::Value> IPickupToJS(IPickup &pickup, v8::Local<v8::Context> context
     return ext->get();
 }
 v8::Local<v8::Value> IPickupToJS(IPickup *pickup, v8::Local<v8::Context> context) {
+    if (pickup == nullptr) {
+        return v8::Null(context->GetIsolate());
+    }
+
     auto ext = GetHandleStorageExtension(pickup);
 
     return ext->get();

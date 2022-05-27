@@ -56,6 +56,10 @@ v8::Local<v8::Value> IVehicleToJS(IVehicle &vehicle, v8::Local<v8::Context> cont
     return ext->get();
 }
 v8::Local<v8::Value> IVehicleToJS(IVehicle *vehicle, v8::Local<v8::Context> context) {
+    if (vehicle == nullptr) {
+        return v8::Null(context->GetIsolate());
+    }
+
     auto ext = GetHandleStorageExtension(vehicle);
 
     return ext->get();

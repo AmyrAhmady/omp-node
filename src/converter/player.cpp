@@ -29,6 +29,10 @@ v8::Local<v8::Value> IPlayerToJS(IPlayer &player, v8::Local<v8::Context> context
     return ext->get();
 }
 v8::Local<v8::Value> IPlayerToJS(IPlayer *player, v8::Local<v8::Context> context) {
+    if (player == nullptr) {
+        return v8::Null(context->GetIsolate());
+    }
+
     auto ext = GetHandleStorageExtension(player);
 
     return ext->get();
