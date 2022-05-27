@@ -17,10 +17,16 @@ WRAP_BASIC_CALL_RETURN(ICore, getGravity, (float, FloatToJS))
 WRAP_BASIC_CALL(ICore, setWeather, (int, JSToInt, weather))
 WRAP_BASIC_CALL(ICore, setWorldTime, (Hours, FROM_JS_FN(Hours), time))
 WRAP_BASIC_CALL(ICore, useStuntBonuses, (bool, JSToBool, enable))
-WRAP_BASIC_CALL(ICore, setData, (SettableCoreDataType, JSToEnum<SettableCoreDataType>, type), (Impl::String, FROM_JS_FN(String), data))
+WRAP_BASIC_CALL(ICore,
+                setData,
+                (SettableCoreDataType, JSToEnum<SettableCoreDataType>, type),
+                (Impl::String, FROM_JS_FN(String), data))
 WRAP_BASIC_CALL(ICore, resetAll)
 WRAP_BASIC_CALL(ICore, reloadAll)
-WRAP_BASIC_CALL_RETURN(ICore, getWeaponName, (StringView, TO_JS_FN(StringView)), (PlayerWeapon, JSToEnum<PlayerWeapon>, weapon))
+WRAP_BASIC_CALL_RETURN(ICore,
+                       getWeaponName,
+                       (StringView, TO_JS_FN(StringView)),
+                       (PlayerWeapon, JSToEnum<PlayerWeapon>, weapon))
 WRAP_BASIC_CALL(ICore, connectBot, (Impl::String, FROM_JS_FN(String), name), (Impl::String, FROM_JS_FN(String), script))
 //WRAP_BASIC_CALL(ICore, requestHTTP, (HTTPResponseHandler*, FROM_JS_FN(HTTPResponseHandler), handler), PARAMETERS(, HTTPRequestType type, StringView url, StringView data = StringView()))
 WRAP_BASIC_CALL_RETURN(ICore, tickRate, (unsigned, UIntToJS))

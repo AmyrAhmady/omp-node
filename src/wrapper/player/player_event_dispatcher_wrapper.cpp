@@ -63,23 +63,50 @@ WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerShotMissed, 2, {
     args[1] = PlayerBulletDataToJS(bulletData, context);
 }, return JSToBool(cbReturnedValue, context), return true, IPlayer &player, const PlayerBulletData &bulletData)
 
-WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerShotPlayer, 3, {
-    args[0] = GetHandleStorageExtension(&player)->get();
-    args[1] = IPlayerToJS(target, context);
-    args[2] = PlayerBulletDataToJS(bulletData, context);
-}, return JSToBool(cbReturnedValue, context), return true, IPlayer &player, IPlayer &target, const PlayerBulletData &bulletData)
+WRAP_HANDLER(NodeJSPlayerEventHandler,
+             bool,
+             onPlayerShotPlayer,
+             3,
+             {
+                 args[0] = GetHandleStorageExtension(&player)->get();
+                 args[1] = IPlayerToJS(target, context);
+                 args[2] = PlayerBulletDataToJS(bulletData, context);
+             },
+             return JSToBool(cbReturnedValue, context),
+             return true,
+             IPlayer &player,
+             IPlayer &target,
+             const PlayerBulletData &bulletData)
 
-WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerShotVehicle, 3, {
-    args[0] = GetHandleStorageExtension(&player)->get();
-    args[1] = IVehicleToJS(target, context);
-    args[2] = PlayerBulletDataToJS(bulletData, context);
-}, return JSToBool(cbReturnedValue, context), return true, IPlayer &player, IVehicle &target, const PlayerBulletData &bulletData)
+WRAP_HANDLER(NodeJSPlayerEventHandler,
+             bool,
+             onPlayerShotVehicle,
+             3,
+             {
+                 args[0] = GetHandleStorageExtension(&player)->get();
+                 args[1] = IVehicleToJS(target, context);
+                 args[2] = PlayerBulletDataToJS(bulletData, context);
+             },
+             return JSToBool(cbReturnedValue, context),
+             return true,
+             IPlayer &player,
+             IVehicle &target,
+             const PlayerBulletData &bulletData)
 
-WRAP_HANDLER(NodeJSPlayerEventHandler, bool, onPlayerShotObject, 3, {
-    args[0] = GetHandleStorageExtension(&player)->get();
-    args[1] = v8::Boolean::New(isolate, false); // todo
-    args[2] = PlayerBulletDataToJS(bulletData, context);
-}, return JSToBool(cbReturnedValue, context), return true, IPlayer &player, IObject &target, const PlayerBulletData &bulletData)
+WRAP_HANDLER(NodeJSPlayerEventHandler,
+             bool,
+             onPlayerShotObject,
+             3,
+             {
+                 args[0] = GetHandleStorageExtension(&player)->get();
+                 args[1] = v8::Boolean::New(isolate, false); // todo
+                 args[2] = PlayerBulletDataToJS(bulletData, context);
+             },
+             return JSToBool(cbReturnedValue, context),
+             return true,
+             IPlayer &player,
+             IObject &target,
+             const PlayerBulletData &bulletData)
 
 WRAP_HANDLER(NodeJSPlayerEventHandler,
              bool,

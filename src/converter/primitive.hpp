@@ -15,7 +15,7 @@ v8::Local<v8::Number> FloatToJS(float value, v8::Local<v8::Context> context);
 v8::Local<v8::String> StringViewToJS(StringView str, v8::Local<v8::Context> context);
 v8::Local<v8::Boolean> BoolToJS(bool value, v8::Local<v8::Context> context);
 
-template <typename Enum>
+template<typename Enum>
 Enum JSToEnum(v8::Local<v8::Value> value, v8::Local<v8::Context> context, Enum defaultValue) {
     if (value->IsUndefined()) {
         return defaultValue;
@@ -24,13 +24,15 @@ Enum JSToEnum(v8::Local<v8::Value> value, v8::Local<v8::Context> context, Enum d
     using enumUndelyingType = typename std::underlying_type<Enum>::type;
 
     if (std::is_unsigned<enumUndelyingType>::value) {
-        return static_cast<Enum>(static_cast<enumUndelyingType>(value->ToInteger(context).ToLocalChecked()->Uint32Value(context).ToChecked()));
+        return static_cast<Enum>(static_cast<enumUndelyingType>(value->ToInteger(context).ToLocalChecked()->Uint32Value(
+            context).ToChecked()));
     } else {
-        return static_cast<Enum>(static_cast<enumUndelyingType>(value->ToInteger(context).ToLocalChecked()->Int32Value(context).ToChecked()));
+        return static_cast<Enum>(static_cast<enumUndelyingType>(value->ToInteger(context).ToLocalChecked()->Int32Value(
+            context).ToChecked()));
     }
 }
 
-template <typename Enum>
+template<typename Enum>
 Enum JSToEnum(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     auto isolate = context->GetIsolate();
 
@@ -43,9 +45,11 @@ Enum JSToEnum(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     using enumUndelyingType = typename std::underlying_type<Enum>::type;
 
     if (std::is_unsigned<enumUndelyingType>::value) {
-        return static_cast<Enum>(static_cast<enumUndelyingType>(value->ToInteger(context).ToLocalChecked()->Uint32Value(context).ToChecked()));
+        return static_cast<Enum>(static_cast<enumUndelyingType>(value->ToInteger(context).ToLocalChecked()->Uint32Value(
+            context).ToChecked()));
     } else {
-        return static_cast<Enum>(static_cast<enumUndelyingType>(value->ToInteger(context).ToLocalChecked()->Int32Value(context).ToChecked()));
+        return static_cast<Enum>(static_cast<enumUndelyingType>(value->ToInteger(context).ToLocalChecked()->Int32Value(
+            context).ToChecked()));
     }
 }
 

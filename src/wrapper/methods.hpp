@@ -36,7 +36,6 @@
 // arg_##CURRENT##_of_##N
 #define USE_ARG(N, CURRENT, ArgInfo) CALL(ARG_NAME, ArgInfo)
 
-
 #define RETURN_VALUE_TYPE(Type, Fn) Type
 #define RETURN_VALUE_FN(Type, Fn) Fn
 

@@ -18,15 +18,21 @@ WRAP_BASIC_CALL(IPickup, setModel, (int, JSToInt, id), (bool, JSToBool, update, 
 
 WRAP_BASIC_CALL_RETURN(IPickup, getModel, (int, IntToJS))
 
-WRAP_BASIC_CALL_RETURN(IPickup, isStreamedInForPlayer, (bool, BoolToJS), (const IPlayer&, FROM_JS_FN(IPlayerRef), player))
+WRAP_BASIC_CALL_RETURN(IPickup,
+                       isStreamedInForPlayer,
+                       (bool, BoolToJS),
+                       (const IPlayer&, FROM_JS_FN(IPlayerRef), player))
 
-WRAP_BASIC_CALL(IPickup, streamInForPlayer, (IPlayer&, FROM_JS_FN(IPlayerRef), player))
+WRAP_BASIC_CALL(IPickup, streamInForPlayer, (IPlayer & , FROM_JS_FN(IPlayerRef), player))
 
-WRAP_BASIC_CALL(IPickup, streamOutForPlayer, (IPlayer&, FROM_JS_FN(IPlayerRef), player))
+WRAP_BASIC_CALL(IPickup, streamOutForPlayer, (IPlayer & , FROM_JS_FN(IPlayerRef), player))
 
-WRAP_BASIC_CALL(IPickup, setPickupHiddenForPlayer, (IPlayer&, FROM_JS_FN(IPlayerRef), player), (bool, JSToBool, hidden))
+WRAP_BASIC_CALL(IPickup,
+                setPickupHiddenForPlayer,
+                (IPlayer & , FROM_JS_FN(IPlayerRef), player),
+                (bool, JSToBool, hidden))
 
-WRAP_BASIC_CALL_RETURN(IPickup, isPickupHiddenForPlayer, (bool, BoolToJS), (IPlayer&, FROM_JS_FN(IPlayerRef), player))
+WRAP_BASIC_CALL_RETURN(IPickup, isPickupHiddenForPlayer, (bool, BoolToJS), (IPlayer & , FROM_JS_FN(IPlayerRef), player))
 
 WRAP_ENTITY_METHODS(IPickup)
 

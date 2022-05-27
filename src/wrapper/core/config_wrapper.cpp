@@ -118,7 +118,10 @@ WRAP_BASIC_CALL(IConfig, writeBans)
 WRAP_BASIC_CALL(IConfig, reloadBans)
 WRAP_BASIC_CALL(IConfig, clearBans)
 WRAP_BASIC_CALL_RETURN(IConfig, isBanned, (bool, BoolToJS), (const BanEntry&, FROM_JS_FN(BanEntry), entry))
-WRAP_BASIC_CALL_RETURN(IConfig, getNameFromAlias, (PairBoolStringView, TO_JS_FN(PairBoolStringView)), (Impl::String, FROM_JS_FN(String), alias))
+WRAP_BASIC_CALL_RETURN(IConfig,
+                       getNameFromAlias,
+                       (PairBoolStringView, TO_JS_FN(PairBoolStringView)),
+                       (Impl::String, FROM_JS_FN(String), alias))
 //WRAP_BASIC_CALL(IConfig, enumOptions, (OptionEnumeratorCallback&, FROM_JS_FN(OptionEnumeratorCallback), callback))
 
 void WrapConfig(IConfig *config, v8::Local<v8::Context> context) {

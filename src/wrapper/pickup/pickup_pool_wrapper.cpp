@@ -13,7 +13,7 @@ WRAP_BASIC(IPickupsComponent)
 
 WRAP_BASIC_CALL_RETURN(IPickupsComponent,
                        create,
-                       (IPickup* , TO_JS_FN(IPickup)),
+                       (IPickup * , TO_JS_FN(IPickup)),
                        (int, JSToInt, modelId),
                        (PickupType, JSToUInt<PickupType>, type),
                        (Vector3, JSToVector<Vector3>, pos),

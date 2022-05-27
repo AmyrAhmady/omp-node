@@ -3,8 +3,7 @@
 #include "sdk.hpp"
 #include "v8.h"
 
-template <class Interface>
-using WrapperFunction = void (*)(Interface *, v8::Local<v8::Context>);
+template<class Interface> using WrapperFunction = void (*)(Interface *, v8::Local<v8::Context>);
 
 template<class Interface>
 struct NodeJSEntryHandler : PoolEventHandler<Interface> {

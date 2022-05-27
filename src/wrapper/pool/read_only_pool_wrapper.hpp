@@ -1,6 +1,5 @@
 #pragma once
 
-
 typedef Pair<int, int> PairInt;
 
 #define WRAP_READ_ONLY_POOL_METHODS(Type, EntityType, ConvertEntityToJSFn) \
