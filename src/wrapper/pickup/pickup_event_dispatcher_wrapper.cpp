@@ -14,7 +14,7 @@ WRAP_HANDLER_BASIC(PickupEventHandler, NodeJSPickupEventHandler)
 WRAP_HANDLER(NodeJSPickupEventHandler, void, onPlayerPickUpPickup, 2, {
     args[0] = IPlayerToJS(player, context);
     args[1] = IPickupToJS(pickup, context);
-}, return, IPlayer& player, IPickup& pickup)
+}, return, return, IPlayer& player, IPickup& pickup)
 
 WRAP_BASIC_CODE(IPickupEventDispatcher, addEventHandler, WRAP_ADD_EVENT_HANDLER(NodeJSPickupEventHandler))
 

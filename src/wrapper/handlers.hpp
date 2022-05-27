@@ -1,9 +1,10 @@
 #pragma once
 #include "v8.h"
+#include "../print_exception.hpp"
 
 #define WRAP_HANDLER_BASIC(FullType, TypeAlias) \
-    namespace handler_wrapper_##_##TypeAlias {  \
-        typedef FullType HandlerType;                                        \
+    namespace handler_wrapper_##_##TypeAlias { \
+        typedef FullType HandlerType; \
         typedef NodeJSEventHandler<FullType> TypeAlias; \
         using HandlerCreatorFunction = TypeAlias* (*)(Impl::String, v8::Local<v8::Function>); \
         typedef FlatHashMap<std::string, HandlerCreatorFunction> HandlerGenerators; \
@@ -23,7 +24,7 @@
         FlatPtrHashSet<TypeAlias> eventHandlers; \
     }
 
-#define WRAP_HANDLER(Type, returnType, handlerFunctionName, argsCount, codeBlock, returnValue, ...) \
+#define WRAP_HANDLER(Type, returnType, handlerFunctionName, argsCount, codeBlock, returnValue, returnDefaultValue, ...) \
     namespace handler_wrapper_##_##Type { \
         struct H##_##handlerFunctionName : Type { \
             H##_##handlerFunctionName(Impl::String _event, v8::Local<v8::Function> _handler) : Type( \
@@ -32,9 +33,20 @@
             } \
             returnType handlerFunctionName(__VA_ARGS__) override { \
                 ENTER_HANDLER(isolate, handler) \
+                v8::TryCatch tryCatch(isolate);\
                 v8::Local<v8::Value> args[argsCount]; \
                 codeBlock \
-                auto cbReturnedValue = func->Call(context, context->Global(), argsCount, args).ToLocalChecked(); \
+                auto cbReturnedValueMaybe = func->Call(context, context->Global(), argsCount, args); \
+                if (cbReturnedValueMaybe.IsEmpty()) { \
+                    if (tryCatch.HasCaught()) { \
+                        PrintException(isolate, context, tryCatch.Exception(), tryCatch.Message()); \
+                    } \
+                    returnDefaultValue; \
+                } \
+                v8::Local<v8::Value> cbReturnedValue = cbReturnedValueMaybe.ToLocalChecked(); \
+                if (cbReturnedValue->IsPromise() || cbReturnedValue->IsUndefined()) { \
+                    returnDefaultValue; \
+                } \
                 returnValue; \
             } \
         }; \
@@ -82,7 +94,7 @@
     std::underlying_type_t<EventPriority> priority; \
     for (auto handlerObj: WRAPPED_HANDLERS(Type)) { \
         if (handlerObj->getEvent() == event && handlerObj->getHandler() == handler) { \
-            bool result = dispatcher->hasEventHandler(handlerObj, priority);                                     \
+            bool result = dispatcher->hasEventHandler(handlerObj, priority); \
             info.GetReturnValue().Set(result); \
             return; \
         } \
@@ -105,8 +117,8 @@
             auto result = dispatcher->removeEventHandler(handlerObj); \
             info.GetReturnValue().Set(result); \
             if (result) { \
-                WRAPPED_HANDLERS(Type).erase(handlerObj);                                                        \
-                delete handlerObj;                              \
+                WRAPPED_HANDLERS(Type).erase(handlerObj); \
+                delete handlerObj; \
             } \
             return; \
         } \

@@ -2,7 +2,6 @@
 #include "pickup_pool_wrapper.hpp"
 #include "pickup_wrapper.hpp"
 #include "pickup_event_dispatcher_wrapper.hpp"
-#include "pickup_pool_event_dispatcher_wrapper.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
 #include "../../converter/pickup.hpp"
@@ -30,7 +29,7 @@ WRAP_BASIC_CODE(IPickupsComponent, getEventDispatcher, {
 })
 
 WRAP_READ_ONLY_POOL_METHODS(IPickupsComponent, IPickup, IPickupToJS)
-WRAP_POOL_METHODS(IPickupsComponent, WrapPickupPoolEventDispatcher)
+WRAP_POOL_METHODS(IPickupsComponent, IPickup)
 
 NodeJSEntryHandler<IPickup> *handler;
 

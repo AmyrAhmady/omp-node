@@ -1,14 +1,13 @@
 #include "player_wrapper.hpp"
 #include "player_event_dispatcher_wrapper.hpp"
 #include "player_update_event_dispatcher_wrapper.hpp"
-#include "player_pool_event_dispatcher_wrapper.hpp"
 #include "../../logger.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/player.hpp"
 #include "../../converter/types.hpp"
 #include "../entry_handler.hpp"
 #include "../pool/read_only_pool_wrapper.hpp"
-#include "../pool/pool_wrapper.hpp"
+#include "../pool/pool_event_dispatcher_wrapper.hpp"
 
 WRAP_BASIC(IPlayerPool)
 
@@ -42,11 +41,13 @@ WRAP_BASIC_CODE(IPlayerPool, getPlayerUpdateDispatcher, {
     auto dispatcherHandle = WrapPlayerUpdateEventDispatcher(dispatcher, context);
     info.GetReturnValue().Set(dispatcherHandle);
 })
+
+WRAP_POOL_EVENT_DISPATCHER(IPlayerPool, IPlayer)
 WRAP_BASIC_CODE(IPlayerPool, getPoolEventDispatcher, {
     ENTER_FUNCTION_CALLBACK(info)
     auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
     auto dispatcher = &playerPool->getPoolEventDispatcher();
-    auto dispatcherHandle = WrapPlayerPoolEventDispatcher(dispatcher, context);
+    auto dispatcherHandle = WRAPPED_POOL_EVENT_DISPATCHER(IPlayer)(dispatcher, context);
     info.GetReturnValue().Set(dispatcherHandle);
 })
 

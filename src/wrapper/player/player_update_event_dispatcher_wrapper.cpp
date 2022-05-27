@@ -14,7 +14,7 @@ WRAP_HANDLER_BASIC(PlayerUpdateEventHandler, NodeJSPlayerUpdateEventHandler)
 WRAP_HANDLER(NodeJSPlayerUpdateEventHandler, bool, onUpdate, 2, {
     args[0] = GetHandleStorageExtension(&player)->get();
     args[1] = TimePointToJS(now, context);
-}, return JSToBool(cbReturnedValue, context), IPlayer& player, TimePoint now)
+}, return JSToBool(cbReturnedValue, context), return true, IPlayer& player, TimePoint now)
 
 WRAP_BASIC_CODE(IPlayerUpdateEventDispatcher, addEventHandler, WRAP_ADD_EVENT_HANDLER(NodeJSPlayerUpdateEventHandler))
 

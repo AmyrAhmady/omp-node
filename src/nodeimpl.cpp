@@ -4,27 +4,15 @@
 #include "nodeimpl.hpp"
 
 void OnMessage(v8::Local<v8::Message> message, v8::Local<v8::Value> error) {
+    L_DEBUG << "OnMessage";
     auto isolate = ompnode::nodeImpl.GetIsolate();
     v8::Locker locker(isolate);
     v8::Isolate::Scope isolateScope(isolate);
     v8::HandleScope handleScope(isolate);
-    v8::String::Utf8Value messageStr(isolate, message->Get());
-    v8::String::Utf8Value errorStr(isolate, error);
+    v8::Local<v8::Context> context = isolate->GetCurrentContext();
+    v8::Context::Scope ctxScope(context);
 
-    std::stringstream stack;
-    auto stackTrace = message->GetStackTrace();
-
-    for (int i = 0; i < stackTrace->GetFrameCount(); i++) {
-        auto frame = stackTrace->GetFrame(isolate, i);
-
-        v8::String::Utf8Value sourceStr(isolate, frame->GetScriptNameOrSourceURL());
-        v8::String::Utf8Value functionStr(isolate, frame->GetFunctionName());
-
-        stack << *sourceStr << "(" << frame->GetLineNumber() << "," << frame->GetColumn() << "): "
-              << (*functionStr ? *functionStr : "") << "\n";
-    }
-
-    printf("%s\n%s\n%s\n", *messageStr, stack.str().c_str(), *errorStr);
+    PrintException(isolate, context, error, message);
 }
 
 namespace ompnode {

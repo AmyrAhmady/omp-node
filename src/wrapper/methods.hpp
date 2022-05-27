@@ -28,9 +28,9 @@
 
 #define DEFINE_ARG(N, CURRENT, ArgInfo) \
     CALL(ARG_TYPE, ArgInfo) CALL(ARG_NAME, ArgInfo) = CALL_FN(CALL(ARG_FN, ArgInfo), info[N - CURRENT], context CALL(ARG_DEFAULT, ArgInfo)); \
-    if (tryCatch.HasCaught()) {                                         \
+    if (tryCatch.HasCaught()) { \
         tryCatch.ReThrow(); \
-        return;                                                                    \
+        return; \
     }
 
 // arg_##CURRENT##_of_##N
@@ -48,8 +48,8 @@
             if (external == nullptr) { \
                 return; \
             } \
-            v8::TryCatch tryCatch(isolate);                                                           \
-            FOR_EACH_N(DEFINE_ARG, ##__VA_ARGS__)                               \
+            v8::TryCatch tryCatch(isolate); \
+            FOR_EACH_N(DEFINE_ARG, ##__VA_ARGS__) \
             CALL(RETURN_VALUE_TYPE, ReturnValueInfo) value = external->getFunction(FOR_EACH_N_JOIN(USE_ARG, ##__VA_ARGS__)); \
             auto valueHandle = CALL(RETURN_VALUE_FN, ReturnValueInfo)(value, context); \
             info.GetReturnValue().Set(valueHandle); \
@@ -86,8 +86,8 @@
             if (external == nullptr) { \
                 return; \
             } \
-            v8::TryCatch tryCatch(isolate);                                                           \
-            FOR_EACH_N(DEFINE_ARG, ##__VA_ARGS__)       \
+            v8::TryCatch tryCatch(isolate); \
+            FOR_EACH_N(DEFINE_ARG, ##__VA_ARGS__) \
             external->setFunction(FOR_EACH_N_JOIN(USE_ARG, ##__VA_ARGS__)); \
         } \
         AddObjectMethod AddObjectMethod##_##setFunction(#setFunction, setFunction); \
