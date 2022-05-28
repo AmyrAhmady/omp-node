@@ -127,7 +127,7 @@
                 return; \
             }\
             FOR_EACH_N(DEFINE_ARG, ##__VA_ARGS__) \
-            external->functionName(FOR_EACH_N_JOIN(USE_ARG, ##__VA_ARGS__)); \
+            extension->functionName(FOR_EACH_N_JOIN(USE_ARG, ##__VA_ARGS__)); \
         } \
         AddObjectMethod AddObjectMethod##_##functionName(#functionName, functionName); \
     }

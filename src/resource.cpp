@@ -6,6 +6,7 @@
 #include "wrapper/gangzone/gangzone_pool_wrapper.hpp"
 #include "wrapper/checkpoint/checkpoint_pool_wrapper.hpp"
 #include "wrapper/actor/actor_pool_wrapper.hpp"
+#include "wrapper/dialog/dialog_pool_wrapper.hpp"
 
 v8::Isolate *GetV8Isolate() {
     return ompnode::nodeImpl.GetIsolate();
@@ -97,6 +98,7 @@ namespace ompnode {
         USE_WRAPPER(IGangZonesComponent, gangZones, WrapGangZonePool)
         USE_WRAPPER(ICheckpointsComponent, checkpoints, WrapCheckpointPool)
         USE_WRAPPER(IActorsComponent, actors, WrapActorPool)
+        USE_WRAPPER(IDialogsComponent, dialogs, WrapDialogPool)
 
         node::EnvironmentFlags::Flags flags = node::EnvironmentFlags::kOwnsProcessState;
 

@@ -7,6 +7,7 @@
 #include "../entity/entity_wrapper.hpp"
 #include "../checkpoint/checkpoint_data_wrapper.hpp"
 #include "../checkpoint/race_checkpoint_data_wrapper.hpp"
+#include "../dialog/dialog_pool_wrapper.hpp"
 
 WRAP_BASIC(IPlayer)
 WRAP_BASIC_CALL(IPlayer, kick)
@@ -233,12 +234,65 @@ WRAP_BASIC_CALL(IPlayer, toggleGhostMode, (bool, JSToBool, toggle))
 WRAP_BASIC_CALL_RETURN(IPlayer, isGhostModeEnabled, (bool, BoolToJS))
 WRAP_BASIC_CALL_RETURN(IPlayer, getDefaultObjectsRemoved, (int, IntToJS))
 
-WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getVehicle, (IVehicle*, IVehicleToJS))
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getVehicle, (IVehicle * , IVehicleToJS))
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getSeat, (int, IntToJS))
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, isInModShop, (bool, BoolToJS))
 
-WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerCheckpointData, getRaceCheckpoint, (IRaceCheckpointData&, WrapRaceCheckpointData))
-WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerCheckpointData, getCheckpoint, (ICheckpointData&, WrapCheckpointData))
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer,
+                           IPlayerCheckpointData,
+                           getRaceCheckpoint,
+                           (IRaceCheckpointData & , WrapRaceCheckpointData))
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerCheckpointData, getCheckpoint, (ICheckpointData & , WrapCheckpointData))
+
+WRAP_EXT_BASIC_CALL(IPlayer, IPlayerDialogData, hide, (IPlayer & , FROM_JS_FN(IPlayerRef), player))
+WRAP_EXT_BASIC_CALL(IPlayer,
+                    IPlayerDialogData,
+                    show,
+                    (IPlayer & , FROM_JS_FN(IPlayerRef), player),
+                    (int, JSToInt<int>, id),
+                    (DialogStyle, JSToEnum<DialogStyle>, style),
+                    (Impl::String, JSToString, title),
+                    (Impl::String, JSToString, body),
+                    (Impl::String, JSToString, button1),
+                    (Impl::String, JSToString, button2))
+//WRAP_EXT_BASIC_CALL(IPlayer, IPlayerDialogData, get, (int&, JSToInt<int>, id), (DialogStyle&, JSToEnum<DialogStyle>, style), (StringView&, JSToString, title), (StringView&, JSToString, body), (StringView&, JSToString, button1), (StringView&, JSToString, button2))
+WRAP_BASIC_CODE(IPlayer, get, {
+    ENTER_FUNCTION_CALLBACK(info)
+    auto external = GetContextExternalPointer<IPlayer>(info);
+    if (external == nullptr) {
+        return;
+    }
+    v8::TryCatch tryCatch(isolate);
+    auto extension = queryExtension<IPlayerDialogData>(external);
+    if (extension == nullptr) {
+        info.GetIsolate()->ThrowException(v8::Exception::ReferenceError(v8::String::NewFromUtf8(isolate,
+                                                                                                "IPlayerDialogData" " extension is not connected").ToLocalChecked()));
+        return;
+    }
+    int id;
+    DialogStyle style;
+    StringView title;
+    StringView body;
+    StringView button1;
+    StringView button2;
+    extension->get(id, style, title, body, button1, button2);
+
+    v8::Local<v8::Array> array = v8::Array::New(context->GetIsolate(), 6);
+
+    if (array.IsEmpty())
+        return;
+
+    // Fill out the values
+    array->Set(context, 0, IntToJS(id, context)).Check();
+    array->Set(context, 1, EnumToJS(style, context)).Check();
+    array->Set(context, 2, StringViewToJS(title, context)).Check();
+    array->Set(context, 3, StringViewToJS(body, context)).Check();
+    array->Set(context, 4, StringViewToJS(button1, context)).Check();
+    array->Set(context, 5, StringViewToJS(button2, context)).Check();
+
+    info.GetReturnValue().Set(array);
+})
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerDialogData, getActiveID, (int, IntToJS));
 
 WRAP_ENTITY_METHODS(IPlayer)
 
