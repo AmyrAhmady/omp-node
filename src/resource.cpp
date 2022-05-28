@@ -5,6 +5,7 @@
 #include "wrapper/pickup/pickup_pool_wrapper.hpp"
 #include "wrapper/gangzone/gangzone_pool_wrapper.hpp"
 #include "wrapper/checkpoint/checkpoint_pool_wrapper.hpp"
+#include "wrapper/actor/actor_pool_wrapper.hpp"
 
 v8::Isolate *GetV8Isolate() {
     return ompnode::nodeImpl.GetIsolate();
@@ -17,6 +18,14 @@ static v8::Platform *GetV8Platform() {
 static node::IsolateData *GetNodeIsolate() {
     return ompnode::nodeImpl.GetNodeIsolate();
 }
+
+#define USE_WRAPPER(ComponentType, componentName, WrapperFunction) \
+    auto componentName##Component = componentList->queryComponent<ComponentType>(); \
+    WrapperFunction(componentName##Component, _context); \
+    auto componentName##ComponentHandle = GetHandleStorageExtension(componentName##Component)->get(); \
+    _context->Global()->Set(_context, \
+        v8::String::NewFromUtf8(GetV8Isolate(), #componentName).ToLocalChecked(), \
+        componentName##ComponentHandle).Check();
 
 namespace ompnode {
 
@@ -72,8 +81,6 @@ namespace ompnode {
         context.Reset(GetV8Isolate(), _context);
         v8::Context::Scope scope(_context);
 
-        L_DEBUG << 1;
-
         auto core = ompnode::nodeImpl.GetCore();
         WrapCore(core, _context);
         auto coreHandle = GetHandleStorageExtension(core)->get();
@@ -85,41 +92,11 @@ namespace ompnode {
         /**/
         auto componentList = ompnode::nodeImpl.GetComponentList();
 
-        auto vehiclesComponent = componentList->queryComponent<IVehiclesComponent>();
-
-        WrapVehiclePool(vehiclesComponent, _context);
-        auto vehiclePoolHandle = GetHandleStorageExtension(vehiclesComponent)->get();
-
-        _context->Global()->Set(_context,
-                                v8::String::NewFromUtf8(GetV8Isolate(), "vehicles").ToLocalChecked(),
-                                vehiclePoolHandle).Check();
-
-        auto pickupsComponent = componentList->queryComponent<IPickupsComponent>();
-
-        WrapPickupPool(pickupsComponent, _context);
-        auto pickupPoolHandle = GetHandleStorageExtension(pickupsComponent)->get();
-
-        _context->Global()->Set(_context,
-                                v8::String::NewFromUtf8(GetV8Isolate(), "pickups").ToLocalChecked(),
-                                pickupPoolHandle).Check();
-
-        auto gangZonesComponent = componentList->queryComponent<IGangZonesComponent>();
-
-        WrapGangZonePool(gangZonesComponent, _context);
-        auto gangZonePoolHandle = GetHandleStorageExtension(gangZonesComponent)->get();
-
-        _context->Global()->Set(_context,
-                                v8::String::NewFromUtf8(GetV8Isolate(), "gangZones").ToLocalChecked(),
-                                gangZonePoolHandle).Check();
-
-        auto checkpointsComponent = componentList->queryComponent<ICheckpointsComponent>();
-
-        WrapCheckpointPool(checkpointsComponent, _context);
-        auto checkpointPoolHandle = GetHandleStorageExtension(checkpointsComponent)->get();
-
-        _context->Global()->Set(_context,
-                                v8::String::NewFromUtf8(GetV8Isolate(), "checkpoints").ToLocalChecked(),
-                                checkpointPoolHandle).Check();
+        USE_WRAPPER(IVehiclesComponent, vehicles, WrapVehiclePool)
+        USE_WRAPPER(IPickupsComponent, pickups, WrapPickupPool)
+        USE_WRAPPER(IGangZonesComponent, gangZones, WrapGangZonePool)
+        USE_WRAPPER(ICheckpointsComponent, checkpoints, WrapCheckpointPool)
+        USE_WRAPPER(IActorsComponent, actors, WrapActorPool)
 
         node::EnvironmentFlags::Flags flags = node::EnvironmentFlags::kOwnsProcessState;
 

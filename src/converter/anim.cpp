@@ -1,5 +1,6 @@
 #include "player.hpp"
 #include "primitive.hpp"
+#include "anim.hpp"
 
 //float delta, bool loop, bool lockX, bool lockY, bool freeze, uint32_t time, StringView lib, StringView name
 
@@ -18,5 +19,3 @@ OBJECT_CONVERTER_DEFINE_TO_JS(PlayerAnimationData,
                               (uint16_t, flags, UIntToJS, JSToUInt<uint16_t>),
                               (StringView, lib, StringViewToJS, JSToString, data.name().first),
                               (StringView, name, StringViewToJS, JSToString, data.name().second))
-
-OBJECT_CONVERTER_DEFINE(PeerRequestParams)
