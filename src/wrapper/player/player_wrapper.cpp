@@ -5,6 +5,8 @@
 #include "../../converter/vehicle.hpp"
 #include "../../converter/anim.hpp"
 #include "../entity/entity_wrapper.hpp"
+#include "../checkpoint/checkpoint_data_wrapper.hpp"
+#include "../checkpoint/race_checkpoint_data_wrapper.hpp"
 
 WRAP_BASIC(IPlayer)
 WRAP_BASIC_CALL(IPlayer, kick)
@@ -234,6 +236,9 @@ WRAP_BASIC_CALL_RETURN(IPlayer, getDefaultObjectsRemoved, (int, IntToJS))
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getVehicle, (IVehicle*, IVehicleToJS))
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getSeat, (int, IntToJS))
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, isInModShop, (bool, BoolToJS))
+
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerCheckpointData, getRaceCheckpoint, (IRaceCheckpointData&, WrapRaceCheckpointData))
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerCheckpointData, getCheckpoint, (ICheckpointData&, WrapCheckpointData))
 
 WRAP_ENTITY_METHODS(IPlayer)
 

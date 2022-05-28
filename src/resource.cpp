@@ -3,6 +3,8 @@
 #include "wrapper/utils.hpp"
 #include "wrapper/vehicle/vehicle_pool_wrapper.hpp"
 #include "wrapper/pickup/pickup_pool_wrapper.hpp"
+#include "wrapper/gangzone/gangzone_pool_wrapper.hpp"
+#include "wrapper/checkpoint/checkpoint_pool_wrapper.hpp"
 
 v8::Isolate *GetV8Isolate() {
     return ompnode::nodeImpl.GetIsolate();
@@ -100,6 +102,24 @@ namespace ompnode {
         _context->Global()->Set(_context,
                                 v8::String::NewFromUtf8(GetV8Isolate(), "pickups").ToLocalChecked(),
                                 pickupPoolHandle).Check();
+
+        auto gangZonesComponent = componentList->queryComponent<IGangZonesComponent>();
+
+        WrapGangZonePool(gangZonesComponent, _context);
+        auto gangZonePoolHandle = GetHandleStorageExtension(gangZonesComponent)->get();
+
+        _context->Global()->Set(_context,
+                                v8::String::NewFromUtf8(GetV8Isolate(), "gangZones").ToLocalChecked(),
+                                gangZonePoolHandle).Check();
+
+        auto checkpointsComponent = componentList->queryComponent<ICheckpointsComponent>();
+
+        WrapCheckpointPool(checkpointsComponent, _context);
+        auto checkpointPoolHandle = GetHandleStorageExtension(checkpointsComponent)->get();
+
+        _context->Global()->Set(_context,
+                                v8::String::NewFromUtf8(GetV8Isolate(), "checkpoints").ToLocalChecked(),
+                                checkpointPoolHandle).Check();
 
         node::EnvironmentFlags::Flags flags = node::EnvironmentFlags::kOwnsProcessState;
 

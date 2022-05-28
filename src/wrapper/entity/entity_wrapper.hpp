@@ -1,7 +1,11 @@
 #pragma once
 
+#define WRAP_IID_PROVIDER_METHODS(Type) \
+    WRAP_BASIC_CALL_RETURN(Type, getID, (int, IntToJS))
+
+
 #define WRAP_ENTITY_METHODS(Type) \
-    WRAP_BASIC_CALL_RETURN(Type, getID, (int, IntToJS)) \
+    WRAP_IID_PROVIDER_METHODS(Type) \
     WRAP_BASIC_CALL_RETURN(Type, getPosition, (Vector3, VectorToJS<Vector3>)) \
     WRAP_BASIC_CALL(Type, setPosition, (Vector3, JSToVector<Vector3>, position)) \
     WRAP_BASIC_CALL_RETURN(Type, getRotation, (GTAQuat, GTAQuatToJS)) \
