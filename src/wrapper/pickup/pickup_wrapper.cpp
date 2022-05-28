@@ -1,9 +1,8 @@
 #include "pickup_wrapper.hpp"
-#include "../../logger.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
-#include "../../converter/player.hpp"
 #include "../../converter/vehicle.hpp"
+#include "../../converter/entity.hpp"
 #include "../entity/entity_wrapper.hpp"
 
 WRAP_BASIC(IPickup)
@@ -21,18 +20,18 @@ WRAP_BASIC_CALL_RETURN(IPickup, getModel, (int, IntToJS))
 WRAP_BASIC_CALL_RETURN(IPickup,
                        isStreamedInForPlayer,
                        (bool, BoolToJS),
-                       (const IPlayer&, FROM_JS_FN(IPlayerRef), player))
+                       (const IPlayer&, JSToEntityRef<IPlayer>, player))
 
-WRAP_BASIC_CALL(IPickup, streamInForPlayer, (IPlayer & , FROM_JS_FN(IPlayerRef), player))
+WRAP_BASIC_CALL(IPickup, streamInForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 
-WRAP_BASIC_CALL(IPickup, streamOutForPlayer, (IPlayer & , FROM_JS_FN(IPlayerRef), player))
+WRAP_BASIC_CALL(IPickup, streamOutForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 
 WRAP_BASIC_CALL(IPickup,
                 setPickupHiddenForPlayer,
-                (IPlayer & , FROM_JS_FN(IPlayerRef), player),
+                (IPlayer & , JSToEntityRef<IPlayer>, player),
                 (bool, JSToBool, hidden))
 
-WRAP_BASIC_CALL_RETURN(IPickup, isPickupHiddenForPlayer, (bool, BoolToJS), (IPlayer & , FROM_JS_FN(IPlayerRef), player))
+WRAP_BASIC_CALL_RETURN(IPickup, isPickupHiddenForPlayer, (bool, BoolToJS), (IPlayer & , JSToEntityRef<IPlayer>, player))
 
 WRAP_ENTITY_METHODS(IPickup)
 

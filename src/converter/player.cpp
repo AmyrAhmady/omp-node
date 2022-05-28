@@ -2,41 +2,7 @@
 #include "primitive.hpp"
 #include "types.hpp"
 #include "../wrapper/utils.hpp"
-
-IPlayer *JSToIPlayer(v8::Local<v8::Value> value, v8::Local<v8::Context> context, IPlayer *defaultValue) {
-    v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(value.As<v8::Object>()->GetInternalField(0));
-
-    return static_cast<IPlayer *>( pointer->Value());
-}
-
-IPlayer *JSToIPlayer(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
-    v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(value.As<v8::Object>()->GetInternalField(0));
-
-    return static_cast<IPlayer *>( pointer->Value());
-}
-
-IPlayer &JSToIPlayerRef(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
-    v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(value.As<v8::Object>()->GetInternalField(0));
-
-    auto *playerPointerValue = static_cast<IPlayer *>(pointer->Value());
-
-    return *playerPointerValue;
-}
-
-v8::Local<v8::Value> IPlayerToJS(IPlayer &player, v8::Local<v8::Context> context) {
-    auto ext = GetHandleStorageExtension(&player);
-
-    return ext->get();
-}
-v8::Local<v8::Value> IPlayerToJS(IPlayer *player, v8::Local<v8::Context> context) {
-    if (player == nullptr) {
-        return v8::Null(context->GetIsolate());
-    }
-
-    auto ext = GetHandleStorageExtension(player);
-
-    return ext->get();
-}
+#include "entity.hpp"
 
 v8::Local<v8::Array> FlatPtrHashSetIPlayerToJS(const FlatPtrHashSet<IPlayer> &players, v8::Local<v8::Context> context) {
     // Create a new empty array.
@@ -48,7 +14,7 @@ v8::Local<v8::Array> FlatPtrHashSetIPlayerToJS(const FlatPtrHashSet<IPlayer> &pl
 
     int i = 0;
     for (auto player: players) {
-        array->Set(context, i++, IPlayerToJS(*player, context)).Check();
+        array->Set(context, i++, EntityToJS<IPlayer>(*player, context)).Check();
     }
 
     return array;

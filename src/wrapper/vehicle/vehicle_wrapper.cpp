@@ -4,6 +4,7 @@
 #include "../../converter/types.hpp"
 #include "../../converter/player.hpp"
 #include "../../converter/vehicle.hpp"
+#include "../../converter/entity.hpp"
 #include "../entity/entity_wrapper.hpp"
 
 WRAP_BASIC(IVehicle)
@@ -15,11 +16,11 @@ WRAP_BASIC_CALL_RETURN(IVehicle, getSpawnData, (const VehicleSpawnData&, TO_JS_F
 WRAP_BASIC_CALL_RETURN(IVehicle,
                        isStreamedInForPlayer,
                        (bool, BoolToJS),
-                       (const IPlayer&, FROM_JS_FN(IPlayerRef), player))
+                       (const IPlayer&, JSToEntityRef<IPlayer>, player))
 
-WRAP_BASIC_CALL(IVehicle, streamInForPlayer, (IPlayer & , FROM_JS_FN(IPlayerRef), player))
+WRAP_BASIC_CALL(IVehicle, streamInForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 
-WRAP_BASIC_CALL(IVehicle, streamOutForPlayer, (IPlayer & , FROM_JS_FN(IPlayerRef), player))
+WRAP_BASIC_CALL(IVehicle, streamOutForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 
 WRAP_BASIC_CALL(IVehicle, setColour, (int, JSToInt, col1), (int, JSToInt, col2))
 
@@ -29,14 +30,14 @@ WRAP_BASIC_CALL(IVehicle, setHealth, (float, JSToFloat, Health))
 
 WRAP_BASIC_CALL_RETURN(IVehicle, getHealth, (float, FloatToJS))
 
-//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromDriverSync, (bool, BoolToJS), (const VehicleDriverSyncPacket&, FROM_JS_FN(VehicleDriverSyncPacket), vehicleSync), (IPlayer&, FROM_JS_FN(IPlayerRef), player))
-//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromPassengerSync, (bool, BoolToJS), (const VehiclePassengerSyncPacket&, FROM_JS_FN(VehiclePassengerSyncPacket), passengerSync), (IPlayer&, FROM_JS_FN(IPlayerRef), player))
-//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromUnoccupied, (bool, BoolToJS), (const VehicleUnoccupiedSyncPacket&, FROM_JS_FN(VehicleUnoccupiedSyncPacket), unoccupiedSync), (IPlayer&, FROM_JS_FN(IPlayerRef), player))
-//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromTrailerSync, (bool, BoolToJS), (const VehicleTrailerSyncPacket&, FROM_JS_FN(VehicleTrailerSyncPacket), unoccupiedSync), (IPlayer&, FROM_JS_FN(IPlayerRef), player))
+//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromDriverSync, (bool, BoolToJS), (const VehicleDriverSyncPacket&, FROM_JS_FN(VehicleDriverSyncPacket), vehicleSync), (IPlayer&, JSToEntityRef<IPlayer>, player))
+//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromPassengerSync, (bool, BoolToJS), (const VehiclePassengerSyncPacket&, FROM_JS_FN(VehiclePassengerSyncPacket), passengerSync), (IPlayer&, JSToEntityRef<IPlayer>, player))
+//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromUnoccupied, (bool, BoolToJS), (const VehicleUnoccupiedSyncPacket&, FROM_JS_FN(VehicleUnoccupiedSyncPacket), unoccupiedSync), (IPlayer&, JSToEntityRef<IPlayer>, player))
+//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromTrailerSync, (bool, BoolToJS), (const VehicleTrailerSyncPacket&, FROM_JS_FN(VehicleTrailerSyncPacket), unoccupiedSync), (IPlayer&, JSToEntityRef<IPlayer>, player))
 
 WRAP_BASIC_CALL_RETURN(IVehicle, streamedForPlayers, (const FlatPtrHashSetIPlayer&, TO_JS_FN(FlatPtrHashSetIPlayer)))
 
-WRAP_BASIC_CALL_RETURN(IVehicle, getDriver, (IPlayer * , TO_JS_FN(IPlayer)))
+WRAP_BASIC_CALL_RETURN(IVehicle, getDriver, (IPlayer * , EntityToJS<IPlayer>))
 
 WRAP_BASIC_CALL_RETURN(IVehicle, getPassengers, (const FlatPtrHashSetIPlayer&, TO_JS_FN(FlatPtrHashSetIPlayer)))
 
@@ -50,7 +51,7 @@ WRAP_BASIC_CALL(IVehicle,
                 (int, JSToInt, DoorStatus),
                 (uint8_t, JSToUInt<uint8_t>, LightStatus),
                 (uint8_t, JSToUInt<uint8_t>, TyreStatus),
-                (IPlayer * , FROM_JS_FN(IPlayer), vehicleUpdater, nullptr))
+                (IPlayer * , JSToEntity<IPlayer>, vehicleUpdater, nullptr))
 
 WRAP_BASIC_CODE(IVehicle, getDamageStatus, {
     ENTER_FUNCTION_CALLBACK(info);
@@ -91,7 +92,7 @@ WRAP_BASIC_CALL_RETURN(IVehicle, getComponentInSlot, (int, IntToJS), (int, JSToI
 
 WRAP_BASIC_CALL(IVehicle, removeComponent, (int, JSToInt, component))
 
-WRAP_BASIC_CALL(IVehicle, putPlayer, (IPlayer & , FROM_JS_FN(IPlayerRef), player), (int, JSToInt, SeatID))
+WRAP_BASIC_CALL(IVehicle, putPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player), (int, JSToInt, SeatID))
 
 WRAP_BASIC_CALL(IVehicle, setZAngle, (float, JSToFloat, angle))
 
@@ -101,7 +102,7 @@ WRAP_BASIC_CALL(IVehicle, setParams, (const VehicleParams&, FROM_JS_FN(VehiclePa
 
 WRAP_BASIC_CALL(IVehicle,
                 setParamsForPlayer,
-                (IPlayer & , FROM_JS_FN(IPlayerRef), player),
+                (IPlayer & , JSToEntityRef<IPlayer>, player),
                 (const VehicleParams&, FROM_JS_FN(VehicleParams), params))
 
 WRAP_BASIC_CALL_RETURN(IVehicle, getParams, (VehicleParams const&, TO_JS_FN(VehicleParams)))
@@ -120,19 +121,19 @@ WRAP_BASIC_CALL(IVehicle, setInterior, (int, JSToInt, InteriorID))
 
 WRAP_BASIC_CALL_RETURN(IVehicle, getInterior, (int, IntToJS))
 
-WRAP_BASIC_CALL(IVehicle, attachTrailer, (IVehicle & , FROM_JS_FN(IVehicleRef), trailer))
+WRAP_BASIC_CALL(IVehicle, attachTrailer, (IVehicle & , JSToEntityRef<IVehicle>, trailer))
 
 WRAP_BASIC_CALL(IVehicle, detachTrailer)
 
 WRAP_BASIC_CALL_RETURN(IVehicle, isTrailer, (bool, BoolToJS))
 
-WRAP_BASIC_CALL_RETURN(IVehicle, getTrailer, (IVehicle * , TO_JS_FN(IVehicle)))
+WRAP_BASIC_CALL_RETURN(IVehicle, getTrailer, (IVehicle * , EntityToJS<IVehicle>))
 
-WRAP_BASIC_CALL_RETURN(IVehicle, getTower, (IVehicle * , TO_JS_FN(IVehicle)))
+WRAP_BASIC_CALL_RETURN(IVehicle, getTower, (IVehicle * , EntityToJS<IVehicle>))
 
 WRAP_BASIC_CALL(IVehicle, repair)
 
-WRAP_BASIC_CALL(IVehicle, addCarriage, (IVehicle * , FROM_JS_FN(IVehicle), carriage), (int, JSToInt, pos))
+WRAP_BASIC_CALL(IVehicle, addCarriage, (IVehicle * , JSToEntity<IVehicle>, carriage), (int, JSToInt, pos))
 WRAP_BASIC_CALL(IVehicle, updateCarriage, (Vector3, JSToVector<Vector3>, pos), (Vector3, JSToVector<Vector3>, veloc))
 WRAP_BASIC_CALL_RETURN(IVehicle, getCarriages, (const VehicleCarriages&, TO_JS_FN(VehicleCarriages)))
 

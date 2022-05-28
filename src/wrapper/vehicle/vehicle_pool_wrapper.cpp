@@ -4,6 +4,7 @@
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
 #include "../../converter/vehicle.hpp"
+#include "../../converter/entity.hpp"
 #include "../entry_handler.hpp"
 #include "vehicle_event_dispatcher_wrapper.hpp"
 #include "../pool/read_only_pool_wrapper.hpp"
@@ -16,7 +17,7 @@ WRAP_BASIC_CALL_RETURN(IVehiclesComponent, models, (VehicleModels & , TO_JS_FN(V
 
 WRAP_BASIC_CALL_RETURN(IVehiclesComponent,
                        create,
-                       (IVehicle * , TO_JS_FN(IVehicle)),
+                       (IVehicle * , EntityToJS<IVehicle>),
                        (bool, JSToBool, isStatic),
                        (int, JSToInt, modelID),
                        (Vector3, JSToVector<Vector3>, position),
@@ -34,7 +35,7 @@ WRAP_BASIC_CODE(IVehiclesComponent, getEventDispatcher, {
     info.GetReturnValue().Set(dispatcherHandle);
 })
 
-WRAP_READ_ONLY_POOL_METHODS(IVehiclesComponent, IVehicle, IVehicleToJS)
+WRAP_READ_ONLY_POOL_METHODS(IVehiclesComponent, IVehicle, EntityToJS<IVehicle>)
 
 WRAP_POOL_METHODS(IVehiclesComponent, IVehicle)
 

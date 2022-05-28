@@ -2,14 +2,14 @@
 #include "../../logger.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
-#include "../../converter/player.hpp"
 #include "dialog_event_dispatcher_wrapper.hpp"
+#include "../../converter/entity.hpp"
 
 WRAP_BASIC(IDialogEventDispatcher)
 WRAP_HANDLER_BASIC(PlayerDialogEventHandler, NodeJSDialogEventHandler)
 
 WRAP_HANDLER(NodeJSDialogEventHandler, void, onDialogResponse, 5, {
-    args[0] = IPlayerToJS(player, context);
+    args[0] = EntityToJS<IPlayer>(player, context);
     args[1] = IntToJS(dialogId, context);
     args[2] = EnumToJS(response, context);
     args[3] = IntToJS(listItem, context);

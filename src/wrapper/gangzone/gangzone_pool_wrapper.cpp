@@ -5,6 +5,7 @@
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
 #include "../../converter/gangzone.hpp"
+#include "../../converter/entity.hpp"
 #include "../entry_handler.hpp"
 #include "../pool/read_only_pool_wrapper.hpp"
 #include "../pool/pool_wrapper.hpp"
@@ -13,7 +14,7 @@ WRAP_BASIC(IGangZonesComponent)
 
 WRAP_BASIC_CALL_RETURN(IGangZonesComponent,
                        create,
-                       (IGangZone * , TO_JS_FN(IGangZone)),
+                       (IGangZone * , EntityToJS<IGangZone>),
                        (GangZonePos, FROM_JS_FN(GangZonePos), pos))
 
 WRAP_BASIC_CALL_RETURN(IGangZonesComponent,
@@ -22,7 +23,7 @@ WRAP_BASIC_CALL_RETURN(IGangZonesComponent,
 
 WRAP_BASIC_CALL(IGangZonesComponent,
                 useGangZoneCheck,
-                (IGangZone & , FROM_JS_FN(IGangZoneRef), zone),
+                (IGangZone & , JSToEntityRef<IGangZone>, zone),
                 (bool, JSToBool, enable))
 
 WRAP_BASIC_CODE(IGangZonesComponent, getEventDispatcher, {
@@ -33,7 +34,7 @@ WRAP_BASIC_CODE(IGangZonesComponent, getEventDispatcher, {
     info.GetReturnValue().Set(dispatcherHandle);
 })
 
-WRAP_READ_ONLY_POOL_METHODS(IGangZonesComponent, IGangZone, IGangZoneToJS)
+WRAP_READ_ONLY_POOL_METHODS(IGangZonesComponent, IGangZone, EntityToJS<IGangZone>)
 WRAP_POOL_METHODS(IGangZonesComponent, IGangZone)
 
 NodeJSEntryHandler<IGangZone> *handler;

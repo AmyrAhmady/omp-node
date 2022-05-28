@@ -3,27 +3,26 @@
 #include "../../logger.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
-#include "../../converter/player.hpp"
-#include "../../converter/gangzone.hpp"
 #include "checkpoint_event_dispatcher_wrapper.hpp"
+#include "../../converter/entity.hpp"
 
 WRAP_BASIC(ICheckpointEventDispatcher)
 WRAP_HANDLER_BASIC(PlayerCheckpointEventHandler, NodeJSCheckpointEventHandler)
 
 WRAP_HANDLER(NodeJSCheckpointEventHandler, void, onPlayerEnterCheckpoint, 1, {
-    args[0] = IPlayerToJS(player, context);
+    args[0] = EntityToJS<IPlayer>(player, context);
 }, return, return, IPlayer &player)
 
 WRAP_HANDLER(NodeJSCheckpointEventHandler, void, onPlayerLeaveCheckpoint, 1, {
-    args[0] = IPlayerToJS(player, context);
+    args[0] = EntityToJS<IPlayer>(player, context);
 }, return, return, IPlayer &player)
 
 WRAP_HANDLER(NodeJSCheckpointEventHandler, void, onPlayerEnterRaceCheckpoint, 1, {
-    args[0] = IPlayerToJS(player, context);
+    args[0] = EntityToJS<IPlayer>(player, context);
 }, return, return, IPlayer &player)
 
 WRAP_HANDLER(NodeJSCheckpointEventHandler, void, onPlayerLeaveRaceCheckpoint, 1, {
-    args[0] = IPlayerToJS(player, context);
+    args[0] = EntityToJS<IPlayer>(player, context);
 }, return, return, IPlayer &player)
 
 WRAP_BASIC_CODE(ICheckpointEventDispatcher, addEventHandler, WRAP_ADD_EVENT_HANDLER(NodeJSCheckpointEventHandler))

@@ -4,6 +4,7 @@
 #include "../../converter/player.hpp"
 #include "../../converter/vehicle.hpp"
 #include "../../converter/anim.hpp"
+#include "../../converter/entity.hpp"
 #include "../entity/entity_wrapper.hpp"
 #include "../checkpoint/checkpoint_data_wrapper.hpp"
 #include "../checkpoint/race_checkpoint_data_wrapper.hpp"
@@ -41,8 +42,8 @@ WRAP_BASIC_CALL(IPlayer,
                 (Vector3, JSToVector<Vector3>, to),
                 (int, JSToInt, time),
                 (PlayerCameraCutType, JSToEnum<PlayerCameraCutType>, cutType))
-//WRAP_BASIC_CALL(IPlayer, attachCameraToObject, (IObject&, FROM_JS_FN(IObject), object))
-//WRAP_BASIC_CALL(IPlayer, attachCameraToObject, (IPlayerObject&, FROM_JS_FN(IPlayerObject), object))
+//WRAP_BASIC_CALL(IPlayer, attachCameraToObject, (IObject&, JSToEntity<IObject>, object))
+//WRAP_BASIC_CALL(IPlayer, attachCameraToObject, (IPlayerObject&, JSToEntity<IPlayerObject>, object))
 WRAP_BASIC_CALL_RETURN(IPlayer,
                        setName,
                        (EPlayerNameStatus, EnumToJS<EPlayerNameStatus>),
@@ -64,7 +65,7 @@ WRAP_BASIC_CALL(IPlayer, setColour, (Colour, FROM_JS_FN(Colour), colour))
 WRAP_BASIC_CALL_RETURN(IPlayer, getColour, (const Colour&, TO_JS_FN(Colour)))
 WRAP_BASIC_CALL(IPlayer,
                 setOtherColour,
-                (IPlayer & , FROM_JS_FN(IPlayerRef), other),
+                (IPlayer & , JSToEntityRef<IPlayer>, other),
                 (Colour, FROM_JS_FN(Colour), colour))
 WRAP_BASIC_CODE(IPlayer, getOtherColour, {
     ENTER_FUNCTION_CALLBACK(info);
@@ -72,7 +73,7 @@ WRAP_BASIC_CODE(IPlayer, getOtherColour, {
     if (external == nullptr) {
         return;
     }
-    auto player = JSToIPlayer(info[0], context);
+    auto player = JSToEntity<IPlayer>(info[0], context);
     Colour colour;
     auto value = external->getOtherColour(*player, colour);
     if (value) {
@@ -98,7 +99,7 @@ WRAP_BASIC_CALL(IPlayer,
 WRAP_BASIC_CALL_RETURN(IPlayer,
                        playerCrimeReport,
                        (bool, BoolToJS),
-                       (IPlayer & , *FROM_JS_FN(IPlayer), suspect),
+                       (IPlayer & , *JSToEntity<IPlayer>, suspect),
                        (int, JSToInt, crime))
 WRAP_BASIC_CALL(IPlayer, stopAudio)
 WRAP_BASIC_CALL_RETURN(IPlayer, lastPlayedAudio, (StringView, TO_JS_FN(StringView)))
@@ -109,8 +110,8 @@ WRAP_BASIC_CALL(IPlayer,
                 (float, JSToFloat, radius))
 WRAP_BASIC_CALL(IPlayer,
                 sendDeathMessage,
-                (IPlayer & , FROM_JS_FN(IPlayerRef), player),
-                (IPlayer * , FROM_JS_FN(IPlayer), killer),
+                (IPlayer & , JSToEntityRef<IPlayer>, player),
+                (IPlayer * , JSToEntity<IPlayer>, killer),
                 (int, JSToInt, weapon))
 WRAP_BASIC_CALL(IPlayer, sendEmptyDeathMessage)
 WRAP_BASIC_CALL(IPlayer,
@@ -132,7 +133,7 @@ WRAP_BASIC_CALL(IPlayer,
                 (MapIconStyle, JSToEnum<MapIconStyle>, style))
 WRAP_BASIC_CALL(IPlayer, unsetMapIcon, (int, JSToInt, id))
 WRAP_BASIC_CALL(IPlayer, useStuntBonuses, (bool, JSToBool, enable))
-WRAP_BASIC_CALL(IPlayer, toggleOtherNameTag, (IPlayer & , FROM_JS_FN(IPlayerRef), other), (bool, JSToBool, toggle))
+WRAP_BASIC_CALL(IPlayer, toggleOtherNameTag, (IPlayer & , JSToEntityRef<IPlayer>, other), (bool, JSToBool, toggle))
 WRAP_BASIC_CALL(IPlayer, setTime, (Hours, FROM_JS_FN(Hours), hr), (Minutes, FROM_JS_FN(Minutes), min))
 WRAP_BASIC_CALL_RETURN(IPlayer, getTime, (HoursMinutes, HoursMinutesToJS))
 WRAP_BASIC_CALL(IPlayer, useClock, (bool, JSToBool, enable))
@@ -156,12 +157,12 @@ WRAP_BASIC_CALL(IPlayer,
 WRAP_BASIC_CALL(IPlayer, clearAnimations, (PlayerAnimationSyncType, JSToEnum<PlayerAnimationSyncType>, syncType))
 WRAP_BASIC_CALL_RETURN(IPlayer, getAnimationData, (PlayerAnimationData, TO_JS_FN(PlayerAnimationData)))
 WRAP_BASIC_CALL_RETURN(IPlayer, getSurfingData, (PlayerSurfingData, TO_JS_FN(PlayerSurfingData)))
-WRAP_BASIC_CALL(IPlayer, streamInForPlayer, (IPlayer & , FROM_JS_FN(IPlayerRef), other))
+WRAP_BASIC_CALL(IPlayer, streamInForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, other))
 WRAP_BASIC_CALL_RETURN(IPlayer,
                        isStreamedInForPlayer,
                        (bool, BoolToJS),
-                       (const IPlayer&, FROM_JS_FN(IPlayerRef), other))
-WRAP_BASIC_CALL(IPlayer, streamOutForPlayer, (IPlayer & , FROM_JS_FN(IPlayerRef), other))
+                       (const IPlayer&, JSToEntityRef<IPlayer>, other))
+WRAP_BASIC_CALL(IPlayer, streamOutForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, other))
 WRAP_BASIC_CALL_RETURN(IPlayer, streamedForPlayers, (const FlatPtrHashSetIPlayer&, TO_JS_FN(FlatPtrHashSetIPlayer)))
 WRAP_BASIC_CALL_RETURN(IPlayer, getState, (PlayerState, EnumToJS))
 WRAP_BASIC_CALL(IPlayer, setTeam, (int, JSToInt, team))
@@ -180,7 +181,7 @@ WRAP_BASIC_CALL(IPlayer,
                 (Impl::String, JSToString, message))
 WRAP_BASIC_CALL(IPlayer,
                 sendChatMessage,
-                (IPlayer & , FROM_JS_FN(IPlayerRef), sender),
+                (IPlayer & , JSToEntityRef<IPlayer>, sender),
                 (Impl::String, JSToString, message))
 WRAP_BASIC_CALL(IPlayer, sendCommand, (Impl::String, JSToString, message))
 WRAP_BASIC_CALL(IPlayer,
@@ -208,20 +209,20 @@ WRAP_BASIC_CALL_RETURN(IPlayer, getBulletData, (const PlayerBulletData&, TO_JS_F
 WRAP_BASIC_CALL(IPlayer, useCameraTargeting, (bool, JSToBool, enable))
 WRAP_BASIC_CALL_RETURN(IPlayer, hasCameraTargeting, (bool, BoolToJS))
 WRAP_BASIC_CALL(IPlayer, removeFromVehicle)
-WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetPlayer, (IPlayer * , TO_JS_FN(IPlayer)))
-WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetVehicle, (IVehicle * , TO_JS_FN(IVehicle)))
-//WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetObject, (IObject*, TO_JS_FN(IObject)))
-//WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetActor, (IActor*, TO_JS_FN(IActor)))
-WRAP_BASIC_CALL_RETURN(IPlayer, getTargetPlayer, (IPlayer * , TO_JS_FN(IPlayer)))
-//WRAP_BASIC_CALL_RETURN(IPlayer, getTargetActor, (IActor*, TO_JS_FN(IActor)))
+WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetPlayer, (IPlayer * , EntityToJS<IPlayer>))
+WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetVehicle, (IVehicle * , EntityToJS<IVehicle>))
+//WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetObject, (IObject*, EntityToJS<IObject>))
+//WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetActor, (IActor*, EntityToJS<IActor>))
+WRAP_BASIC_CALL_RETURN(IPlayer, getTargetPlayer, (IPlayer * , EntityToJS<IPlayer>))
+//WRAP_BASIC_CALL_RETURN(IPlayer, getTargetActor, (IActor*, EntityToJS<IActor>))
 WRAP_BASIC_CALL(IPlayer, setRemoteVehicleCollisions, (bool, JSToBool, collide))
 WRAP_BASIC_CALL(IPlayer,
                 spectatePlayer,
-                (IPlayer & , FROM_JS_FN(IPlayerRef), target),
+                (IPlayer & , JSToEntityRef<IPlayer>, target),
                 (PlayerSpectateMode, JSToEnum<PlayerSpectateMode>, mode))
 WRAP_BASIC_CALL(IPlayer,
                 spectateVehicle,
-                (IVehicle & , FROM_JS_FN(IVehicleRef), target),
+                (IVehicle & , JSToEntityRef<IVehicle>, target),
                 (PlayerSpectateMode, JSToEnum<PlayerSpectateMode>, mode))
 WRAP_BASIC_CALL_RETURN(IPlayer, getSpectateData, (const PlayerSpectateData&, TO_JS_FN(PlayerSpectateData)))
 WRAP_BASIC_CALL(IPlayer,
@@ -234,7 +235,7 @@ WRAP_BASIC_CALL(IPlayer, toggleGhostMode, (bool, JSToBool, toggle))
 WRAP_BASIC_CALL_RETURN(IPlayer, isGhostModeEnabled, (bool, BoolToJS))
 WRAP_BASIC_CALL_RETURN(IPlayer, getDefaultObjectsRemoved, (int, IntToJS))
 
-WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getVehicle, (IVehicle * , IVehicleToJS))
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getVehicle, (IVehicle * , EntityToJS<IVehicle>))
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getSeat, (int, IntToJS))
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, isInModShop, (bool, BoolToJS))
 
@@ -244,11 +245,11 @@ WRAP_EXT_BASIC_CALL_RETURN(IPlayer,
                            (IRaceCheckpointData & , WrapRaceCheckpointData))
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerCheckpointData, getCheckpoint, (ICheckpointData & , WrapCheckpointData))
 
-WRAP_EXT_BASIC_CALL(IPlayer, IPlayerDialogData, hide, (IPlayer & , FROM_JS_FN(IPlayerRef), player))
+WRAP_EXT_BASIC_CALL(IPlayer, IPlayerDialogData, hide, (IPlayer & , JSToEntityRef<IPlayer>, player))
 WRAP_EXT_BASIC_CALL(IPlayer,
                     IPlayerDialogData,
                     show,
-                    (IPlayer & , FROM_JS_FN(IPlayerRef), player),
+                    (IPlayer & , JSToEntityRef<IPlayer>, player),
                     (int, JSToInt<int>, id),
                     (DialogStyle, JSToEnum<DialogStyle>, style),
                     (Impl::String, JSToString, title),

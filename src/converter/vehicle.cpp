@@ -2,20 +2,7 @@
 #include "primitive.hpp"
 #include "types.hpp"
 #include "../wrapper/utils.hpp"
-
-IVehicle *JSToIVehicle(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
-    v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(value.As<v8::Object>()->GetInternalField(0));
-
-    return static_cast<IVehicle *>( pointer->Value());
-}
-
-IVehicle &JSToIVehicleRef(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
-    v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(value.As<v8::Object>()->GetInternalField(0));
-
-    auto pointerValue = static_cast<IVehicle *>( pointer->Value());
-
-    return *pointerValue;
-}
+#include "entity.hpp"
 
 OBJECT_CONVERTER_DEFINE(VehicleSpawnData,
                         (Seconds, respawnDelay, SecondsToJS, JSToSeconds),
@@ -50,21 +37,6 @@ OBJECT_CONVERTER_DEFINE(UnoccupiedVehicleUpdate,
                         (Vector3, position, VectorToJS<Vector3>, JSToVector<Vector3>),
                         (Vector3, velocity, VectorToJS<Vector3>, JSToVector<Vector3>))
 
-v8::Local<v8::Value> IVehicleToJS(IVehicle &vehicle, v8::Local<v8::Context> context) {
-    auto ext = GetHandleStorageExtension(&vehicle);
-
-    return ext->get();
-}
-v8::Local<v8::Value> IVehicleToJS(IVehicle *vehicle, v8::Local<v8::Context> context) {
-    if (vehicle == nullptr) {
-        return v8::Null(context->GetIsolate());
-    }
-
-    auto ext = GetHandleStorageExtension(vehicle);
-
-    return ext->get();
-}
-
 v8::Local<v8::Array> VehicleCarriagesToJS(const VehicleCarriages &carriages, v8::Local<v8::Context> context) {
     // Create a new empty array.
     v8::Local<v8::Array> array = v8::Array::New(context->GetIsolate(), carriages.size());
@@ -74,7 +46,7 @@ v8::Local<v8::Array> VehicleCarriagesToJS(const VehicleCarriages &carriages, v8:
         return v8::Local<v8::Array>();
 
     for (int i = 0; i < carriages.size(); i++) {
-        array->Set(context, i, IVehicleToJS(carriages[i], context)).Check();
+        array->Set(context, i, EntityToJS<IVehicle>(carriages[i], context)).Check();
     }
 
     return array;

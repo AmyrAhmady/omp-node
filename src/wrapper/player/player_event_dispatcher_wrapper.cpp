@@ -1,11 +1,11 @@
 #include <utility>
 
 #include "player_wrapper.hpp"
-#include "../../logger.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
 #include "../../converter/player.hpp"
 #include "../../converter/vehicle.hpp"
+#include "../../converter/entity.hpp"
 #include "player_event_dispatcher_wrapper.hpp"
 
 WRAP_BASIC(IPlayerEventDispatcher)
@@ -69,7 +69,7 @@ WRAP_HANDLER(NodeJSPlayerEventHandler,
              3,
              {
                  args[0] = GetHandleStorageExtension(&player)->get();
-                 args[1] = IPlayerToJS(target, context);
+                 args[1] = EntityToJS<IPlayer>(target, context);
                  args[2] = PlayerBulletDataToJS(bulletData, context);
              },
              return JSToBool(cbReturnedValue, context),
@@ -84,7 +84,7 @@ WRAP_HANDLER(NodeJSPlayerEventHandler,
              3,
              {
                  args[0] = GetHandleStorageExtension(&player)->get();
-                 args[1] = IVehicleToJS(target, context);
+                 args[1] = EntityToJS<IVehicle>(target, context);
                  args[2] = PlayerBulletDataToJS(bulletData, context);
              },
              return JSToBool(cbReturnedValue, context),

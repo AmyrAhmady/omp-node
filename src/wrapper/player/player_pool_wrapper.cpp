@@ -1,10 +1,10 @@
 #include "player_wrapper.hpp"
 #include "player_event_dispatcher_wrapper.hpp"
 #include "player_update_event_dispatcher_wrapper.hpp"
-#include "../../logger.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/player.hpp"
 #include "../../converter/types.hpp"
+#include "../../converter/entity.hpp"
 #include "../entry_handler.hpp"
 #include "../pool/read_only_pool_wrapper.hpp"
 #include "../pool/pool_event_dispatcher_wrapper.hpp"
@@ -18,14 +18,14 @@ WRAP_BASIC_CALL_RETURN(IPlayerPool,
                        isNameTaken,
                        (bool, BoolToJS),
                        (Impl::String, JSToString, name),
-                       (const IPlayer*, FROM_JS_FN(IPlayer), skip))
+                       (const IPlayer*, JSToEntity<IPlayer>, skip))
 WRAP_BASIC_CALL(IPlayerPool,
                 sendClientMessageToAll,
                 (const Colour&, FROM_JS_FN(Colour), colour),
                 (Impl::String, JSToString, message))
 WRAP_BASIC_CALL(IPlayerPool,
                 sendChatMessageToAll,
-                (IPlayer & , FROM_JS_FN(IPlayerRef), from),
+                (IPlayer & , JSToEntityRef<IPlayer>, from),
                 (Impl::String, JSToString, message))
 WRAP_BASIC_CALL(IPlayerPool,
                 sendGameTextToAll,
@@ -34,8 +34,8 @@ WRAP_BASIC_CALL(IPlayerPool,
                 (int, JSToInt, style))
 WRAP_BASIC_CALL(IPlayerPool,
                 sendDeathMessageToAll,
-                (IPlayer * , FROM_JS_FN(IPlayer), killer),
-                (IPlayer & , FROM_JS_FN(IPlayerRef), killee),
+                (IPlayer * , JSToEntity<IPlayer>, killer),
+                (IPlayer & , JSToEntityRef<IPlayer>, killee),
                 (int, JSToInt, weapon))
 WRAP_BASIC_CALL(IPlayerPool, sendEmptyDeathMessageToAll)
 WRAP_BASIC_CALL(IPlayerPool,
@@ -44,7 +44,7 @@ WRAP_BASIC_CALL(IPlayerPool,
                 (int, JSToInt, type),
                 (float, JSToFloat, radius))
 //WRAP_BASIC_CALL_RETURN(IPlayerPool, requestPlayer, (Pair<NewConnectionResult, IPlayer*>, TO_JS_FN(Pair<NewConnectionResult, IPlayer*>)), (const PeerNetworkData&, FROM_JS_FN(PeerNetworkData), netData), (const PeerRequestParams&, FROM_JS_FN(PeerRequestParams), params))
-//WRAP_BASIC_CALL(IPlayerPool, broadcastRPC, (int, JSToInt, id), (Span<uint8_t>, FROM_JS_FN(Span<uint8_t>), data), (int, JSToInt, channel), (const IPlayer*, FROM_JS_FN(IPlayer), skipFrom, nullptr))
+//WRAP_BASIC_CALL(IPlayerPool, broadcastRPC, (int, JSToInt, id), (Span<uint8_t>, FROM_JS_FN(Span<uint8_t>), data), (int, JSToInt, channel), (const IPlayer*, JSToEntity<IPlayer>, skipFrom, nullptr))
 WRAP_BASIC_CALL_RETURN(IPlayerPool, isNameValid, (bool, BoolToJS), (Impl::String, JSToString, name))
 WRAP_BASIC_CALL(IPlayerPool, allowNickNameCharacter, (char, JSToInt<char>, character), (bool, JSToBool, allow))
 WRAP_BASIC_CALL_RETURN(IPlayerPool, isNickNameCharacterAllowed, (bool, BoolToJS), (char, JSToInt<char>, character))
@@ -73,7 +73,7 @@ WRAP_BASIC_CODE(IPlayerPool, getPoolEventDispatcher, {
     info.GetReturnValue().Set(dispatcherHandle);
 })
 
-WRAP_READ_ONLY_POOL_METHODS(IPlayerPool, IPlayer, IPlayerToJS)
+WRAP_READ_ONLY_POOL_METHODS(IPlayerPool, IPlayer, EntityToJS<IPlayer>)
 
 NodeJSEntryHandler<IPlayer> *handler;
 

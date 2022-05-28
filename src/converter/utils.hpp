@@ -6,9 +6,8 @@
 #define OBJECT_CONVERTER_HANDLE(params) OBJECT_CONVERTER_HANDLE_ params
 
 #define OBJECT_CONVERTER_CHECK_HANDLE_(Type, name, ToJS, FromJS, ...) \
-    if (!exceptionThrown && (name##Handle.IsEmpty() || name##Handle.ToLocalChecked()->IsUndefined())) { \
+    if (!tryCatch.HasCaught() && (name##Handle.IsEmpty() || name##Handle.ToLocalChecked()->IsNullOrUndefined())) { \
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, #name " field is missing").ToLocalChecked())); \
-        exceptionThrown = true; \
     }
 #define OBJECT_CONVERTER_CHECK_HANDLE(params) OBJECT_CONVERTER_CHECK_HANDLE_ params
 
@@ -42,9 +41,10 @@
             return defaultValue; \
         } \
         FOR_EACH(OBJECT_CONVERTER_HANDLE, __VA_ARGS__) \
-        bool exceptionThrown = false; \
+        v8::TryCatch tryCatch(isolate); \
         FOR_EACH(OBJECT_CONVERTER_CHECK_HANDLE, __VA_ARGS__) \
-        if (exceptionThrown) { \
+        if (tryCatch.HasCaught()) { \
+            tryCatch.ReThrow(); \
             return defaultValue; \
         } \
         FOR_EACH(OBJECT_CONVERTER_CONVERT, __VA_ARGS__) \

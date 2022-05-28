@@ -1,19 +1,17 @@
 #include <utility>
 
 #include "pickup_wrapper.hpp"
-#include "../../logger.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
-#include "../../converter/player.hpp"
-#include "../../converter/pickup.hpp"
+#include "../../converter/entity.hpp"
 #include "pickup_event_dispatcher_wrapper.hpp"
 
 WRAP_BASIC(IPickupEventDispatcher)
 WRAP_HANDLER_BASIC(PickupEventHandler, NodeJSPickupEventHandler)
 
 WRAP_HANDLER(NodeJSPickupEventHandler, void, onPlayerPickUpPickup, 2, {
-    args[0] = IPlayerToJS(player, context);
-    args[1] = IPickupToJS(pickup, context);
+    args[0] = EntityToJS<IPlayer>(player, context);
+    args[1] = EntityToJS<IPickup>(pickup, context);
 }, return, return, IPlayer &player, IPickup &pickup)
 
 WRAP_BASIC_CODE(IPickupEventDispatcher, addEventHandler, WRAP_ADD_EVENT_HANDLER(NodeJSPickupEventHandler))

@@ -4,7 +4,7 @@
 #include "pickup_event_dispatcher_wrapper.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
-#include "../../converter/pickup.hpp"
+#include "../../converter/entity.hpp"
 #include "../entry_handler.hpp"
 #include "../pool/read_only_pool_wrapper.hpp"
 #include "../pool/pool_wrapper.hpp"
@@ -13,7 +13,7 @@ WRAP_BASIC(IPickupsComponent)
 
 WRAP_BASIC_CALL_RETURN(IPickupsComponent,
                        create,
-                       (IPickup * , TO_JS_FN(IPickup)),
+                       (IPickup * , EntityToJS<IPickup>),
                        (int, JSToInt, modelId),
                        (PickupType, JSToUInt<PickupType>, type),
                        (Vector3, JSToVector<Vector3>, pos),
@@ -28,7 +28,7 @@ WRAP_BASIC_CODE(IPickupsComponent, getEventDispatcher, {
     info.GetReturnValue().Set(dispatcherHandle);
 })
 
-WRAP_READ_ONLY_POOL_METHODS(IPickupsComponent, IPickup, IPickupToJS)
+WRAP_READ_ONLY_POOL_METHODS(IPickupsComponent, IPickup, EntityToJS<IPickup>)
 WRAP_POOL_METHODS(IPickupsComponent, IPickup)
 
 NodeJSEntryHandler<IPickup> *handler;

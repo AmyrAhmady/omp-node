@@ -4,16 +4,16 @@
 #include "actor_event_dispatcher_wrapper.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
-#include "../../converter/actor.hpp"
 #include "../entry_handler.hpp"
 #include "../pool/read_only_pool_wrapper.hpp"
 #include "../pool/pool_wrapper.hpp"
+#include "../../converter/entity.hpp"
 
 WRAP_BASIC(IActorsComponent)
 
 WRAP_BASIC_CALL_RETURN(IActorsComponent,
                        create,
-                       (IActor * , TO_JS_FN(IActor)),
+                       (IActor * , EntityToJS<IActor>),
                        (int, JSToInt, skin),
                        (Vector3, JSToVector<Vector3>, pos),
                        (float, JSToFloat, angle))
@@ -26,7 +26,7 @@ WRAP_BASIC_CODE(IActorsComponent, getEventDispatcher, {
     info.GetReturnValue().Set(dispatcherHandle);
 })
 
-WRAP_READ_ONLY_POOL_METHODS(IActorsComponent, IActor, IActorToJS)
+WRAP_READ_ONLY_POOL_METHODS(IActorsComponent, IActor, EntityToJS<IActor>)
 WRAP_POOL_METHODS(IActorsComponent, IActor)
 
 NodeJSEntryHandler<IActor> *handler;
