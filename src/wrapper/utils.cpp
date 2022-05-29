@@ -5,6 +5,16 @@ IHandleStorage *GetHandleStorageExtension(IExtensible *extensible) {
     return queryExtension<IHandleStorage>(extensible);
 }
 
+Impl::String GetValueInterfaceType(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
+    auto isolate = context->GetIsolate();
+
+    auto interfaceTypeSymbol = v8::Symbol::For(isolate, StringViewToJS("interfaceToObjectInterfaceType", context));
+
+    auto resultHandle = value.As<v8::Object>()->Get(context, interfaceTypeSymbol).ToLocalChecked();
+
+    return JSToString(resultHandle, context);
+}
+
 IHandleStorage::IHandleStorage(v8::Isolate *isolate, v8::Local<v8::Value> value)
     : isolate(isolate), storedValue(isolate, value) {
     L_DEBUG << "IHandleStorage";

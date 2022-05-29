@@ -64,6 +64,7 @@ v8::Local<v8::Integer> EnumToJS(Enum value, v8::Local<v8::Context> context) {
     }
 }
 
+// todo: add checking finiteness
 template<typename type = int>
 type JSToInt(v8::Local<v8::Value> value, v8::Local<v8::Context> context, type defaultValue) {
     auto isolate = context->GetIsolate();

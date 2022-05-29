@@ -5,21 +5,43 @@
 #include "../../converter/types.hpp"
 #include "../../converter/entity.hpp"
 #include "../entry_handler.hpp"
+#include "Server/Components/Vehicles/vehicles.hpp"
 #include "../pool/read_only_pool_wrapper.hpp"
 #include "../pool/pool_wrapper.hpp"
 
 WRAP_BASIC(ITextLabelsComponent)
 
-// todo: add overloads for attaching in create function
-WRAP_BASIC_CALL_RETURN(ITextLabelsComponent,
+WRAP_BASIC_CALL_RETURN_OVERLOAD(ITextLabelsComponent,
                        create,
-                       (ITextLabel * , EntityToJS<ITextLabel>),
-                       (Impl::String, JSToString, text),
-                       (Colour, JSToColour, colour),
-                       (Vector3, JSToVector<Vector3>, pos),
-                       (float, JSToFloat, drawDist),
-                       (int, JSToInt, vw),
-                       (bool, JSToBool, los))
+                                (create,
+                                    info[6]->IsUndefined(),
+                                    (ITextLabel * , EntityToJS<ITextLabel>),
+                                    (Impl::String, JSToString, text),
+                                    (Colour, JSToColour, colour),
+                                    (Vector3, JSToVector<Vector3>, pos),
+                                    (float, JSToFloat, drawDist),
+                                    (int, JSToInt, vw),
+                                    (bool, JSToBool, los)),
+                                (create,
+                                    GetValueInterfaceType(info[6], context) == typeid(IPlayer).name(),
+                                    (ITextLabel * , EntityToJS<ITextLabel>),
+                                    (Impl::String, JSToString, text),
+                                    (Colour, JSToColour, colour),
+                                    (Vector3, JSToVector<Vector3>, pos),
+                                    (float, JSToFloat, drawDist),
+                                    (int, JSToInt, vw),
+                                    (bool, JSToBool, los),
+                                    (IPlayer&, JSToEntityRef<IPlayer>, attach)),
+                                (create,
+                                    GetValueInterfaceType(info[6], context) == typeid(IVehicle).name(),
+                                    (ITextLabel * , EntityToJS<ITextLabel>),
+                                    (Impl::String, JSToString, text),
+                                    (Colour, JSToColour, colour),
+                                    (Vector3, JSToVector<Vector3>, pos),
+                                    (float, JSToFloat, drawDist),
+                                    (int, JSToInt, vw),
+                                    (bool, JSToBool, los),
+                                    (IVehicle&, JSToEntityRef<IVehicle>, attach)))
 
 WRAP_READ_ONLY_POOL_METHODS(ITextLabelsComponent, ITextLabel, EntityToJS<ITextLabel>)
 WRAP_POOL_METHODS(ITextLabelsComponent, ITextLabel)

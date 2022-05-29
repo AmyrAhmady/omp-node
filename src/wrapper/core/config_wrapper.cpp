@@ -110,10 +110,17 @@ WRAP_BASIC_CODE(IConfig, get, {
 })
 
 WRAP_BASIC_CALL_RETURN(IConfig, getBansCount, (size_t, UIntToJS<size_t>))
+
+// todo: add checking existing bans count
 WRAP_BASIC_CALL_RETURN(IConfig, getBan, (const BanEntry&, TO_JS_FN(BanEntry)), (size_t, JSToUInt<size_t>, index))
+
 WRAP_BASIC_CALL(IConfig, addBan, (const BanEntry&, FROM_JS_FN(BanEntry), entry))
-WRAP_BASIC_CALL(IConfig, removeBan, (size_t, JSToUInt<size_t>, index))
-//WRAP_BASIC_CALL(IConfig, removeBan, (const BanEntry&, FROM_JS_FN(BanEntry), entry))
+
+WRAP_BASIC_CALL_OVERLOAD(IConfig,
+                         removeBan,
+                         (removeBan, info[0]->IsObject(), (const BanEntry&, FROM_JS_FN(BanEntry), entry)),
+                         (removeBan, true, (size_t, JSToUInt<size_t>, index)))
+
 WRAP_BASIC_CALL(IConfig, writeBans)
 WRAP_BASIC_CALL(IConfig, reloadBans)
 WRAP_BASIC_CALL(IConfig, clearBans)

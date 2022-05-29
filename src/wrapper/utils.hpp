@@ -5,6 +5,7 @@
 #include "../logger.hpp"
 #include "methods.hpp"
 #include "handlers.hpp"
+#include "../converter/primitive.hpp"
 #include "../converter/find_function.hpp"
 
 #define ENTER_FUNCTION_CALLBACK(info) \
@@ -64,6 +65,9 @@ v8::Local<v8::Object> InterfaceToObject(Interface *pointer,
 
     auto objectTemplate = v8::ObjectTemplate::New(isolate);
 
+    auto interfaceTypeSymbol = v8::Symbol::For(isolate, StringViewToJS("interfaceToObjectInterfaceType", context));
+    objectTemplate->Set(interfaceTypeSymbol, StringViewToJS(std::string(typeid(Interface).name()), context));
+
     objectTemplate->SetInternalFieldCount(1);
 
     for (auto &entry: methods) {
@@ -79,6 +83,8 @@ v8::Local<v8::Object> InterfaceToObject(Interface *pointer,
 
     return object;
 }
+
+Impl::String GetValueInterfaceType(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 
 template<class Interface>
 v8::Local<v8::Object> MutableToObject(Interface *pointer,
