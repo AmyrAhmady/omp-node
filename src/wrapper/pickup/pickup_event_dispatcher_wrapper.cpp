@@ -22,12 +22,11 @@ WRAP_BASIC_CODE(IPickupEventDispatcher, removeEventHandler, WRAP_REMOVE_EVENT_HA
 
 WRAP_BASIC_CALL_RETURN(IPickupEventDispatcher, count, (size_t, UIntToJS))
 
-v8::Local<v8::Value> WrapPickupEventDispatcher(IEventDispatcher<PickupEventHandler> *dispatcher,
-                                               v8::Local<v8::Context> context) {
-
-    v8::EscapableHandleScope hs(context->GetIsolate());
+EventDispatcherHandleStorage *WrapPickupEventDispatcher(IEventDispatcher<PickupEventHandler> *dispatcher,
+                                                        v8::Local<v8::Context> context) {
+    v8::HandleScope hs(context->GetIsolate());
 
     auto dispatcherHandle = InterfaceToObject(dispatcher, context, WRAPPED_METHODS(IPickupEventDispatcher));
 
-    return hs.Escape(dispatcherHandle);
+    return new EventDispatcherHandleStorage(context->GetIsolate(), dispatcherHandle);
 }

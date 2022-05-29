@@ -37,7 +37,7 @@
         auto isolate = context->GetIsolate(); \
         if (!value->IsObject()) { \
             isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, \
-                                                                                     "An object is required").ToLocalChecked())); \
+                                                                                     "An object is required for " #Type).ToLocalChecked())); \
             return defaultValue; \
         } \
         FOR_EACH(OBJECT_CONVERTER_HANDLE, __VA_ARGS__) \

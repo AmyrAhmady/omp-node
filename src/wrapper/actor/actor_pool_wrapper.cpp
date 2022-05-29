@@ -18,13 +18,7 @@ WRAP_BASIC_CALL_RETURN(IActorsComponent,
                        (Vector3, JSToVector<Vector3>, pos),
                        (float, JSToFloat, angle))
 
-WRAP_BASIC_CODE(IActorsComponent, getEventDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
-    auto pool = GetContextExternalPointer<IActorsComponent>(info);
-    auto dispatcher = &pool->getEventDispatcher();
-    auto dispatcherHandle = WrapActorEventDispatcher(dispatcher, context);
-    info.GetReturnValue().Set(dispatcherHandle);
-})
+WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(IActorsComponent, getEventDispatcher, EventDispatcherHandleStorage)
 
 WRAP_READ_ONLY_POOL_METHODS(IActorsComponent, IActor, EntityToJS<IActor>)
 WRAP_POOL_METHODS(IActorsComponent, IActor)
@@ -37,6 +31,11 @@ void WrapActorPool(IActorsComponent *actorPool, v8::Local<v8::Context> context) 
     actorPool->getPoolEventDispatcher().addEventHandler(handler);
 
     auto actorPoolHandle = InterfaceToObject(actorPool, context, WRAPPED_METHODS(IActorsComponent));
-
     actorPool->addExtension(new IHandleStorage(context->GetIsolate(), actorPoolHandle), true);
+
+    auto eventDispatcherHandleStorage = WrapActorEventDispatcher(&actorPool->getEventDispatcher(), context);
+    actorPool->addExtension(eventDispatcherHandleStorage, true);
+
+    auto poolEventDispatcherHandleStorage = WRAPPED_POOL_EVENT_DISPATCHER(IActor)(&actorPool->getPoolEventDispatcher(), context);
+    actorPool->addExtension(poolEventDispatcherHandleStorage, true);
 }

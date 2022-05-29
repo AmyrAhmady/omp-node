@@ -199,12 +199,11 @@ WRAP_BASIC_CODE(IPlayerEventDispatcher, removeEventHandler, WRAP_REMOVE_EVENT_HA
 
 WRAP_BASIC_CALL_RETURN(IPlayerEventDispatcher, count, (size_t, UIntToJS))
 
-v8::Local<v8::Value> WrapPlayerEventDispatcher(IEventDispatcher<PlayerEventHandler> *dispatcher,
+EventDispatcherHandleStorage *WrapPlayerEventDispatcher(IEventDispatcher<PlayerEventHandler> *dispatcher,
                                                v8::Local<v8::Context> context) {
-
-    v8::EscapableHandleScope hs(context->GetIsolate());
+    v8::HandleScope hs(context->GetIsolate());
 
     auto dispatcherHandle = InterfaceToObject(dispatcher, context, WRAPPED_METHODS(IPlayerEventDispatcher));
 
-    return hs.Escape(dispatcherHandle);
+    return new EventDispatcherHandleStorage(context->GetIsolate(), dispatcherHandle);
 }

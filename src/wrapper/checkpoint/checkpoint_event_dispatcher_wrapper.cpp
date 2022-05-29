@@ -33,12 +33,11 @@ WRAP_BASIC_CODE(ICheckpointEventDispatcher, removeEventHandler, WRAP_REMOVE_EVEN
 
 WRAP_BASIC_CALL_RETURN(ICheckpointEventDispatcher, count, (size_t, UIntToJS))
 
-v8::Local<v8::Value> WrapCheckpointEventDispatcher(ICheckpointEventDispatcher *dispatcher,
-                                                 v8::Local<v8::Context> context) {
-
-    v8::EscapableHandleScope hs(context->GetIsolate());
+EventDispatcherHandleStorage *WrapCheckpointEventDispatcher(ICheckpointEventDispatcher *dispatcher,
+                                                            v8::Local<v8::Context> context) {
+    v8::HandleScope hs(context->GetIsolate());
 
     auto dispatcherHandle = InterfaceToObject(dispatcher, context, WRAPPED_METHODS(ICheckpointEventDispatcher));
 
-    return hs.Escape(dispatcherHandle);
+    return new EventDispatcherHandleStorage(context->GetIsolate(), dispatcherHandle);
 }

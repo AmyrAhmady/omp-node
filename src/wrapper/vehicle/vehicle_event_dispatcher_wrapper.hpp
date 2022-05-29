@@ -6,4 +6,4 @@
 
 typedef IEventDispatcher<VehicleEventHandler> IVehicleEventDispatcher;
 
-v8::Local<v8::Value> WrapVehicleEventDispatcher(IVehicleEventDispatcher *dispatcher, v8::Local<v8::Context> context);
+EventDispatcherHandleStorage* WrapVehicleEventDispatcher(IVehicleEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));

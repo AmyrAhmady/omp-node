@@ -11,12 +11,10 @@ WRAP_BASIC(ICheckpointData)
 
 WRAP_CHECKPOINT_DATA_BASE_METHODS(ICheckpointData)
 
-v8::Local<v8::Value> WrapCheckpointData(ICheckpointData &data,
-                                                 v8::Local<v8::Context> context) {
+CheckpointDataHandleStorage *WrapCheckpointData(ICheckpointData &data, v8::Local<v8::Context> context) {
+    v8::HandleScope hs(context->GetIsolate());
 
-    v8::EscapableHandleScope hs(context->GetIsolate());
+    auto handle = InterfaceToObject(&data, context, WRAPPED_METHODS(ICheckpointData));
 
-    auto dispatcherHandle = InterfaceToObject(&data, context, WRAPPED_METHODS(ICheckpointData));
-
-    return hs.Escape(dispatcherHandle);
+    return new CheckpointDataHandleStorage(context->GetIsolate(), handle);
 }

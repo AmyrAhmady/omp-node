@@ -90,6 +90,39 @@
         AddObjectMethod AddObjectMethod##_##functionName(#functionName, functionName); \
     }
 
+#define WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(ExternalType, functionName, ExtensionType) \
+    WRAP_BASIC_CODE(ExternalType, functionName, { \
+        ENTER_FUNCTION_CALLBACK(info) \
+        auto external = GetContextExternalPointer<ExternalType>(info); \
+        if (external == nullptr) { \
+            return; \
+        } \
+        auto storageExtension = queryExtension<ExtensionType>(external); \
+        auto handle = storageExtension->get(); \
+        info.GetReturnValue().Set(handle); \
+    })
+
+#define WRAP_LOCAL_EXT_LAZY_HANDLE_STORAGE_GET(ExternalType, functionName, ExtensionType, AddExtensionFn) \
+    WRAP_BASIC_CODE(ExternalType, functionName, { \
+        ENTER_FUNCTION_CALLBACK(info) \
+        auto external = GetContextExternalPointer<ExternalType>(info); \
+        if (external == nullptr) { \
+            return; \
+        } \
+        auto storageExtension = queryExtension<ExtensionType>(external);                                  \
+        if (storageExtension == nullptr) {                                                                \
+            v8::TryCatch tryCatch(isolate);                                                                                              \
+            storageExtension = AddExtensionFn(external, context);                                         \
+                                                                                                          \
+            if (tryCatch.HasCaught()) {                                                                   \
+                tryCatch.ReThrow();                                                                       \
+                return; \
+            }\
+        }\
+        auto handle = storageExtension->get(); \
+        info.GetReturnValue().Set(handle); \
+    })
+
 #define WRAP_EXT_BASIC_CALL_RETURN(ExternalType, ExtensionType, functionName, ReturnValueInfo, ...) \
     namespace wrapper##_##ExternalType { \
         void functionName(const v8::FunctionCallbackInfo<v8::Value> &info) { \

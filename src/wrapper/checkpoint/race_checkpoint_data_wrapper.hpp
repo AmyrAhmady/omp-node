@@ -4,4 +4,7 @@
 #include "Server/Components/Checkpoints/checkpoints.hpp"
 #include "../utils.hpp"
 
-v8::Local<v8::Value> WrapRaceCheckpointData(IRaceCheckpointData &data, v8::Local<v8::Context> context);
+CREATE_HANDLE_STORAGE_EXTENSION(0x4ec4dea7c13b41da, RaceCheckpointDataHandleStorage)
+
+RaceCheckpointDataHandleStorage *WrapRaceCheckpointData(IRaceCheckpointData &data,
+                                                        v8::Local<v8::Context> context) __attribute__((warn_unused_result));

@@ -22,12 +22,11 @@ WRAP_BASIC_CODE(IDialogEventDispatcher, removeEventHandler, WRAP_REMOVE_EVENT_HA
 
 WRAP_BASIC_CALL_RETURN(IDialogEventDispatcher, count, (size_t, UIntToJS))
 
-v8::Local<v8::Value> WrapDialogEventDispatcher(IEventDispatcher<PlayerDialogEventHandler> *dispatcher,
-                                               v8::Local<v8::Context> context) {
-
-    v8::EscapableHandleScope hs(context->GetIsolate());
+EventDispatcherHandleStorage *WrapDialogEventDispatcher(IEventDispatcher<PlayerDialogEventHandler> *dispatcher,
+                                                        v8::Local<v8::Context> context) {
+    v8::HandleScope hs(context->GetIsolate());
 
     auto dispatcherHandle = InterfaceToObject(dispatcher, context, WRAPPED_METHODS(IDialogEventDispatcher));
 
-    return hs.Escape(dispatcherHandle);
+    return new EventDispatcherHandleStorage(context->GetIsolate(), dispatcherHandle);
 }

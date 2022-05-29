@@ -20,13 +20,7 @@ WRAP_BASIC_CALL_RETURN(IPickupsComponent,
                        (uint32_t, JSToUInt<uint32_t>, virtualWorld),
                        (bool, JSToBool, isStatic))
 
-WRAP_BASIC_CODE(IPickupsComponent, getEventDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
-    auto pool = GetContextExternalPointer<IPickupsComponent>(info);
-    auto dispatcher = &pool->getEventDispatcher();
-    auto dispatcherHandle = WrapPickupEventDispatcher(dispatcher, context);
-    info.GetReturnValue().Set(dispatcherHandle);
-})
+WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(IPickupsComponent, getEventDispatcher, EventDispatcherHandleStorage)
 
 WRAP_READ_ONLY_POOL_METHODS(IPickupsComponent, IPickup, EntityToJS<IPickup>)
 WRAP_POOL_METHODS(IPickupsComponent, IPickup)
@@ -39,6 +33,11 @@ void WrapPickupPool(IPickupsComponent *pickupPool, v8::Local<v8::Context> contex
     pickupPool->getPoolEventDispatcher().addEventHandler(handler);
 
     auto pickupPoolHandle = InterfaceToObject(pickupPool, context, WRAPPED_METHODS(IPickupsComponent));
-
     pickupPool->addExtension(new IHandleStorage(context->GetIsolate(), pickupPoolHandle), true);
+
+    auto eventDispatcherHandleStorage = WrapPickupEventDispatcher(&pickupPool->getEventDispatcher(), context);
+    pickupPool->addExtension(eventDispatcherHandleStorage, true);
+
+    auto poolEventDispatcherHandleStorage = WRAPPED_POOL_EVENT_DISPATCHER(IPickup)(&pickupPool->getPoolEventDispatcher(), context);
+    pickupPool->addExtension(poolEventDispatcherHandleStorage, true);
 }

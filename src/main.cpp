@@ -6,7 +6,7 @@ struct NodeJSComponent final : IComponent, CoreEventHandler {
     PROVIDE_UID(0x88f9172cc6eb78a3);
 
     StringView componentName() const override {
-        return "Count vehicles in rules";
+        return "NodeJS";
     }
 
     SemanticVersion componentVersion() const override {

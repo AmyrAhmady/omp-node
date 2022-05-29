@@ -6,4 +6,4 @@
 
 typedef IEventDispatcher<GangZoneEventHandler> IGangZoneEventDispatcher;
 
-v8::Local<v8::Value> WrapGangZoneEventDispatcher(IGangZoneEventDispatcher *dispatcher, v8::Local<v8::Context> context);
+EventDispatcherHandleStorage* WrapGangZoneEventDispatcher(IGangZoneEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));

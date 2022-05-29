@@ -5,4 +5,4 @@
 
 typedef IEventDispatcher<PlayerEventHandler> IPlayerEventDispatcher;
 
-v8::Local<v8::Value> WrapPlayerEventDispatcher(IPlayerEventDispatcher *dispatcher, v8::Local<v8::Context> context);
+EventDispatcherHandleStorage* WrapPlayerEventDispatcher(IPlayerEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));

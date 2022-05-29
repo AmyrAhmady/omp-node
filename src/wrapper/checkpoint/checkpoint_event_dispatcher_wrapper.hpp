@@ -6,4 +6,4 @@
 
 typedef IEventDispatcher<PlayerCheckpointEventHandler> ICheckpointEventDispatcher;
 
-v8::Local<v8::Value> WrapCheckpointEventDispatcher(ICheckpointEventDispatcher *dispatcher, v8::Local<v8::Context> context);
+EventDispatcherHandleStorage* WrapCheckpointEventDispatcher(ICheckpointEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));

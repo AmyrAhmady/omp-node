@@ -27,12 +27,11 @@ WRAP_BASIC_CODE(IGangZoneEventDispatcher, removeEventHandler, WRAP_REMOVE_EVENT_
 
 WRAP_BASIC_CALL_RETURN(IGangZoneEventDispatcher, count, (size_t, UIntToJS))
 
-v8::Local<v8::Value> WrapGangZoneEventDispatcher(IEventDispatcher<GangZoneEventHandler> *dispatcher,
-                                                 v8::Local<v8::Context> context) {
-
-    v8::EscapableHandleScope hs(context->GetIsolate());
+EventDispatcherHandleStorage *WrapGangZoneEventDispatcher(IEventDispatcher<GangZoneEventHandler> *dispatcher,
+                                                          v8::Local<v8::Context> context) {
+    v8::HandleScope hs(context->GetIsolate());
 
     auto dispatcherHandle = InterfaceToObject(dispatcher, context, WRAPPED_METHODS(IGangZoneEventDispatcher));
 
-    return hs.Escape(dispatcherHandle);
+    return new EventDispatcherHandleStorage(context->GetIsolate(), dispatcherHandle);
 }

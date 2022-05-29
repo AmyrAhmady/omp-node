@@ -26,12 +26,11 @@ WRAP_BASIC_CODE(IPlayerUpdateEventDispatcher,
 
 WRAP_BASIC_CALL_RETURN(IPlayerUpdateEventDispatcher, count, (size_t, UIntToJS))
 
-v8::Local<v8::Value> WrapPlayerUpdateEventDispatcher(IEventDispatcher<PlayerUpdateEventHandler> *dispatcher,
-                                                     v8::Local<v8::Context> context) {
-
-    v8::EscapableHandleScope hs(context->GetIsolate());
+PlayerUpdateEventDispatcherHandleStorage *WrapPlayerUpdateEventDispatcher(IEventDispatcher<PlayerUpdateEventHandler> *dispatcher,
+                                                                          v8::Local<v8::Context> context) {
+    v8::HandleScope hs(context->GetIsolate());
 
     auto dispatcherHandle = InterfaceToObject(dispatcher, context, WRAPPED_METHODS(IPlayerUpdateEventDispatcher));
 
-    return hs.Escape(dispatcherHandle);
+    return new PlayerUpdateEventDispatcherHandleStorage(context->GetIsolate(), dispatcherHandle);
 }

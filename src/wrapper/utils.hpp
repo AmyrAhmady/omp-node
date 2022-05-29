@@ -23,7 +23,7 @@
     v8::Local<v8::Context> context = func->GetCreationContext().ToLocalChecked(); \
     v8::Context::Scope contextScope(context);
 
-static const UID HandleStorage_UID = UID(0x9f8d31e2f071cfff);
+static const UID HandleStorage_UID = UID(0xd42b91d86d0c7b30);
 struct IHandleStorage : public IExtension {
     PROVIDE_EXT_UID(HandleStorage_UID);
 
@@ -38,6 +38,18 @@ struct IHandleStorage : public IExtension {
 
     void reset() override;
 };
+
+#define CREATE_HANDLE_STORAGE_EXTENSION(ID, Type) \
+    static const UID Type##_UID = UID(ID); \
+    struct Type : public IHandleStorage { \
+        PROVIDE_EXT_UID(Type##_UID); \
+        Type(v8::Isolate *isolate, v8::Local<v8::Value> value) : IHandleStorage(isolate, value) { \
+            L_DEBUG << #Type; \
+        } \
+    };
+
+CREATE_HANDLE_STORAGE_EXTENSION(0x05be1bbe879280ee, EventDispatcherHandleStorage)
+CREATE_HANDLE_STORAGE_EXTENSION(0x74b01b92d5207574, PoolEventDispatcherHandleStorage)
 
 IHandleStorage *GetHandleStorageExtension(IExtensible *extensible);
 

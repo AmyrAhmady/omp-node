@@ -6,4 +6,4 @@
 
 typedef IEventDispatcher<PlayerDialogEventHandler> IDialogEventDispatcher;
 
-v8::Local<v8::Value> WrapDialogEventDispatcher(IDialogEventDispatcher *dispatcher, v8::Local<v8::Context> context);
+EventDispatcherHandleStorage* WrapDialogEventDispatcher(IDialogEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));

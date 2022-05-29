@@ -49,29 +49,14 @@ WRAP_BASIC_CALL_RETURN(IPlayerPool, isNameValid, (bool, BoolToJS), (Impl::String
 WRAP_BASIC_CALL(IPlayerPool, allowNickNameCharacter, (char, JSToInt<char>, character), (bool, JSToBool, allow))
 WRAP_BASIC_CALL_RETURN(IPlayerPool, isNickNameCharacterAllowed, (bool, BoolToJS), (char, JSToInt<char>, character))
 
-WRAP_BASIC_CODE(IPlayerPool, getEventDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
-    auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
-    auto dispatcher = &playerPool->getEventDispatcher();
-    auto dispatcherHandle = WrapPlayerEventDispatcher(dispatcher, context);
-    info.GetReturnValue().Set(dispatcherHandle);
-})
-WRAP_BASIC_CODE(IPlayerPool, getPlayerUpdateDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
-    auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
-    auto dispatcher = &playerPool->getPlayerUpdateDispatcher();
-    auto dispatcherHandle = WrapPlayerUpdateEventDispatcher(dispatcher, context);
-    info.GetReturnValue().Set(dispatcherHandle);
-})
+
+WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(IPlayerPool, getEventDispatcher, EventDispatcherHandleStorage)
+
+WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(IPlayerPool, getPlayerUpdateDispatcher, PlayerUpdateEventDispatcherHandleStorage)
 
 WRAP_POOL_EVENT_DISPATCHER(IPlayerPool, IPlayer)
-WRAP_BASIC_CODE(IPlayerPool, getPoolEventDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
-    auto playerPool = GetContextExternalPointer<IPlayerPool>(info);
-    auto dispatcher = &playerPool->getPoolEventDispatcher();
-    auto dispatcherHandle = WRAPPED_POOL_EVENT_DISPATCHER(IPlayer)(dispatcher, context);
-    info.GetReturnValue().Set(dispatcherHandle);
-})
+
+WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(IPlayerPool, getPoolEventDispatcher, PoolEventDispatcherHandleStorage)
 
 WRAP_READ_ONLY_POOL_METHODS(IPlayerPool, IPlayer, EntityToJS<IPlayer>)
 
@@ -83,6 +68,16 @@ void WrapPlayerPool(IPlayerPool *playerPool, v8::Local<v8::Context> context) {
     playerPool->getPoolEventDispatcher().addEventHandler(handler);
 
     auto playerPoolHandle = InterfaceToObject(playerPool, context, WRAPPED_METHODS(IPlayerPool));
-
     playerPool->addExtension(new IHandleStorage(context->GetIsolate(), playerPoolHandle), true);
+
+    auto eventDispatcherHandleStorage = WrapPlayerEventDispatcher(&playerPool->getEventDispatcher(), context);
+    playerPool->addExtension(eventDispatcherHandleStorage, true);
+
+    auto updateEventDispatcherHandleStorage =
+        WrapPlayerUpdateEventDispatcher(&playerPool->getPlayerUpdateDispatcher(), context);
+    playerPool->addExtension(updateEventDispatcherHandleStorage, true);
+
+    auto poolEventDispatcherHandleStorage =
+        WRAPPED_POOL_EVENT_DISPATCHER(IPlayer)(&playerPool->getPoolEventDispatcher(), context);
+    playerPool->addExtension(poolEventDispatcherHandleStorage, true);
 }

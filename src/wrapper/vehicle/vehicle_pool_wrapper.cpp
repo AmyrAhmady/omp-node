@@ -27,13 +27,7 @@ WRAP_BASIC_CALL_RETURN(IVehiclesComponent,
                        (Seconds, JSToSeconds, respawnDelay, Seconds(-1)),
                        (bool, JSToBool, addSiren, false))
 
-WRAP_BASIC_CODE(IVehiclesComponent, getEventDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
-    auto pool = GetContextExternalPointer<IVehiclesComponent>(info);
-    auto dispatcher = &pool->getEventDispatcher();
-    auto dispatcherHandle = WrapVehicleEventDispatcher(dispatcher, context);
-    info.GetReturnValue().Set(dispatcherHandle);
-})
+WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(IVehiclesComponent, getEventDispatcher, EventDispatcherHandleStorage)
 
 WRAP_READ_ONLY_POOL_METHODS(IVehiclesComponent, IVehicle, EntityToJS<IVehicle>)
 
@@ -47,6 +41,11 @@ void WrapVehiclePool(IVehiclesComponent *vehiclePool, v8::Local<v8::Context> con
     vehiclePool->getPoolEventDispatcher().addEventHandler(handler);
 
     auto vehiclePoolHandle = InterfaceToObject(vehiclePool, context, WRAPPED_METHODS(IVehiclesComponent));
-
     vehiclePool->addExtension(new IHandleStorage(context->GetIsolate(), vehiclePoolHandle), true);
+
+    auto eventDispatcherHandleStorage = WrapVehicleEventDispatcher(&vehiclePool->getEventDispatcher(), context);
+    vehiclePool->addExtension(eventDispatcherHandleStorage, true);
+
+    auto poolEventDispatcherHandleStorage = WRAPPED_POOL_EVENT_DISPATCHER(IVehicle)(&vehiclePool->getPoolEventDispatcher(), context);
+    vehiclePool->addExtension(poolEventDispatcherHandleStorage, true);
 }

@@ -5,16 +5,12 @@
 
 WRAP_BASIC(ICheckpointsComponent)
 
-WRAP_BASIC_CODE(ICheckpointsComponent, getEventDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
-    auto pool = GetContextExternalPointer<ICheckpointsComponent>(info);
-    auto dispatcher = &pool->getEventDispatcher();
-    auto dispatcherHandle = WrapCheckpointEventDispatcher(dispatcher, context);
-    info.GetReturnValue().Set(dispatcherHandle);
-})
+WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(ICheckpointsComponent, getEventDispatcher, EventDispatcherHandleStorage)
 
 void WrapCheckpointPool(ICheckpointsComponent *checkpointPool, v8::Local<v8::Context> context) {
     auto checkpointPoolHandle = InterfaceToObject(checkpointPool, context, WRAPPED_METHODS(ICheckpointsComponent));
-
     checkpointPool->addExtension(new IHandleStorage(context->GetIsolate(), checkpointPoolHandle), true);
+
+    auto eventDispatcherHandleStorage = WrapCheckpointEventDispatcher(&checkpointPool->getEventDispatcher(), context);
+    checkpointPool->addExtension(eventDispatcherHandleStorage, true);
 }

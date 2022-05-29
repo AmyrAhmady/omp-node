@@ -26,13 +26,7 @@ WRAP_BASIC_CALL(IGangZonesComponent,
                 (IGangZone & , JSToEntityRef<IGangZone>, zone),
                 (bool, JSToBool, enable))
 
-WRAP_BASIC_CODE(IGangZonesComponent, getEventDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
-    auto pool = GetContextExternalPointer<IGangZonesComponent>(info);
-    auto dispatcher = &pool->getEventDispatcher();
-    auto dispatcherHandle = WrapGangZoneEventDispatcher(dispatcher, context);
-    info.GetReturnValue().Set(dispatcherHandle);
-})
+WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(IGangZonesComponent, getEventDispatcher, EventDispatcherHandleStorage)
 
 WRAP_READ_ONLY_POOL_METHODS(IGangZonesComponent, IGangZone, EntityToJS<IGangZone>)
 WRAP_POOL_METHODS(IGangZonesComponent, IGangZone)
@@ -45,6 +39,11 @@ void WrapGangZonePool(IGangZonesComponent *gangZonePool, v8::Local<v8::Context> 
     gangZonePool->getPoolEventDispatcher().addEventHandler(handler);
 
     auto gangZonePoolHandle = InterfaceToObject(gangZonePool, context, WRAPPED_METHODS(IGangZonesComponent));
-
     gangZonePool->addExtension(new IHandleStorage(context->GetIsolate(), gangZonePoolHandle), true);
+
+    auto eventDispatcherHandleStorage = WrapGangZoneEventDispatcher(&gangZonePool->getEventDispatcher(), context);
+    gangZonePool->addExtension(eventDispatcherHandleStorage, true);
+
+    auto poolEventDispatcherHandleStorage = WRAPPED_POOL_EVENT_DISPATCHER(IGangZone)(&gangZonePool->getPoolEventDispatcher(), context);
+    gangZonePool->addExtension(poolEventDispatcherHandleStorage, true);
 }

@@ -6,4 +6,4 @@
 
 typedef IEventDispatcher<ActorEventHandler> IActorEventDispatcher;
 
-v8::Local<v8::Value> WrapActorEventDispatcher(IActorEventDispatcher *dispatcher, v8::Local<v8::Context> context);
+EventDispatcherHandleStorage* WrapActorEventDispatcher(IActorEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));
