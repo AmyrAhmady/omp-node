@@ -109,16 +109,20 @@
         if (external == nullptr) { \
             return; \
         } \
-        auto storageExtension = queryExtension<ExtensionType>(external);                                  \
-        if (storageExtension == nullptr) {                                                                \
-            v8::TryCatch tryCatch(isolate);                                                                                              \
-            storageExtension = AddExtensionFn(external, context);                                         \
-                                                                                                          \
-            if (tryCatch.HasCaught()) {                                                                   \
-                tryCatch.ReThrow();                                                                       \
+        auto storageExtension = queryExtension<ExtensionType>(external); \
+        if (storageExtension == nullptr) { \
+            { \
+                v8::TryCatch tryCatch(isolate); \
+                storageExtension = AddExtensionFn(external, context); \
+                if (tryCatch.HasCaught()) { \
+                    tryCatch.ReThrow(); \
+                    return; \
+                } \
+            } \
+            if (storageExtension == nullptr) { \
                 return; \
-            }\
-        }\
+            } \
+        } \
         auto handle = storageExtension->get(); \
         info.GetReturnValue().Set(handle); \
     })
