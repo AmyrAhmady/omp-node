@@ -42,8 +42,8 @@ WRAP_BASIC_CALL(IPlayer,
                 (Vector3, JSToVector<Vector3>, to),
                 (int, JSToInt, time),
                 (PlayerCameraCutType, JSToEnum<PlayerCameraCutType>, cutType))
-//WRAP_BASIC_CALL(IPlayer, attachCameraToObject, (IObject&, JSToEntity<IObject>, object))
-//WRAP_BASIC_CALL(IPlayer, attachCameraToObject, (IPlayerObject&, JSToEntity<IPlayerObject>, object))
+//WRAP_BASIC_CALL(IPlayer, attachCameraToObject, (IObject&, JSToEntity<IObject>, object)) // todo
+//WRAP_BASIC_CALL(IPlayer, attachCameraToObject, (IPlayerObject&, JSToEntity<IPlayerObject>, object)) // todo
 WRAP_BASIC_CALL_RETURN(IPlayer,
                        setName,
                        (EPlayerNameStatus, EnumToJS<EPlayerNameStatus>),
@@ -211,10 +211,10 @@ WRAP_BASIC_CALL_RETURN(IPlayer, hasCameraTargeting, (bool, BoolToJS))
 WRAP_BASIC_CALL(IPlayer, removeFromVehicle)
 WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetPlayer, (IPlayer * , EntityToJS<IPlayer>))
 WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetVehicle, (IVehicle * , EntityToJS<IVehicle>))
-//WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetObject, (IObject*, EntityToJS<IObject>))
-//WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetActor, (IActor*, EntityToJS<IActor>))
+//WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetObject, (IObject*, EntityToJS<IObject>)) // todo
+WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetActor, (IActor*, EntityToJS<IActor>))
 WRAP_BASIC_CALL_RETURN(IPlayer, getTargetPlayer, (IPlayer * , EntityToJS<IPlayer>))
-//WRAP_BASIC_CALL_RETURN(IPlayer, getTargetActor, (IActor*, EntityToJS<IActor>))
+WRAP_BASIC_CALL_RETURN(IPlayer, getTargetActor, (IActor*, EntityToJS<IActor>))
 WRAP_BASIC_CALL(IPlayer, setRemoteVehicleCollisions, (bool, JSToBool, collide))
 WRAP_BASIC_CALL(IPlayer,
                 spectatePlayer,
