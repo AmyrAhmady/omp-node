@@ -9,6 +9,7 @@
 #include "../checkpoint/checkpoint_data_wrapper.hpp"
 #include "../checkpoint/race_checkpoint_data_wrapper.hpp"
 #include "../dialog/dialog_pool_wrapper.hpp"
+#include "../menu/menu_wrapper.hpp"
 
 WRAP_BASIC(IPlayer)
 WRAP_BASIC_CALL(IPlayer, kick)
@@ -212,9 +213,9 @@ WRAP_BASIC_CALL(IPlayer, removeFromVehicle)
 WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetPlayer, (IPlayer * , EntityToJS<IPlayer>))
 WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetVehicle, (IVehicle * , EntityToJS<IVehicle>))
 //WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetObject, (IObject*, EntityToJS<IObject>)) // todo
-WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetActor, (IActor*, EntityToJS<IActor>))
+WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetActor, (IActor * , EntityToJS<IActor>))
 WRAP_BASIC_CALL_RETURN(IPlayer, getTargetPlayer, (IPlayer * , EntityToJS<IPlayer>))
-WRAP_BASIC_CALL_RETURN(IPlayer, getTargetActor, (IActor*, EntityToJS<IActor>))
+WRAP_BASIC_CALL_RETURN(IPlayer, getTargetActor, (IActor * , EntityToJS<IActor>))
 WRAP_BASIC_CALL(IPlayer, setRemoteVehicleCollisions, (bool, JSToBool, collide))
 WRAP_BASIC_CALL(IPlayer,
                 spectatePlayer,
@@ -339,7 +340,10 @@ WRAP_BASIC_CODE(IPlayer, get, {
 
     info.GetReturnValue().Set(array);
 })
-WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerDialogData, getActiveID, (int, IntToJS));
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerDialogData, getActiveID, (int, IntToJS))
+
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerMenuData, getMenuID, (uint8_t, UIntToJS<uint8_t>))
+WRAP_EXT_BASIC_CALL(IPlayer, IPlayerMenuData, setMenuID, (uint8_t, JSToUInt<uint8_t>, id))
 
 WRAP_ENTITY_METHODS(IPlayer)
 
