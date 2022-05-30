@@ -145,23 +145,27 @@
         info.GetReturnValue().Set(handle); \
     })
 
-#define WRAP_LOCAL_EXT_LAZY_HANDLE_STORAGE_GET(ExternalType, functionName, ExtensionType, AddExtensionFn) \
+#define WRAP_LAZILY_GET_EXTENSION_HANDLE(ExternalType, functionName, StorageExtensionType, ExtensionType, WrapExtensionFn) \
     WRAP_BASIC_CODE(ExternalType, functionName, { \
         ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         if (external == nullptr) { \
             return; \
         } \
-        auto storageExtension = queryExtension<ExtensionType>(external); \
+        auto storageExtension = queryExtension<StorageExtensionType>(external); \
         if (storageExtension == nullptr) { \
             { \
-                v8::TryCatch tryCatch(isolate); \
-                storageExtension = AddExtensionFn(external, context); \
-                if (tryCatch.HasCaught()) { \
-                    tryCatch.ReThrow(); \
+                auto nativeExtension = queryExtension<ExtensionType>(external); \
+                if (nativeExtension == nullptr) { \
+                    isolate->ThrowException(v8::Exception::ReferenceError(v8::String::NewFromUtf8(isolate, #ExtensionType " extension is not connected").ToLocalChecked())); \
                     return; \
                 } \
+                auto handleStorageExtensions = WrapExtensionFn(external, nativeExtension, context); \
+                for (auto handleStorageExt: handleStorageExtensions) { \
+                    external->addExtension(handleStorageExt, true); \
+                } \
             } \
+            storageExtension = queryExtension<StorageExtensionType>(external); \
             if (storageExtension == nullptr) { \
                 return; \
             } \

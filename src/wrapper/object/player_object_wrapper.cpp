@@ -19,7 +19,7 @@ WRAP_BASIC_CALL(IPlayerObject,
 
 WRAP_ENTITY_METHODS(IPlayerObject)
 
-void WrapPlayerObject(IObject *playerObject, v8::Local<v8::Context> context) {
+void WrapPlayerObject(IPlayerObject *playerObject, v8::Local<v8::Context> context) {
     auto objectHandle = InterfaceToObject(playerObject, context, WRAPPED_METHODS(IPlayerObject));
 
     playerObject->addExtension(new IHandleStorage(context->GetIsolate(), objectHandle), true);

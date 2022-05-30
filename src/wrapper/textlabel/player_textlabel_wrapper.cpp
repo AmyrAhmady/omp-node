@@ -1,4 +1,4 @@
-#include "textlabel_wrapper.hpp"
+#include "player_textlabel_wrapper.hpp"
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
 #include "../../converter/vehicle.hpp"
@@ -13,7 +13,7 @@ WRAP_TEXTLABEL_BASE_METHODS(IPlayerTextLabel)
 
 WRAP_ENTITY_METHODS(IPlayerTextLabel)
 
-void WrapPlayerTextLabel(ITextLabel *playerTextLabel, v8::Local<v8::Context> context) {
+void WrapPlayerTextLabel(IPlayerTextLabel *playerTextLabel, v8::Local<v8::Context> context) {
     auto textLabelHandle = InterfaceToObject(playerTextLabel, context, WRAPPED_METHODS(IPlayerTextLabel));
 
     playerTextLabel->addExtension(new IHandleStorage(context->GetIsolate(), textLabelHandle), true);

@@ -57,10 +57,11 @@ IHandleStorage *GetHandleStorageExtension(IExtensible *extensible);
 typedef std::vector<std::pair<std::string, v8::FunctionCallback>> ObjectMethods;
 typedef std::vector<std::tuple<std::string, v8::FunctionCallback, v8::FunctionCallback>> ObjectAccessors;
 
-template<class Interface>
+template<class Interface, class ClosestExtensibleInterface = void>
 v8::Local<v8::Object> InterfaceToObject(Interface *pointer,
                                         v8::Local<v8::Context> context,
-                                        const ObjectMethods &methods) {
+                                        const ObjectMethods &methods,
+                                        ClosestExtensibleInterface *closestExtensiblePointer = nullptr) {
     auto isolate = context->GetIsolate();
 
     auto objectTemplate = v8::ObjectTemplate::New(isolate);
@@ -68,7 +69,7 @@ v8::Local<v8::Object> InterfaceToObject(Interface *pointer,
     auto interfaceTypeSymbol = v8::Symbol::For(isolate, StringViewToJS("interfaceToObjectInterfaceType", context));
     objectTemplate->Set(interfaceTypeSymbol, StringViewToJS(std::string(typeid(Interface).name()), context));
 
-    objectTemplate->SetInternalFieldCount(1);
+    objectTemplate->SetInternalFieldCount(2);
 
     for (auto &entry: methods) {
         objectTemplate->Set(v8::String::NewFromUtf8(isolate,
@@ -80,6 +81,7 @@ v8::Local<v8::Object> InterfaceToObject(Interface *pointer,
     auto object = objectTemplate->NewInstance(context).ToLocalChecked();
 
     object->SetInternalField(0, v8::External::New(isolate, pointer));
+    object->SetInternalField(1, v8::External::New(isolate, closestExtensiblePointer));
 
     return object;
 }
@@ -113,6 +115,13 @@ v8::Local<v8::Object> MutableToObject(Interface *pointer,
 template<class Interface>
 Interface *GetContextExternalPointer(const v8::FunctionCallbackInfo<v8::Value> &info) {
     v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(info.This()->GetInternalField(0));
+
+    return static_cast<Interface *>( pointer->Value());
+}
+
+template<class Interface>
+Interface *GetClosestExtensiblePointer(const v8::FunctionCallbackInfo<v8::Value> &info) {
+    v8::Handle<v8::External> pointer = v8::Handle<v8::External>::Cast(info.This()->GetInternalField(1));
 
     return static_cast<Interface *>( pointer->Value());
 }
