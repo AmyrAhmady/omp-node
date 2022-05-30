@@ -3,7 +3,7 @@
 #include "nodeimpl.hpp"
 
 struct NodeJSComponent final : IComponent, CoreEventHandler {
-    PROVIDE_UID(0x88f9172cc6eb78a3);
+    PROVIDE_UID(0x8b256881a3704e81);
 
     StringView componentName() const override {
         return "NodeJS";

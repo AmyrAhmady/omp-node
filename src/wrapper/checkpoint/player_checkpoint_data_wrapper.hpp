@@ -3,8 +3,8 @@
 #include "v8.h"
 #include "../utils.hpp"
 
-CREATE_HANDLE_STORAGE_EXTENSION(0xf7750496835303c5, PlayerCheckpointDataHandleStorage)
-CREATE_HANDLE_STORAGE_EXTENSION(0xc1a6b86b95e5ca63, PlayerCheckpointHandleStorage)
-CREATE_HANDLE_STORAGE_EXTENSION(0xb2ccc83d81558211, PlayerRaceCheckpointHandleStorage)
+CREATE_HANDLE_STORAGE_EXTENSION(0xc586f1de7d0920cd, PlayerCheckpointDataHandleStorage)
+CREATE_HANDLE_STORAGE_EXTENSION(0xec271baf3dd77e77, PlayerCheckpointHandleStorage)
+CREATE_HANDLE_STORAGE_EXTENSION(0x49182c34fbf4f0dd, PlayerRaceCheckpointHandleStorage)
 
 std::vector<IHandleStorage*> WrapPlayerCheckpointData(IPlayer *player, IPlayerCheckpointData *playerCheckpointData, v8::Local<v8::Context> context);
