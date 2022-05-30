@@ -10,6 +10,7 @@
 #include "../checkpoint/race_checkpoint_data_wrapper.hpp"
 #include "../dialog/dialog_pool_wrapper.hpp"
 #include "../menu/menu_wrapper.hpp"
+#include "../textdraw/textdraw_wrapper.hpp"
 
 WRAP_BASIC(IPlayer)
 WRAP_BASIC_CALL(IPlayer, kick)
@@ -240,45 +241,33 @@ WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getVehicle, (IVehicle * 
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, getSeat, (int, IntToJS))
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerVehicleData, isInModShop, (bool, BoolToJS))
 
-//WRAP_EXT_BASIC_CALL_RETURN(IPlayer,
-//                           IPlayerCheckpointData,
-//                           getRaceCheckpoint,
-//                           (IRaceCheckpointData & , WrapRaceCheckpointData))
-//WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerCheckpointData, getCheckpoint, (ICheckpointData & , WrapCheckpointData))
+WRAP_EXT_BASIC_CALL(IPlayer, IPlayerTextDrawData, beginSelection, (Colour, JSToColour, highlight))
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerTextDrawData, isSelecting, (bool, BoolToJS))
+WRAP_EXT_BASIC_CALL(IPlayer, IPlayerTextDrawData, endSelection)
 
 RaceCheckpointDataHandleStorage *AddRaceCheckpointDataHandleStorage(IPlayer *player, v8::Local<v8::Context> context) {
     auto isolate = context->GetIsolate();
-
     auto playerCheckpointData = queryExtension<IPlayerCheckpointData>(player);
-
     if (playerCheckpointData == nullptr) {
         isolate->ThrowException(v8::Exception::ReferenceError(v8::String::NewFromUtf8(isolate,
                                                                                       "IPlayerCheckpointData extension is not connected").ToLocalChecked()));
-
         return nullptr;
     }
-
     auto raceCheckpointHandleStorage = WrapRaceCheckpointData(playerCheckpointData->getRaceCheckpoint(), context);
     player->addExtension(raceCheckpointHandleStorage, true);
-
     return raceCheckpointHandleStorage;
 }
 
 CheckpointDataHandleStorage *AddCheckpointDataHandleStorage(IPlayer *player, v8::Local<v8::Context> context) {
     auto isolate = context->GetIsolate();
-
     auto playerCheckpointData = queryExtension<IPlayerCheckpointData>(player);
-
     if (playerCheckpointData == nullptr) {
         isolate->ThrowException(v8::Exception::ReferenceError(v8::String::NewFromUtf8(isolate,
                                                                                       "IPlayerCheckpointData extension is not connected").ToLocalChecked()));
-
         return nullptr;
     }
-
     auto checkpointHandleStorage = WrapCheckpointData(playerCheckpointData->getCheckpoint(), context);
     player->addExtension(checkpointHandleStorage, true);
-
     return checkpointHandleStorage;
 }
 
