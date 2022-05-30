@@ -4,4 +4,4 @@
 #include "v8.h"
 #include "../utils.hpp"
 
-void WrapTextLabel(ITextLabel *textLabel, v8::Local<v8::Context> context);
+void WrapPlayerTextLabel(IPlayerTextLabel *playerTextLabel, v8::Local<v8::Context> context);

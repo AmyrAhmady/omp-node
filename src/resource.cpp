@@ -8,6 +8,7 @@
 #include "wrapper/actor/actor_pool_wrapper.hpp"
 #include "wrapper/dialog/dialog_pool_wrapper.hpp"
 #include "wrapper/textlabel/textlabel_pool_wrapper.hpp"
+#include "wrapper/object/object_pool_wrapper.hpp"
 
 v8::Isolate *GetV8Isolate() {
     return ompnode::nodeImpl.GetIsolate();
@@ -101,6 +102,7 @@ namespace ompnode {
         USE_WRAPPER(IActorsComponent, actors, WrapActorPool)
         USE_WRAPPER(IDialogsComponent, dialogs, WrapDialogPool)
         USE_WRAPPER(ITextLabelsComponent, textLabels, WrapTextLabelPool)
+        USE_WRAPPER(IObjectsComponent, objects, WrapObjectPool)
 
         node::EnvironmentFlags::Flags flags = node::EnvironmentFlags::kOwnsProcessState;
 

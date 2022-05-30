@@ -53,6 +53,25 @@
         }; \
     }
 
+#define OBJECT_CONVERTER_DEFINE_FROM_JS_CUSTOM(Type, defaultValue, InitializeStructure, ...) \
+    Type JSTo##Type(v8::Local<v8::Value> value, v8::Local<v8::Context> context) { \
+        auto isolate = context->GetIsolate(); \
+        if (!value->IsObject()) { \
+            isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, \
+                                                                                     "An object is required for " #Type).ToLocalChecked())); \
+            return defaultValue; \
+        } \
+        FOR_EACH(OBJECT_CONVERTER_HANDLE, __VA_ARGS__) \
+        v8::TryCatch tryCatch(isolate); \
+        FOR_EACH(OBJECT_CONVERTER_CHECK_HANDLE, __VA_ARGS__) \
+        if (tryCatch.HasCaught()) { \
+            tryCatch.ReThrow(); \
+            return defaultValue; \
+        } \
+        FOR_EACH(OBJECT_CONVERTER_CONVERT, __VA_ARGS__) \
+        return InitializeStructure; \
+    }
+
 #define OBJECT_CONVERTER_DEFINE(Type, ...) \
     OBJECT_CONVERTER_DEFINE_TO_JS(Type, __VA_ARGS__) \
     OBJECT_CONVERTER_DEFINE_FROM_JS(Type, {}, __VA_ARGS__)
