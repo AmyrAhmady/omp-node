@@ -11,6 +11,7 @@
 #include "wrapper/object/object_pool_wrapper.hpp"
 #include "wrapper/menu/menu_pool_wrapper.hpp"
 #include "wrapper/textdraw/textdraw_pool_wrapper.hpp"
+#include "wrapper/class/class_pool_wrapper.hpp"
 
 v8::Isolate *GetV8Isolate() {
     return ompnode::nodeImpl.GetIsolate();
@@ -107,6 +108,7 @@ namespace ompnode {
         USE_WRAPPER(IObjectsComponent, objects, WrapObjectPool)
         USE_WRAPPER(IMenusComponent, menus, WrapMenuPool)
         USE_WRAPPER(ITextDrawsComponent, textDraws, WrapTextDrawPool)
+        USE_WRAPPER(IClassesComponent, classes, WrapClassPool)
 
         node::EnvironmentFlags::Flags flags = node::EnvironmentFlags::kOwnsProcessState;
 

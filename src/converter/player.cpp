@@ -51,6 +51,28 @@ v8::Local<v8::Array> SkillLevelsToJS(const StaticArray<uint16_t, NUM_SKILL_LEVEL
     return array;
 }
 
+WeaponSlots JSToWeaponSlots(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
+    auto isolate = context->GetIsolate();
+
+    if (!value->IsArray()) {
+        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
+                                                                                 "An array is required").ToLocalChecked()));
+        return {};
+    }
+
+    auto slots = value.As<v8::Array>();
+
+    WeaponSlots weaponSlots;
+
+    for (int i = 0; i < weaponSlots.size(); i++) {
+        auto value = JSToWeaponSlotData(slots->Get(context, i).ToLocalChecked(), context);
+
+        weaponSlots[i] = value;
+    }
+
+    return weaponSlots;
+}
+
 OBJECT_CONVERTER_DEFINE(WeaponSlotData,
                         (uint8_t, id, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
                         (uint32_t, ammo, UIntToJS<uint32_t>, JSToUInt<uint32_t>))

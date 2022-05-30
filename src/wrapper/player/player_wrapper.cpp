@@ -4,6 +4,7 @@
 #include "../../converter/player.hpp"
 #include "../../converter/vehicle.hpp"
 #include "../../converter/anim.hpp"
+#include "../../converter/class.hpp"
 #include "../../converter/entity.hpp"
 #include "../entity/entity_wrapper.hpp"
 #include "../checkpoint/checkpoint_data_wrapper.hpp"
@@ -11,6 +12,7 @@
 #include "../dialog/dialog_pool_wrapper.hpp"
 #include "../menu/menu_wrapper.hpp"
 #include "../textdraw/textdraw_wrapper.hpp"
+#include "../class/class_wrapper.hpp"
 
 WRAP_BASIC(IPlayer)
 WRAP_BASIC_CALL(IPlayer, kick)
@@ -333,6 +335,9 @@ WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerDialogData, getActiveID, (int, IntToJ
 
 WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerMenuData, getMenuID, (uint8_t, UIntToJS<uint8_t>))
 WRAP_EXT_BASIC_CALL(IPlayer, IPlayerMenuData, setMenuID, (uint8_t, JSToUInt<uint8_t>, id))
+
+WRAP_EXT_BASIC_CALL_RETURN(IPlayer, IPlayerClassData, getClass, (const PlayerClass&, PlayerClassToJS))
+WRAP_EXT_BASIC_CALL(IPlayer, IPlayerClassData, setSpawnInfo, (const PlayerClass &, JSToPlayerClass, classInfo))
 
 WRAP_ENTITY_METHODS(IPlayer)
 
