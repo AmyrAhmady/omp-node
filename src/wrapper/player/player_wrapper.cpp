@@ -12,6 +12,7 @@
 #include "../textlabel/player_textlabel_data_wrapper.hpp"
 #include "../object/player_object_data_wrapper.hpp"
 #include "../textdraw/player_textdraw_data_wrapper.hpp"
+#include "../variable/player_variable_data_wrapper.hpp"
 
 WRAP_BASIC(IPlayer)
 WRAP_BASIC_CALL(IPlayer, kick)
@@ -237,6 +238,12 @@ WRAP_BASIC_CALL(IPlayer,
 WRAP_BASIC_CALL(IPlayer, toggleGhostMode, (bool, JSToBool, toggle))
 WRAP_BASIC_CALL_RETURN(IPlayer, isGhostModeEnabled, (bool, BoolToJS))
 WRAP_BASIC_CALL_RETURN(IPlayer, getDefaultObjectsRemoved, (int, IntToJS))
+
+WRAP_LAZILY_GET_EXTENSION_HANDLE(IPlayer,
+                                 getPlayerVariableData,
+                                 PlayerVariableDataHandleStorage,
+                                 IPlayerVariableData,
+                                 WrapPlayerVariableData)
 
 WRAP_LAZILY_GET_EXTENSION_HANDLE(IPlayer,
                                  getPlayerVehicleData,
