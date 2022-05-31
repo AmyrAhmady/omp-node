@@ -1,15 +1,5 @@
 #include "primitive.hpp"
 
-float JSToFloat(v8::Local<v8::Value> value, v8::Local<v8::Context> context, float defaultValue) {
-    auto isolate = context->GetIsolate();
-
-    if (value->IsUndefined()) {
-        return defaultValue;
-    }
-
-    return static_cast<float>(value->ToNumber(context).ToLocalChecked()->NumberValue(context).ToChecked());
-}
-
 Impl::String JSToString(v8::Local<v8::Value> value, v8::Local<v8::Context> context, Impl::String defaultValue) {
     auto isolate = context->GetIsolate();
 
@@ -48,18 +38,6 @@ char JSToChar(v8::Local<v8::Value> value, v8::Local<v8::Context> context, char d
     auto cstr = *jsString;
 
     return cstr[0];
-}
-
-float JSToFloat(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
-    auto isolate = context->GetIsolate();
-
-    if (value->IsUndefined()) {
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,
-                                                                                 "A value is required").ToLocalChecked()));
-        return float();
-    }
-
-    return static_cast<float>(value->ToNumber(context).ToLocalChecked()->NumberValue(context).ToChecked());
 }
 
 Impl::String JSToString(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
@@ -106,10 +84,6 @@ char JSToChar(v8::Local<v8::Value> value, v8::Local<v8::Context> context) {
     auto cstr = *jsString;
 
     return cstr[0];
-}
-
-v8::Local<v8::Number> FloatToJS(float value, v8::Local<v8::Context> context) {
-    return v8::Number::New(context->GetIsolate(), value);
 }
 
 v8::Local<v8::String> StringViewToJS(StringView str, v8::Local<v8::Context> context) {
