@@ -3,7 +3,6 @@
 #define WRAP_IID_PROVIDER_METHODS(Type) \
     WRAP_BASIC_CALL_RETURN(Type, getID, (int, IntToJS))
 
-
 #define WRAP_ENTITY_METHODS(Type) \
     WRAP_IID_PROVIDER_METHODS(Type) \
     WRAP_BASIC_CALL_RETURN(Type, getPosition, (Vector3, VectorToJS<Vector3>)) \

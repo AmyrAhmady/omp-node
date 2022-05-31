@@ -6,4 +6,5 @@
 
 typedef IEventDispatcher<MenuEventHandler> IMenuEventDispatcher;
 
-EventDispatcherHandleStorage* WrapMenuEventDispatcher(IMenuEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));
+EventDispatcherHandleStorage *WrapMenuEventDispatcher(IMenuEventDispatcher *dispatcher,
+                                                      v8::Local<v8::Context> context) __attribute__((warn_unused_result));

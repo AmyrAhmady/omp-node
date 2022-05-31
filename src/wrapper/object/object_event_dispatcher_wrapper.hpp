@@ -6,4 +6,5 @@
 
 typedef IEventDispatcher<ObjectEventHandler> IObjectEventDispatcher;
 
-EventDispatcherHandleStorage* WrapObjectEventDispatcher(IObjectEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));
+EventDispatcherHandleStorage *WrapObjectEventDispatcher(IObjectEventDispatcher *dispatcher,
+                                                        v8::Local<v8::Context> context) __attribute__((warn_unused_result));

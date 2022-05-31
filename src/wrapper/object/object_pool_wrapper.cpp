@@ -40,6 +40,7 @@ void WrapObjectPool(IObjectsComponent *objectPool, v8::Local<v8::Context> contex
     auto eventDispatcherHandleStorage = WrapObjectEventDispatcher(&objectPool->getEventDispatcher(), context);
     objectPool->addExtension(eventDispatcherHandleStorage, true);
 
-    auto poolEventDispatcherHandleStorage = WRAPPED_POOL_EVENT_DISPATCHER(IObject)(&objectPool->getPoolEventDispatcher(), context);
+    auto poolEventDispatcherHandleStorage =
+        WRAPPED_POOL_EVENT_DISPATCHER(IObject)(&objectPool->getPoolEventDispatcher(), context);
     objectPool->addExtension(poolEventDispatcherHandleStorage, true);
 }

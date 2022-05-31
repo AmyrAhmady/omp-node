@@ -6,4 +6,5 @@
 
 typedef IEventDispatcher<TextDrawEventHandler> ITextDrawEventDispatcher;
 
-EventDispatcherHandleStorage* WrapTextDrawEventDispatcher(ITextDrawEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));
+EventDispatcherHandleStorage *WrapTextDrawEventDispatcher(ITextDrawEventDispatcher *dispatcher,
+                                                          v8::Local<v8::Context> context) __attribute__((warn_unused_result));

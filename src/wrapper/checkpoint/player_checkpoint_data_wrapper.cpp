@@ -29,8 +29,8 @@ WRAP_BASIC_CODE(IPlayerCheckpointData, getRaceCheckpoint, {
 })
 
 std::vector<IExtension *> WrapPlayerCheckpointData(IPlayer *player,
-                                                       IPlayerCheckpointData *playerCheckpointData,
-                                                       v8::Local<v8::Context> context) {
+                                                   IPlayerCheckpointData *playerCheckpointData,
+                                                   v8::Local<v8::Context> context) {
 
     std::vector<IExtension *> handleStorages;
 

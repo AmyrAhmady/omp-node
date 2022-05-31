@@ -12,36 +12,18 @@
 WRAP_BASIC(ITextLabelsComponent)
 
 WRAP_BASIC_CALL_RETURN_OVERLOAD(ITextLabelsComponent,
-                       create,
-                                (create,
-                                    info[6]->IsUndefined(),
-                                    (ITextLabel * , EntityToJS<ITextLabel>),
-                                    (Impl::String, JSToString, text),
-                                    (Colour, JSToColour, colour),
-                                    (Vector3, JSToVector<Vector3>, pos),
-                                    (float, JSToFloat, drawDist),
-                                    (int, JSToInt, vw),
-                                    (bool, JSToBool, los)),
-                                (create,
-                                    GetValueInterfaceType(info[6], context) == typeid(IPlayer).name(),
-                                    (ITextLabel * , EntityToJS<ITextLabel>),
-                                    (Impl::String, JSToString, text),
-                                    (Colour, JSToColour, colour),
-                                    (Vector3, JSToVector<Vector3>, pos),
-                                    (float, JSToFloat, drawDist),
-                                    (int, JSToInt, vw),
-                                    (bool, JSToBool, los),
-                                    (IPlayer&, JSToEntityRef<IPlayer>, attach)),
-                                (create,
-                                    GetValueInterfaceType(info[6], context) == typeid(IVehicle).name(),
-                                    (ITextLabel * , EntityToJS<ITextLabel>),
-                                    (Impl::String, JSToString, text),
-                                    (Colour, JSToColour, colour),
-                                    (Vector3, JSToVector<Vector3>, pos),
-                                    (float, JSToFloat, drawDist),
-                                    (int, JSToInt, vw),
-                                    (bool, JSToBool, los),
-                                    (IVehicle&, JSToEntityRef<IVehicle>, attach)))
+                                create,
+                                (create, info[6]->IsUndefined(), (ITextLabel
+                                    * , EntityToJS<ITextLabel>), (Impl::String, JSToString, text), (Colour, JSToColour, colour), (Vector3, JSToVector<
+                                    Vector3>, pos), (float, JSToFloat, drawDist), (int, JSToInt, vw), (bool, JSToBool, los)),
+                                (create, GetValueInterfaceType(info[6], context) == typeid(IPlayer).name(), (ITextLabel
+                                    * , EntityToJS<ITextLabel>), (Impl::String, JSToString, text), (Colour, JSToColour, colour), (Vector3, JSToVector<
+                                    Vector3>, pos), (float, JSToFloat, drawDist), (int, JSToInt, vw), (bool, JSToBool, los), (
+                                    IPlayer & , JSToEntityRef<IPlayer>, attach)),
+                                (create, GetValueInterfaceType(info[6], context) == typeid(IVehicle).name(), (ITextLabel
+                                    * , EntityToJS<ITextLabel>), (Impl::String, JSToString, text), (Colour, JSToColour, colour), (Vector3, JSToVector<
+                                    Vector3>, pos), (float, JSToFloat, drawDist), (int, JSToInt, vw), (bool, JSToBool, los), (
+                                    IVehicle & , JSToEntityRef<IVehicle>, attach)))
 
 WRAP_READ_ONLY_POOL_METHODS(ITextLabelsComponent, ITextLabel, EntityToJS<ITextLabel>)
 WRAP_POOL_METHODS(ITextLabelsComponent, ITextLabel)
@@ -56,6 +38,7 @@ void WrapTextLabelPool(ITextLabelsComponent *textLabelPool, v8::Local<v8::Contex
     auto textLabelPoolHandle = InterfaceToObject(textLabelPool, context, WRAPPED_METHODS(ITextLabelsComponent));
     textLabelPool->addExtension(new IHandleStorage(context->GetIsolate(), textLabelPoolHandle), true);
 
-    auto poolEventDispatcherHandleStorage = WRAPPED_POOL_EVENT_DISPATCHER(ITextLabel)(&textLabelPool->getPoolEventDispatcher(), context);
+    auto poolEventDispatcherHandleStorage =
+        WRAPPED_POOL_EVENT_DISPATCHER(ITextLabel)(&textLabelPool->getPoolEventDispatcher(), context);
     textLabelPool->addExtension(poolEventDispatcherHandleStorage, true);
 }

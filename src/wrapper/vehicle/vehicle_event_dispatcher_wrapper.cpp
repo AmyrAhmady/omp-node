@@ -104,8 +104,8 @@ WRAP_BASIC_CODE(IVehicleEventDispatcher, removeEventHandler, WRAP_REMOVE_EVENT_H
 
 WRAP_BASIC_CALL_RETURN(IVehicleEventDispatcher, count, (size_t, UIntToJS))
 
-EventDispatcherHandleStorage* WrapVehicleEventDispatcher(IEventDispatcher<VehicleEventHandler> *dispatcher,
-                                                v8::Local<v8::Context> context) {
+EventDispatcherHandleStorage *WrapVehicleEventDispatcher(IEventDispatcher<VehicleEventHandler> *dispatcher,
+                                                         v8::Local<v8::Context> context) {
     v8::HandleScope hs(context->GetIsolate());
 
     auto dispatcherHandle = InterfaceToObject(dispatcher, context, WRAPPED_METHODS(IVehicleEventDispatcher));

@@ -9,8 +9,8 @@ WRAP_BASIC_CALL_RETURN(IPlayerVehicleData, getSeat, (int, IntToJS))
 WRAP_BASIC_CALL_RETURN(IPlayerVehicleData, isInModShop, (bool, BoolToJS))
 
 std::vector<IExtension *> WrapPlayerVehicleData(IPlayer *player,
-                                                    IPlayerVehicleData *playerVehicleData,
-                                                    v8::Local<v8::Context> context) {
+                                                IPlayerVehicleData *playerVehicleData,
+                                                v8::Local<v8::Context> context) {
 
     std::vector<IExtension *> handleStorages;
 

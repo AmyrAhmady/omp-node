@@ -6,14 +6,14 @@ WRAP_BASIC(IPlayerDialogData)
 
 WRAP_BASIC_CALL(IPlayerDialogData, hide, (IPlayer & , JSToEntityRef<IPlayer>, player))
 WRAP_BASIC_CALL(IPlayerDialogData,
-                    show,
-                    (IPlayer & , JSToEntityRef<IPlayer>, player),
-                    (int, JSToInt<int>, id),
-                    (DialogStyle, JSToEnum<DialogStyle>, style),
-                    (Impl::String, JSToString, title),
-                    (Impl::String, JSToString, body),
-                    (Impl::String, JSToString, button1),
-                    (Impl::String, JSToString, button2))
+                show,
+                (IPlayer & , JSToEntityRef<IPlayer>, player),
+                (int, JSToInt<int>, id),
+                (DialogStyle, JSToEnum<DialogStyle>, style),
+                (Impl::String, JSToString, title),
+                (Impl::String, JSToString, body),
+                (Impl::String, JSToString, button1),
+                (Impl::String, JSToString, button2))
 WRAP_BASIC_CODE(IPlayerDialogData, get, {
     ENTER_FUNCTION_CALLBACK(info)
     auto external = GetContextExternalPointer<IPlayerDialogData>(info);
@@ -49,8 +49,8 @@ WRAP_BASIC_CODE(IPlayerDialogData, get, {
 WRAP_BASIC_CALL_RETURN(IPlayerDialogData, getActiveID, (int, IntToJS))
 
 std::vector<IExtension *> WrapPlayerDialogData(IPlayer *player,
-                                                  IPlayerDialogData *playerDialogData,
-                                                  v8::Local<v8::Context> context) {
+                                               IPlayerDialogData *playerDialogData,
+                                               v8::Local<v8::Context> context) {
 
     std::vector<IExtension *> handleStorages;
 

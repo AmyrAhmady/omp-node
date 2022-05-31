@@ -10,4 +10,5 @@ typedef FlatPtrHashSet<IGangZone> FlatPtrHashSetIGangZone;
 
 OBJECT_CONVERTER_DECLARE(GangZonePos)
 
-v8::Local<v8::Array> FlatPtrHashSetIGangZoneToJS(const FlatPtrHashSetIGangZone &gangZones, v8::Local<v8::Context> context);
+v8::Local<v8::Array> FlatPtrHashSetIGangZoneToJS(const FlatPtrHashSetIGangZone &gangZones,
+                                                 v8::Local<v8::Context> context);

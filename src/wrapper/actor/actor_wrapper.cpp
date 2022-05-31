@@ -18,9 +18,12 @@ WRAP_BASIC_CALL(IActor, setHealth, (float, JSToFloat, health))
 WRAP_BASIC_CALL_RETURN(IActor, getHealth, (float, FloatToJS))
 WRAP_BASIC_CALL(IActor, setInvulnerable, (bool, JSToBool, invuln))
 WRAP_BASIC_CALL_RETURN(IActor, isInvulnerable, (bool, BoolToJS))
-WRAP_BASIC_CALL_RETURN(IActor, isStreamedInForPlayer, (bool, BoolToJS), (const IPlayer&, JSToEntityRef<IPlayer>, player))
-WRAP_BASIC_CALL(IActor, streamInForPlayer, (IPlayer&, JSToEntityRef<IPlayer>, player))
-WRAP_BASIC_CALL(IActor, streamOutForPlayer, (IPlayer&, JSToEntityRef<IPlayer>, player))
+WRAP_BASIC_CALL_RETURN(IActor,
+                       isStreamedInForPlayer,
+                       (bool, BoolToJS),
+                       (const IPlayer&, JSToEntityRef<IPlayer>, player))
+WRAP_BASIC_CALL(IActor, streamInForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
+WRAP_BASIC_CALL(IActor, streamOutForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 WRAP_BASIC_CALL_RETURN(IActor, getSpawnData, (const ActorSpawnData&, TO_JS_FN(ActorSpawnData)));
 
 WRAP_ENTITY_METHODS(IActor)

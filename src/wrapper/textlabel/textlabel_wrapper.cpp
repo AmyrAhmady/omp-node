@@ -11,9 +11,12 @@ WRAP_BASIC(ITextLabel)
 
 WRAP_TEXTLABEL_BASE_METHODS(ITextLabel)
 
-WRAP_BASIC_CALL_RETURN(ITextLabel, isStreamedInForPlayer, (bool, BoolToJS), (const IPlayer&, JSToEntityRef<IPlayer>, player))
-WRAP_BASIC_CALL(ITextLabel, streamInForPlayer, (IPlayer&, JSToEntityRef<IPlayer>, player))
-WRAP_BASIC_CALL(ITextLabel, streamOutForPlayer, (IPlayer&, JSToEntityRef<IPlayer>, player))
+WRAP_BASIC_CALL_RETURN(ITextLabel,
+                       isStreamedInForPlayer,
+                       (bool, BoolToJS),
+                       (const IPlayer&, JSToEntityRef<IPlayer>, player))
+WRAP_BASIC_CALL(ITextLabel, streamInForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
+WRAP_BASIC_CALL(ITextLabel, streamOutForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 
 WRAP_ENTITY_METHODS(ITextLabel)
 

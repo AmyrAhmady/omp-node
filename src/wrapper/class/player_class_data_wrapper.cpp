@@ -9,8 +9,8 @@ WRAP_BASIC_CALL_RETURN(IPlayerClassData, getClass, (const PlayerClass&, PlayerCl
 WRAP_BASIC_CALL(IPlayerClassData, setSpawnInfo, (const PlayerClass &, JSToPlayerClass, classInfo))
 
 std::vector<IExtension *> WrapPlayerClassData(IPlayer *player,
-                                                  IPlayerClassData *playerClassData,
-                                                  v8::Local<v8::Context> context) {
+                                              IPlayerClassData *playerClassData,
+                                              v8::Local<v8::Context> context) {
 
     std::vector<IExtension *> handleStorages;
 

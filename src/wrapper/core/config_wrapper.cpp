@@ -118,7 +118,7 @@ WRAP_BASIC_CALL(IConfig, addBan, (const BanEntry&, FROM_JS_FN(BanEntry), entry))
 
 WRAP_BASIC_CALL_OVERLOAD(IConfig,
                          removeBan,
-                         (removeBan, info[0]->IsObject(), (const BanEntry&, FROM_JS_FN(BanEntry), entry)),
+                         (removeBan, info[0]->IsObject(),(const BanEntry&, FROM_JS_FN(BanEntry), entry)),
                          (removeBan, true, (size_t, JSToUInt<size_t>, index)))
 
 WRAP_BASIC_CALL(IConfig, writeBans)

@@ -46,8 +46,8 @@ WRAP_BASIC_CODE(IPlayerTextDrawData, getPoolEventDispatcher, {
 NodeJSEntryHandler<IPlayerTextDraw> *handler;
 
 std::vector<IExtension *> WrapPlayerTextDrawData(IPlayer *player,
-                                                     IPlayerTextDrawData *textDrawPool,
-                                                     v8::Local<v8::Context> context) {
+                                                 IPlayerTextDrawData *textDrawPool,
+                                                 v8::Local<v8::Context> context) {
     std::vector<IExtension *> handleStorages;
 
     handler = new NodeJSEntryHandler<IPlayerTextDraw>(context, WrapPlayerTextDraw);

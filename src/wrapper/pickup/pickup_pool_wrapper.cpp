@@ -38,6 +38,7 @@ void WrapPickupPool(IPickupsComponent *pickupPool, v8::Local<v8::Context> contex
     auto eventDispatcherHandleStorage = WrapPickupEventDispatcher(&pickupPool->getEventDispatcher(), context);
     pickupPool->addExtension(eventDispatcherHandleStorage, true);
 
-    auto poolEventDispatcherHandleStorage = WRAPPED_POOL_EVENT_DISPATCHER(IPickup)(&pickupPool->getPoolEventDispatcher(), context);
+    auto poolEventDispatcherHandleStorage =
+        WRAPPED_POOL_EVENT_DISPATCHER(IPickup)(&pickupPool->getPoolEventDispatcher(), context);
     pickupPool->addExtension(poolEventDispatcherHandleStorage, true);
 }

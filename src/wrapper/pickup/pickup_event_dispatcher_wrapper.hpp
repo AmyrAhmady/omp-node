@@ -6,4 +6,5 @@
 
 typedef IEventDispatcher<PickupEventHandler> IPickupEventDispatcher;
 
-EventDispatcherHandleStorage* WrapPickupEventDispatcher(IPickupEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));
+EventDispatcherHandleStorage *WrapPickupEventDispatcher(IPickupEventDispatcher *dispatcher,
+                                                        v8::Local<v8::Context> context) __attribute__((warn_unused_result));

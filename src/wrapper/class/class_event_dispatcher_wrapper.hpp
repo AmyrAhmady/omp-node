@@ -6,4 +6,5 @@
 
 typedef IEventDispatcher<ClassEventHandler> IClassEventDispatcher;
 
-EventDispatcherHandleStorage* WrapClassEventDispatcher(IClassEventDispatcher *dispatcher, v8::Local<v8::Context> context) __attribute__((warn_unused_result));
+EventDispatcherHandleStorage *WrapClassEventDispatcher(IClassEventDispatcher *dispatcher,
+                                                       v8::Local<v8::Context> context) __attribute__((warn_unused_result));

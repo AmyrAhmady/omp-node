@@ -8,8 +8,8 @@ WRAP_BASIC(IPlayerVariableData)
 WRAP_VARIABLE_STORAGE_BASE_METHODS(IPlayerVariableData)
 
 std::vector<IExtension *> WrapPlayerVariableData(IPlayer *player,
-                                                     IPlayerVariableData *playerVariableData,
-                                                     v8::Local<v8::Context> context) {
+                                                 IPlayerVariableData *playerVariableData,
+                                                 v8::Local<v8::Context> context) {
 
     std::vector<IExtension *> handleStorages;
 
