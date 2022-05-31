@@ -48,14 +48,14 @@ WRAP_BASIC_CODE(IPlayerTextLabelData, getPoolEventDispatcher, {
     info.GetReturnValue().Set(handle);
 })
 
-NodeJSEntryHandler<IPlayerTextLabel> *handler;
+NodeJSEntryHandler<IPlayerTextLabel, 0x04744ea1d0bb6c72> *handler;
 
 std::vector<IExtension *> WrapPlayerTextLabelData(IPlayer *player,
                                                   IPlayerTextLabelData *textLabelPool,
                                                   v8::Local<v8::Context> context) {
     std::vector<IExtension *> handleStorages;
 
-    handler = new NodeJSEntryHandler<IPlayerTextLabel>(context, WrapPlayerTextLabel);
+    handler = new NodeJSEntryHandler<IPlayerTextLabel, 0x04744ea1d0bb6c72>(context, WrapPlayerTextLabel);
     textLabelPool->getPoolEventDispatcher().addEventHandler(handler);
     handleStorages.push_back(handler);
 

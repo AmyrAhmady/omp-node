@@ -43,14 +43,14 @@ WRAP_BASIC_CODE(IPlayerTextDrawData, getPoolEventDispatcher, {
     info.GetReturnValue().Set(handle);
 })
 
-NodeJSEntryHandler<IPlayerTextDraw> *handler;
+NodeJSEntryHandler<IPlayerTextDraw, 0xee34d201850083ca> *handler;
 
 std::vector<IExtension *> WrapPlayerTextDrawData(IPlayer *player,
                                                  IPlayerTextDrawData *textDrawPool,
                                                  v8::Local<v8::Context> context) {
     std::vector<IExtension *> handleStorages;
 
-    handler = new NodeJSEntryHandler<IPlayerTextDraw>(context, WrapPlayerTextDraw);
+    handler = new NodeJSEntryHandler<IPlayerTextDraw, 0xee34d201850083ca>(context, WrapPlayerTextDraw);
     textDrawPool->getPoolEventDispatcher().addEventHandler(handler);
     handleStorages.push_back(handler);
 

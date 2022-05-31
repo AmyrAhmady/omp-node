@@ -5,9 +5,11 @@
 
 template<class Interface> using WrapperFunction = void (*)(Interface *, v8::Local<v8::Context>);
 
-template<class Interface>
+static const UID NodeJSEntryHandler_UID = UID(0xbc870166fb590549);
+
+template<class Interface, UID uid = NodeJSEntryHandler_UID>
 struct NodeJSEntryHandler : PoolEventHandler<Interface>, public IExtension {
-    PROVIDE_EXT_UID(0);
+    PROVIDE_EXT_UID(uid);
 
     v8::Isolate *isolate;
     v8::UniquePersistent<v8::Context> context;

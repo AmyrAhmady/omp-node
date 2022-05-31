@@ -62,14 +62,14 @@ WRAP_BASIC_CODE(IPlayerObjectData, getPoolEventDispatcher, {
     info.GetReturnValue().Set(handle);
 })
 
-NodeJSEntryHandler<IPlayerObject> *handler;
+NodeJSEntryHandler<IPlayerObject, 0x6554fa7304e797ac> *handler;
 
 std::vector<IExtension *> WrapPlayerObjectData(IPlayer *player,
                                                IPlayerObjectData *objectPool,
                                                v8::Local<v8::Context> context) {
     std::vector<IExtension *> handleStorages;
 
-    handler = new NodeJSEntryHandler<IPlayerObject>(context, WrapPlayerObject);
+    handler = new NodeJSEntryHandler<IPlayerObject, 0x6554fa7304e797ac>(context, WrapPlayerObject);
     objectPool->getPoolEventDispatcher().addEventHandler(handler);
     handleStorages.push_back(handler);
 
