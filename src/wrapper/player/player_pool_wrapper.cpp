@@ -44,15 +44,8 @@ WRAP_BASIC_CALL(IPlayerPool,
                 (int, JSToInt, type),
                 (float, JSToFloat, radius))
 WRAP_BASIC_CALL_RETURN(IPlayerPool, isNameValid, (bool, BoolToJS), (Impl::String, JSToString, name))
-WRAP_BASIC_CALL(IPlayerPool,
-                allowNickNameCharacter,
-                (char, JSToInt<char>, character),
-                (bool, JSToBool, allow)) // todo make JSToChar
-WRAP_BASIC_CALL_RETURN(IPlayerPool,
-                       isNickNameCharacterAllowed,
-                       (bool, BoolToJS),
-                       (char, JSToInt<char>, character)) // todo make CharToJS
-
+WRAP_BASIC_CALL(IPlayerPool, allowNickNameCharacter, (char, JSToChar, character), (bool, JSToBool, allow))
+WRAP_BASIC_CALL_RETURN(IPlayerPool, isNickNameCharacterAllowed, (bool, BoolToJS), (char, JSToChar, character))
 
 WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(IPlayerPool, getEventDispatcher, EventDispatcherHandleStorage)
 

@@ -6,14 +6,17 @@
 float JSToFloat(v8::Local<v8::Value> value, v8::Local<v8::Context> context, float defaultValue);
 Impl::String JSToString(v8::Local<v8::Value> value, v8::Local<v8::Context> context, Impl::String defaultValue);
 bool JSToBool(v8::Local<v8::Value> value, v8::Local<v8::Context> context, bool defaultValue);
+char JSToChar(v8::Local<v8::Value> value, v8::Local<v8::Context> context, char defaultValue);
 
 float JSToFloat(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 Impl::String JSToString(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 bool JSToBool(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
+char JSToChar(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 
 v8::Local<v8::Number> FloatToJS(float value, v8::Local<v8::Context> context);
 v8::Local<v8::String> StringViewToJS(StringView str, v8::Local<v8::Context> context);
 v8::Local<v8::Boolean> BoolToJS(bool value, v8::Local<v8::Context> context);
+v8::Local<v8::String> CharToJS(char value, v8::Local<v8::Context> context);
 
 template<typename Enum>
 Enum JSToEnum(v8::Local<v8::Value> value, v8::Local<v8::Context> context, Enum defaultValue) {
