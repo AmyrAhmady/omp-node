@@ -33,9 +33,9 @@ WRAP_POOL_METHODS(IVehiclesComponent, IVehicle)
 NodeJSEntryHandler<IVehicle> *handler;
 
 void WrapVehiclePool(IVehiclesComponent *vehiclePool, v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<IVehicle>(context, WrapVehicle); // todo: store somewhere to delete later
-
+    handler = new NodeJSEntryHandler<IVehicle>(context, WrapVehicle);
     vehiclePool->getPoolEventDispatcher().addEventHandler(handler);
+    vehiclePool->addExtension(handler, true);
 
     auto vehiclePoolHandle = InterfaceToObject(vehiclePool, context, WRAPPED_METHODS(IVehiclesComponent));
     vehiclePool->addExtension(new IHandleStorage(context->GetIsolate(), vehiclePoolHandle), true);

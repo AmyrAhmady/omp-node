@@ -6,7 +6,9 @@
 template<class Interface> using WrapperFunction = void (*)(Interface *, v8::Local<v8::Context>);
 
 template<class Interface>
-struct NodeJSEntryHandler : PoolEventHandler<Interface> {
+struct NodeJSEntryHandler : PoolEventHandler<Interface>, public IExtension {
+    PROVIDE_EXT_UID(0);
+
     v8::Isolate *isolate;
     v8::UniquePersistent<v8::Context> context;
     WrapperFunction<Interface> wrap;
@@ -29,4 +31,14 @@ struct NodeJSEntryHandler : PoolEventHandler<Interface> {
 
         wrap(&entry, _context);
     };
+
+    void freeExtension() override {
+        context.Reset();
+        isolate = nullptr;
+
+        IExtension::freeExtension();
+    }
+
+    void reset() override {
+    }
 };

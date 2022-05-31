@@ -27,9 +27,9 @@ WRAP_POOL_METHODS(ITextDrawsComponent, ITextDraw)
 NodeJSEntryHandler<ITextDraw> *handler;
 
 void WrapTextDrawPool(ITextDrawsComponent *textDrawPool, v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<ITextDraw>(context, WrapTextDraw); // todo: store somewhere to delete later
-
+    handler = new NodeJSEntryHandler<ITextDraw>(context, WrapTextDraw);
     textDrawPool->getPoolEventDispatcher().addEventHandler(handler);
+    textDrawPool->addExtension(handler, true);
 
     auto textDrawPoolHandle = InterfaceToObject(textDrawPool, context, WRAPPED_METHODS(ITextDrawsComponent));
     textDrawPool->addExtension(new IHandleStorage(context->GetIsolate(), textDrawPoolHandle), true);

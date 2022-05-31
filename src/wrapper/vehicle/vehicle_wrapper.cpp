@@ -30,11 +30,6 @@ WRAP_BASIC_CALL(IVehicle, setHealth, (float, JSToFloat, Health))
 
 WRAP_BASIC_CALL_RETURN(IVehicle, getHealth, (float, FloatToJS))
 
-//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromDriverSync, (bool, BoolToJS), (const VehicleDriverSyncPacket&, FROM_JS_FN(VehicleDriverSyncPacket), vehicleSync), (IPlayer&, JSToEntityRef<IPlayer>, player))
-//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromPassengerSync, (bool, BoolToJS), (const VehiclePassengerSyncPacket&, FROM_JS_FN(VehiclePassengerSyncPacket), passengerSync), (IPlayer&, JSToEntityRef<IPlayer>, player))
-//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromUnoccupied, (bool, BoolToJS), (const VehicleUnoccupiedSyncPacket&, FROM_JS_FN(VehicleUnoccupiedSyncPacket), unoccupiedSync), (IPlayer&, JSToEntityRef<IPlayer>, player))
-//WRAP_BASIC_CALL_RETURN(IVehicle, updateFromTrailerSync, (bool, BoolToJS), (const VehicleTrailerSyncPacket&, FROM_JS_FN(VehicleTrailerSyncPacket), unoccupiedSync), (IPlayer&, JSToEntityRef<IPlayer>, player))
-
 WRAP_BASIC_CALL_RETURN(IVehicle, streamedForPlayers, (const FlatPtrHashSetIPlayer&, TO_JS_FN(FlatPtrHashSetIPlayer)))
 
 WRAP_BASIC_CALL_RETURN(IVehicle, getDriver, (IPlayer * , EntityToJS<IPlayer>))

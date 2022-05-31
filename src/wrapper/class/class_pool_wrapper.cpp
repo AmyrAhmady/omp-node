@@ -28,17 +28,18 @@ WRAP_POOL_METHODS(IClassesComponent, IClass)
 
 NodeJSEntryHandler<IClass> *handler;
 
-void WrapClassPool(IClassesComponent *gangZonePool, v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<IClass>(context, WrapClass); // todo: store somewhere to delete later
+void WrapClassPool(IClassesComponent *classPool, v8::Local<v8::Context> context) {
+    handler = new NodeJSEntryHandler<IClass>(context, WrapClass);
+    classPool->getPoolEventDispatcher().addEventHandler(handler);
+    classPool->addExtension(handler, true);
 
-    gangZonePool->getPoolEventDispatcher().addEventHandler(handler);
+    auto classPoolHandle = InterfaceToObject(classPool, context, WRAPPED_METHODS(IClassesComponent));
+    classPool->addExtension(new IHandleStorage(context->GetIsolate(), classPoolHandle), true);
 
-    auto gangZonePoolHandle = InterfaceToObject(gangZonePool, context, WRAPPED_METHODS(IClassesComponent));
-    gangZonePool->addExtension(new IHandleStorage(context->GetIsolate(), gangZonePoolHandle), true);
+    auto eventDispatcherHandleStorage = WrapClassEventDispatcher(&classPool->getEventDispatcher(), context);
+    classPool->addExtension(eventDispatcherHandleStorage, true);
 
-    auto eventDispatcherHandleStorage = WrapClassEventDispatcher(&gangZonePool->getEventDispatcher(), context);
-    gangZonePool->addExtension(eventDispatcherHandleStorage, true);
-
-    auto poolEventDispatcherHandleStorage = WRAPPED_POOL_EVENT_DISPATCHER(IClass)(&gangZonePool->getPoolEventDispatcher(), context);
-    gangZonePool->addExtension(poolEventDispatcherHandleStorage, true);
+    auto poolEventDispatcherHandleStorage =
+        WRAPPED_POOL_EVENT_DISPATCHER(IClass)(&classPool->getPoolEventDispatcher(), context);
+    classPool->addExtension(poolEventDispatcherHandleStorage, true);
 }

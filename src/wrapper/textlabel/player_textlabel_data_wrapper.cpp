@@ -50,15 +50,14 @@ WRAP_BASIC_CODE(IPlayerTextLabelData, getPoolEventDispatcher, {
 
 NodeJSEntryHandler<IPlayerTextLabel> *handler;
 
-std::vector<IHandleStorage *> WrapPlayerTextLabelData(IPlayer *player,
-                                                      IPlayerTextLabelData *textLabelPool,
-                                                      v8::Local<v8::Context> context) {
-    handler =
-        new NodeJSEntryHandler<IPlayerTextLabel>(context, WrapPlayerTextLabel); // todo: store somewhere to delete later
+std::vector<IExtension *> WrapPlayerTextLabelData(IPlayer *player,
+                                                  IPlayerTextLabelData *textLabelPool,
+                                                  v8::Local<v8::Context> context) {
+    std::vector<IExtension *> handleStorages;
 
+    handler = new NodeJSEntryHandler<IPlayerTextLabel>(context, WrapPlayerTextLabel);
     textLabelPool->getPoolEventDispatcher().addEventHandler(handler);
-
-    std::vector<IHandleStorage *> handleStorages;
+    handleStorages.push_back(handler);
 
     auto textLabelPoolHandle = InterfaceToObject(textLabelPool, context, WRAPPED_METHODS(IPlayerTextLabelData), player);
     handleStorages.push_back(new PlayerTextLabelPoolHandleStorage(context->GetIsolate(), textLabelPoolHandle));

@@ -64,14 +64,14 @@ WRAP_BASIC_CODE(IPlayerObjectData, getPoolEventDispatcher, {
 
 NodeJSEntryHandler<IPlayerObject> *handler;
 
-std::vector<IHandleStorage *> WrapPlayerObjectData(IPlayer *player,
+std::vector<IExtension *> WrapPlayerObjectData(IPlayer *player,
                                                    IPlayerObjectData *objectPool,
                                                    v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<IPlayerObject>(context, WrapPlayerObject); // todo: store somewhere to delete later
+    std::vector<IExtension *> handleStorages;
 
+    handler = new NodeJSEntryHandler<IPlayerObject>(context, WrapPlayerObject);
     objectPool->getPoolEventDispatcher().addEventHandler(handler);
-
-    std::vector<IHandleStorage *> handleStorages;
+    handleStorages.push_back(handler);
 
     auto objectPoolHandle = InterfaceToObject(objectPool, context, WRAPPED_METHODS(IPlayerObjectData), player);
     handleStorages.push_back(new PlayerObjectPoolHandleStorage(context->GetIsolate(), objectPoolHandle));

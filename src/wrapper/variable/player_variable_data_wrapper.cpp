@@ -7,11 +7,11 @@ WRAP_BASIC(IPlayerVariableData)
 
 WRAP_VARIABLE_STORAGE_BASE_METHODS(IPlayerVariableData)
 
-std::vector<IHandleStorage *> WrapPlayerVariableData(IPlayer *player,
+std::vector<IExtension *> WrapPlayerVariableData(IPlayer *player,
                                                      IPlayerVariableData *playerVariableData,
                                                      v8::Local<v8::Context> context) {
 
-    std::vector<IHandleStorage *> handleStorages;
+    std::vector<IExtension *> handleStorages;
 
     auto
         objectPoolHandle = InterfaceToObject(playerVariableData, context, WRAPPED_METHODS(IPlayerVariableData), player);

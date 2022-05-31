@@ -5,4 +5,6 @@
 
 CREATE_HANDLE_STORAGE_EXTENSION(0xf30ea3ef828d3e09, PlayerVehicleDataHandleStorage)
 
-std::vector<IHandleStorage*> WrapPlayerVehicleData(IPlayer *player, IPlayerVehicleData *playerVehicleData, v8::Local<v8::Context> context);
+std::vector<IExtension *> WrapPlayerVehicleData(IPlayer *player,
+                                                IPlayerVehicleData *playerVehicleData,
+                                                v8::Local<v8::Context> context);

@@ -85,19 +85,19 @@ EntityType &JSToEntityRef(v8::Local<v8::Value> value, v8::Local<v8::Context> con
 }
 
 template<class EntityType>
-v8::Local<v8::Value> EntityToJS(EntityType &actor, v8::Local<v8::Context> context) {
-    auto ext = GetHandleStorageExtension(&actor);
+v8::Local<v8::Value> EntityToJS(EntityType &entity, v8::Local<v8::Context> context) {
+    auto ext = GetHandleStorageExtension(&entity);
 
     return ext->get();
 }
 
 template<class EntityType>
-v8::Local<v8::Value> EntityToJS(EntityType *actor, v8::Local<v8::Context> context) {
-    if (actor == nullptr) {
+v8::Local<v8::Value> EntityToJS(EntityType *entity, v8::Local<v8::Context> context) {
+    if (entity == nullptr) {
         return v8::Null(context->GetIsolate());
     }
 
-    auto ext = GetHandleStorageExtension(actor);
+    auto ext = GetHandleStorageExtension(entity);
 
     return ext->get();
 }

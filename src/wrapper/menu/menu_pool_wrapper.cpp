@@ -27,9 +27,9 @@ WRAP_POOL_METHODS(IMenusComponent, IMenu)
 NodeJSEntryHandler<IMenu> *handler;
 
 void WrapMenuPool(IMenusComponent *menuPool, v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<IMenu>(context, WrapMenu); // todo: store somewhere to delete later
-
+    handler = new NodeJSEntryHandler<IMenu>(context, WrapMenu);
     menuPool->getPoolEventDispatcher().addEventHandler(handler);
+    menuPool->addExtension(handler, true);
 
     auto menuPoolHandle = InterfaceToObject(menuPool, context, WRAPPED_METHODS(IMenusComponent));
     menuPool->addExtension(new IHandleStorage(context->GetIsolate(), menuPoolHandle), true);

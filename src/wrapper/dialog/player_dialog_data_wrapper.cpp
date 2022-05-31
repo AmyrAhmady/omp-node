@@ -48,11 +48,11 @@ WRAP_BASIC_CODE(IPlayerDialogData, get, {
 })
 WRAP_BASIC_CALL_RETURN(IPlayerDialogData, getActiveID, (int, IntToJS))
 
-std::vector<IHandleStorage *> WrapPlayerDialogData(IPlayer *player,
+std::vector<IExtension *> WrapPlayerDialogData(IPlayer *player,
                                                   IPlayerDialogData *playerDialogData,
                                                   v8::Local<v8::Context> context) {
 
-    std::vector<IHandleStorage *> handleStorages;
+    std::vector<IExtension *> handleStorages;
 
     auto objectPoolHandle = InterfaceToObject(playerDialogData, context, WRAPPED_METHODS(IPlayerDialogData), player);
     handleStorages.push_back(new PlayerDialogDataHandleStorage(context->GetIsolate(), objectPoolHandle));

@@ -34,9 +34,9 @@ WRAP_POOL_METHODS(IGangZonesComponent, IGangZone)
 NodeJSEntryHandler<IGangZone> *handler;
 
 void WrapGangZonePool(IGangZonesComponent *gangZonePool, v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<IGangZone>(context, WrapGangZone); // todo: store somewhere to delete later
-
+    handler = new NodeJSEntryHandler<IGangZone>(context, WrapGangZone);
     gangZonePool->getPoolEventDispatcher().addEventHandler(handler);
+    gangZonePool->addExtension(handler, true);
 
     auto gangZonePoolHandle = InterfaceToObject(gangZonePool, context, WRAPPED_METHODS(IGangZonesComponent));
     gangZonePool->addExtension(new IHandleStorage(context->GetIsolate(), gangZonePoolHandle), true);
@@ -44,6 +44,7 @@ void WrapGangZonePool(IGangZonesComponent *gangZonePool, v8::Local<v8::Context> 
     auto eventDispatcherHandleStorage = WrapGangZoneEventDispatcher(&gangZonePool->getEventDispatcher(), context);
     gangZonePool->addExtension(eventDispatcherHandleStorage, true);
 
-    auto poolEventDispatcherHandleStorage = WRAPPED_POOL_EVENT_DISPATCHER(IGangZone)(&gangZonePool->getPoolEventDispatcher(), context);
+    auto poolEventDispatcherHandleStorage =
+        WRAPPED_POOL_EVENT_DISPATCHER(IGangZone)(&gangZonePool->getPoolEventDispatcher(), context);
     gangZonePool->addExtension(poolEventDispatcherHandleStorage, true);
 }

@@ -30,9 +30,9 @@ WRAP_POOL_METHODS(IObjectsComponent, IObject)
 NodeJSEntryHandler<IObject> *handler;
 
 void WrapObjectPool(IObjectsComponent *objectPool, v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<IObject>(context, WrapObject); // todo: store somewhere to delete later
-
+    handler = new NodeJSEntryHandler<IObject>(context, WrapObject);
     objectPool->getPoolEventDispatcher().addEventHandler(handler);
+    objectPool->addExtension(handler, true);
 
     auto objectPoolHandle = InterfaceToObject(objectPool, context, WRAPPED_METHODS(IObjectsComponent));
     objectPool->addExtension(new IHandleStorage(context->GetIsolate(), objectPoolHandle), true);

@@ -26,9 +26,9 @@ WRAP_POOL_METHODS(IActorsComponent, IActor)
 NodeJSEntryHandler<IActor> *handler;
 
 void WrapActorPool(IActorsComponent *actorPool, v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<IActor>(context, WrapActor); // todo: store somewhere to delete later
-
+    handler = new NodeJSEntryHandler<IActor>(context, WrapActor);
     actorPool->getPoolEventDispatcher().addEventHandler(handler);
+    actorPool->addExtension(handler, true);
 
     auto actorPoolHandle = InterfaceToObject(actorPool, context, WRAPPED_METHODS(IActorsComponent));
     actorPool->addExtension(new IHandleStorage(context->GetIsolate(), actorPoolHandle), true);
@@ -36,6 +36,7 @@ void WrapActorPool(IActorsComponent *actorPool, v8::Local<v8::Context> context) 
     auto eventDispatcherHandleStorage = WrapActorEventDispatcher(&actorPool->getEventDispatcher(), context);
     actorPool->addExtension(eventDispatcherHandleStorage, true);
 
-    auto poolEventDispatcherHandleStorage = WRAPPED_POOL_EVENT_DISPATCHER(IActor)(&actorPool->getPoolEventDispatcher(), context);
+    auto poolEventDispatcherHandleStorage =
+        WRAPPED_POOL_EVENT_DISPATCHER(IActor)(&actorPool->getPoolEventDispatcher(), context);
     actorPool->addExtension(poolEventDispatcherHandleStorage, true);
 }

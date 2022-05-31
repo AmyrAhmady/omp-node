@@ -68,7 +68,7 @@
             return; \
         } \
         FOR_EACH(HANDLE_OVERLOAD_RETURN, ##__VA_ARGS__) \
-        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong parameter type").ToLocalChecked()));\
+        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong parameter type").ToLocalChecked())); \
     })
 
 #define HANDLE_OVERLOAD_(functionName, Condition, ...) \
@@ -89,6 +89,7 @@
             return; \
         } \
         FOR_EACH(HANDLE_OVERLOAD, ##__VA_ARGS__) \
+        isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong parameter type").ToLocalChecked())); \
     })
 
 /// BASIC

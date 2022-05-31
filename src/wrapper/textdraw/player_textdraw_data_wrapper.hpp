@@ -6,4 +6,6 @@
 CREATE_HANDLE_STORAGE_EXTENSION(0x6faaf9a1a91e1f94, PlayerTextDrawPoolEventDispatcherHandleStorage)
 CREATE_HANDLE_STORAGE_EXTENSION(0xe5ea5a58bb0bf05a, PlayerTextDrawPoolHandleStorage)
 
-std::vector<IHandleStorage*> WrapPlayerTextDrawData(IPlayer *player, IPlayerTextDrawData *textDrawPool, v8::Local<v8::Context> context);
+std::vector<IExtension *> WrapPlayerTextDrawData(IPlayer *player,
+                                                 IPlayerTextDrawData *textDrawPool,
+                                                 v8::Local<v8::Context> context);

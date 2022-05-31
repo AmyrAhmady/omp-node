@@ -18,13 +18,7 @@ WRAP_BASIC(IPlayer)
 WRAP_BASIC_CALL(IPlayer, kick)
 WRAP_BASIC_CALL(IPlayer, ban, (Impl::String, JSToString, reason, Impl::String()))
 WRAP_BASIC_CALL_RETURN(IPlayer, isBot, (bool, BoolToJS))
-//WRAP_BASIC_CALL_RETURN(IPlayer, getNetworkData, (const PeerNetworkData&, TO_JS_FN(PeerNetworkData)))
 WRAP_BASIC_CALL_RETURN(IPlayer, getPing, (unsigned, UIntToJS))
-//WRAP_BASIC_CALL_RETURN(IPlayer, sendPacket, (bool, BoolToJS), (Span<uint8_t>, FROM_JS_FN(Span<uint8_t>), data), (int, JSToInt, channel))
-//WRAP_BASIC_CALL_RETURN(IPlayer, sendRPC, (bool, BoolToJS), (int, JSToInt, id), (Span<uint8_t>, FROM_JS_FN(Span<uint8_t>), data), (int, JSToInt, channel))
-//WRAP_BASIC_CALL(IPlayer, broadcastRPCToStreamed, (int, JSToInt, id), (Span<uint8_t>, FROM_JS_FN(Span<uint8_t>), data), (int, JSToInt, channel), (bool, JSToBool, skipFrom, false))
-//WRAP_BASIC_CALL(IPlayer, broadcastPacketToStreamed, (Span<uint8_t>, FROM_JS_FN(Span<uint8_t>), data), (int, JSToInt, channel), (bool, JSToBool, skipFrom, true))
-//WRAP_BASIC_CALL(IPlayer, broadcastSyncPacket, (Span<uint8_t>, FROM_JS_FN(Span<uint8_t>), data), (int, JSToInt, channel))
 WRAP_BASIC_CALL(IPlayer, spawn)
 WRAP_BASIC_CALL_RETURN(IPlayer, getClientVersion, (uint32_t, UIntToJS))
 WRAP_BASIC_CALL_RETURN(IPlayer, getClientVersionName, (StringView, TO_JS_FN(StringView)))
@@ -46,8 +40,12 @@ WRAP_BASIC_CALL(IPlayer,
                 (Vector3, JSToVector<Vector3>, to),
                 (int, JSToInt, time),
                 (PlayerCameraCutType, JSToEnum<PlayerCameraCutType>, cutType))
-//WRAP_BASIC_CALL(IPlayer, attachCameraToObject, (IObject&, JSToEntity<IObject>, object)) // todo
-//WRAP_BASIC_CALL(IPlayer, attachCameraToObject, (IPlayerObject&, JSToEntity<IPlayerObject>, object)) // todo
+WRAP_BASIC_CALL_OVERLOAD(IPlayer,
+                         attachCameraToObject,
+                         (attachCameraToObject, GetValueInterfaceType(info[0], context) == typeid(IObject).name(), (
+                             IObject & , JSToEntityRef<IObject>, object)),
+                         (attachCameraToObject, GetValueInterfaceType(info[0], context)
+                             == typeid(IPlayerObject).name(), (IPlayerObject & , JSToEntityRef<IPlayerObject>, object)))
 WRAP_BASIC_CALL_RETURN(IPlayer,
                        setName,
                        (EPlayerNameStatus, EnumToJS<EPlayerNameStatus>),
@@ -215,7 +213,7 @@ WRAP_BASIC_CALL_RETURN(IPlayer, hasCameraTargeting, (bool, BoolToJS))
 WRAP_BASIC_CALL(IPlayer, removeFromVehicle)
 WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetPlayer, (IPlayer * , EntityToJS<IPlayer>))
 WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetVehicle, (IVehicle * , EntityToJS<IVehicle>))
-//WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetObject, (IObject*, EntityToJS<IObject>)) // todo
+WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetObject, (IObject * , EntityToJS<IObject>))
 WRAP_BASIC_CALL_RETURN(IPlayer, getCameraTargetActor, (IActor * , EntityToJS<IActor>))
 WRAP_BASIC_CALL_RETURN(IPlayer, getTargetPlayer, (IPlayer * , EntityToJS<IPlayer>))
 WRAP_BASIC_CALL_RETURN(IPlayer, getTargetActor, (IActor * , EntityToJS<IActor>))

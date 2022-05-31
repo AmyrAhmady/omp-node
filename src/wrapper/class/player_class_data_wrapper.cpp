@@ -8,11 +8,11 @@ WRAP_BASIC(IPlayerClassData)
 WRAP_BASIC_CALL_RETURN(IPlayerClassData, getClass, (const PlayerClass&, PlayerClassToJS))
 WRAP_BASIC_CALL(IPlayerClassData, setSpawnInfo, (const PlayerClass &, JSToPlayerClass, classInfo))
 
-std::vector<IHandleStorage *> WrapPlayerClassData(IPlayer *player,
+std::vector<IExtension *> WrapPlayerClassData(IPlayer *player,
                                                   IPlayerClassData *playerClassData,
                                                   v8::Local<v8::Context> context) {
 
-    std::vector<IHandleStorage *> handleStorages;
+    std::vector<IExtension *> handleStorages;
 
     auto objectPoolHandle = InterfaceToObject(playerClassData, context, WRAPPED_METHODS(IPlayerClassData), player);
     handleStorages.push_back(new PlayerClassDataHandleStorage(context->GetIsolate(), objectPoolHandle));

@@ -28,11 +28,11 @@ WRAP_BASIC_CODE(IPlayerCheckpointData, getRaceCheckpoint, {
     info.GetReturnValue().Set(handle);
 })
 
-std::vector<IHandleStorage *> WrapPlayerCheckpointData(IPlayer *player,
+std::vector<IExtension *> WrapPlayerCheckpointData(IPlayer *player,
                                                        IPlayerCheckpointData *playerCheckpointData,
                                                        v8::Local<v8::Context> context) {
 
-    std::vector<IHandleStorage *> handleStorages;
+    std::vector<IExtension *> handleStorages;
 
     auto objectPoolHandle =
         InterfaceToObject(playerCheckpointData, context, WRAPPED_METHODS(IPlayerCheckpointData), player);

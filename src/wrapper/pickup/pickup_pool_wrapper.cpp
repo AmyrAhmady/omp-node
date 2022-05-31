@@ -28,9 +28,9 @@ WRAP_POOL_METHODS(IPickupsComponent, IPickup)
 NodeJSEntryHandler<IPickup> *handler;
 
 void WrapPickupPool(IPickupsComponent *pickupPool, v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<IPickup>(context, WrapPickup); // todo: store somewhere to delete later
-
+    handler = new NodeJSEntryHandler<IPickup>(context, WrapPickup);
     pickupPool->getPoolEventDispatcher().addEventHandler(handler);
+    pickupPool->addExtension(handler, true);
 
     auto pickupPoolHandle = InterfaceToObject(pickupPool, context, WRAPPED_METHODS(IPickupsComponent));
     pickupPool->addExtension(new IHandleStorage(context->GetIsolate(), pickupPoolHandle), true);

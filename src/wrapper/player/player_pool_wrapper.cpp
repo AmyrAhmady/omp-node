@@ -43,8 +43,6 @@ WRAP_BASIC_CALL(IPlayerPool,
                 (Vector3, JSToVector<Vector3>, vec),
                 (int, JSToInt, type),
                 (float, JSToFloat, radius))
-//WRAP_BASIC_CALL_RETURN(IPlayerPool, requestPlayer, (Pair<NewConnectionResult, IPlayer*>, TO_JS_FN(Pair<NewConnectionResult, IPlayer*>)), (const PeerNetworkData&, FROM_JS_FN(PeerNetworkData), netData), (const PeerRequestParams&, FROM_JS_FN(PeerRequestParams), params))
-//WRAP_BASIC_CALL(IPlayerPool, broadcastRPC, (int, JSToInt, id), (Span<uint8_t>, FROM_JS_FN(Span<uint8_t>), data), (int, JSToInt, channel), (const IPlayer*, JSToEntity<IPlayer>, skipFrom, nullptr))
 WRAP_BASIC_CALL_RETURN(IPlayerPool, isNameValid, (bool, BoolToJS), (Impl::String, JSToString, name))
 WRAP_BASIC_CALL(IPlayerPool, allowNickNameCharacter, (char, JSToInt<char>, character), (bool, JSToBool, allow)) // todo make JSToChar
 WRAP_BASIC_CALL_RETURN(IPlayerPool, isNickNameCharacterAllowed, (bool, BoolToJS), (char, JSToInt<char>, character)) // todo make CharToJS
@@ -63,9 +61,9 @@ WRAP_READ_ONLY_POOL_METHODS(IPlayerPool, IPlayer, EntityToJS<IPlayer>)
 NodeJSEntryHandler<IPlayer> *handler;
 
 void WrapPlayerPool(IPlayerPool *playerPool, v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<IPlayer>(context, WrapPlayer); // todo: store somewhere to delete later
-
+    handler = new NodeJSEntryHandler<IPlayer>(context, WrapPlayer);
     playerPool->getPoolEventDispatcher().addEventHandler(handler);
+    playerPool->addExtension(handler, true);
 
     auto playerPoolHandle = InterfaceToObject(playerPool, context, WRAPPED_METHODS(IPlayerPool));
     playerPool->addExtension(new IHandleStorage(context->GetIsolate(), playerPoolHandle), true);

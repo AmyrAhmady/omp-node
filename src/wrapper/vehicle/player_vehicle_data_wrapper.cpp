@@ -8,11 +8,11 @@ WRAP_BASIC_CALL_RETURN(IPlayerVehicleData, getVehicle, (IVehicle * , EntityToJS<
 WRAP_BASIC_CALL_RETURN(IPlayerVehicleData, getSeat, (int, IntToJS))
 WRAP_BASIC_CALL_RETURN(IPlayerVehicleData, isInModShop, (bool, BoolToJS))
 
-std::vector<IHandleStorage *> WrapPlayerVehicleData(IPlayer *player,
+std::vector<IExtension *> WrapPlayerVehicleData(IPlayer *player,
                                                     IPlayerVehicleData *playerVehicleData,
                                                     v8::Local<v8::Context> context) {
 
-    std::vector<IHandleStorage *> handleStorages;
+    std::vector<IExtension *> handleStorages;
 
     auto objectPoolHandle = InterfaceToObject(playerVehicleData, context, WRAPPED_METHODS(IPlayerVehicleData), player);
     handleStorages.push_back(new PlayerVehicleDataHandleStorage(context->GetIsolate(), objectPoolHandle));

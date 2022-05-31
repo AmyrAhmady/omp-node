@@ -49,9 +49,9 @@ WRAP_POOL_METHODS(ITextLabelsComponent, ITextLabel)
 NodeJSEntryHandler<ITextLabel> *handler;
 
 void WrapTextLabelPool(ITextLabelsComponent *textLabelPool, v8::Local<v8::Context> context) {
-    handler = new NodeJSEntryHandler<ITextLabel>(context, WrapTextLabel); // todo: store somewhere to delete later
-
+    handler = new NodeJSEntryHandler<ITextLabel>(context, WrapTextLabel);
     textLabelPool->getPoolEventDispatcher().addEventHandler(handler);
+    textLabelPool->addExtension(handler, true);
 
     auto textLabelPoolHandle = InterfaceToObject(textLabelPool, context, WRAPPED_METHODS(ITextLabelsComponent));
     textLabelPool->addExtension(new IHandleStorage(context->GetIsolate(), textLabelPoolHandle), true);
