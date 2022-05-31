@@ -83,8 +83,6 @@
 #define OBJECT_CONVERTER_DECLARE_TO_JS(Type) v8::Local<v8::Object> Type##ToJS(const Type &data, v8::Local<v8::Context> context);
 #define OBJECT_CONVERTER_DECLARE_FROM_JS(Type) Type JSTo##Type(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
 
-// todo: add checking default and missing parameters
-
 #define OBJECT_CONVERTER_DECLARE(Type) \
     OBJECT_CONVERTER_DECLARE_TO_JS(Type) \
     OBJECT_CONVERTER_DECLARE_FROM_JS(Type)
