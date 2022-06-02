@@ -24,7 +24,7 @@ WRAP_BASIC_CALL_RETURN(IActor,
                        (const IPlayer&, JSToEntityRef<IPlayer>, player))
 WRAP_BASIC_CALL(IActor, streamInForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 WRAP_BASIC_CALL(IActor, streamOutForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
-WRAP_BASIC_CALL_RETURN(IActor, getSpawnData, (const ActorSpawnData&, TO_JS_FN(ActorSpawnData)));
+WRAP_BASIC_CALL_RETURN(IActor, getSpawnData, (const ActorSpawnData&, TO_JS_FN(ActorSpawnData)))
 
 WRAP_ENTITY_METHODS(IActor)
 

@@ -5,6 +5,7 @@
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
 #include "../../converter/player.hpp"
+#include "../../converter/entity.hpp"
 #include "../../converter/vehicle.hpp"
 #include "player_update_event_dispatcher_wrapper.hpp"
 
@@ -12,7 +13,7 @@ WRAP_BASIC(IPlayerUpdateEventDispatcher)
 WRAP_HANDLER_BASIC(PlayerUpdateEventHandler, NodeJSPlayerUpdateEventHandler)
 
 WRAP_HANDLER(NodeJSPlayerUpdateEventHandler, bool, onUpdate, 2, {
-    args[0] = GetHandleStorageExtension(&player)->get();
+    args[0] = EntityToJS<IPlayer>(player, context);
     args[1] = TimePointToJS(now, context);
 }, return JSToBool(cbReturnedValue, context), return true, IPlayer &player, TimePoint now)
 

@@ -136,13 +136,13 @@ WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerNameChange, 2, {
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerDeath, 3, {
     args[0] = EntityToJS<IPlayer>(player, context);
-    args[1] = GetHandleStorageExtension(killer)->get();
+    args[1] = EntityToJS<IPlayer>(killer, context);
     args[2] = IntToJS(reason, context);
 }, return, return, IPlayer &player, IPlayer *killer, int reason)
 
 WRAP_HANDLER(NodeJSPlayerEventHandler, void, onPlayerTakeDamage, 5, {
     args[0] = EntityToJS<IPlayer>(player, context);
-    args[1] = GetHandleStorageExtension(from)->get();
+    args[1] = EntityToJS<IPlayer>(from, context);
     args[2] = FloatToJS(amount, context);
     args[3] = UIntToJS(weapon, context);
     args[4] = EnumToJS(part, context);

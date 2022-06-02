@@ -27,7 +27,6 @@ WRAP_BASIC_CALL_RETURN_OVERLOAD(IVehiclesComponent,
 WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(IVehiclesComponent, getEventDispatcher, EventDispatcherHandleStorage)
 
 WRAP_READ_ONLY_POOL_METHODS(IVehiclesComponent, IVehicle, EntityToJS<IVehicle>)
-
 WRAP_POOL_METHODS(IVehiclesComponent, IVehicle)
 
 NodeJSEntryHandler<IVehicle> *handler;

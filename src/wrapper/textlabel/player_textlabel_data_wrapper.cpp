@@ -30,10 +30,8 @@ WRAP_BASIC_CALL_RETURN_OVERLOAD(IPlayerTextLabelData,
 WRAP_READ_ONLY_POOL_METHODS(IPlayerTextLabelData, IPlayerTextLabel, EntityToJS<IPlayerTextLabel>)
 
 /** Pool methods */
-WRAP_BASIC_CALL(IPlayerTextLabelData, release, (int, JSToInt<int>, index))
-WRAP_BASIC_CALL(IPlayerTextLabelData, lock, (int, JSToInt<int>, index))
-WRAP_BASIC_CALL(IPlayerTextLabelData, unlock, (int, JSToInt<int>, index))
-WRAP_BASIC_CALL_RETURN(IPlayerTextLabelData, count, (size_t, IntToJS<size_t>))
+WRAP_POOL_METHODS_WITHOUT_DISPATCHER(IPlayerTextLabelData)
+
 WRAP_POOL_EVENT_DISPATCHER_CUSTOM_STORAGE(IPlayerTextLabelData,
                                           IPlayerTextLabel,
                                           PlayerTextLabelPoolEventDispatcherHandleStorage)

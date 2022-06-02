@@ -44,10 +44,8 @@ WRAP_BASIC_CALL(IPlayerObjectData, editAttachedObject, (int, JSToInt<int>, index
 WRAP_READ_ONLY_POOL_METHODS(IPlayerObjectData, IPlayerObject, EntityToJS<IPlayerObject>)
 
 /** Pool methods */
-WRAP_BASIC_CALL(IPlayerObjectData, release, (int, JSToInt<int>, index))
-WRAP_BASIC_CALL(IPlayerObjectData, lock, (int, JSToInt<int>, index))
-WRAP_BASIC_CALL(IPlayerObjectData, unlock, (int, JSToInt<int>, index))
-WRAP_BASIC_CALL_RETURN(IPlayerObjectData, count, (size_t, IntToJS<size_t>))
+WRAP_POOL_METHODS_WITHOUT_DISPATCHER(IPlayerObjectData)
+
 WRAP_POOL_EVENT_DISPATCHER_CUSTOM_STORAGE(IPlayerObjectData,
                                           IPlayerObject,
                                           PlayerObjectPoolEventDispatcherHandleStorage)

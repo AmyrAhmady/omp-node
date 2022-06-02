@@ -25,10 +25,8 @@ WRAP_BASIC_CALL(IPlayerTextDrawData, endSelection)
 WRAP_READ_ONLY_POOL_METHODS(IPlayerTextDrawData, IPlayerTextDraw, EntityToJS<IPlayerTextDraw>)
 
 /** Pool methods */
-WRAP_BASIC_CALL(IPlayerTextDrawData, release, (int, JSToInt<int>, index))
-WRAP_BASIC_CALL(IPlayerTextDrawData, lock, (int, JSToInt<int>, index))
-WRAP_BASIC_CALL(IPlayerTextDrawData, unlock, (int, JSToInt<int>, index))
-WRAP_BASIC_CALL_RETURN(IPlayerTextDrawData, count, (size_t, IntToJS<size_t>))
+WRAP_POOL_METHODS_WITHOUT_DISPATCHER(IPlayerTextDrawData)
+
 WRAP_POOL_EVENT_DISPATCHER_CUSTOM_STORAGE(IPlayerTextDrawData,
                                           IPlayerTextDraw,
                                           PlayerTextDrawPoolEventDispatcherHandleStorage)
