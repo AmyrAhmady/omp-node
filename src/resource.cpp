@@ -12,7 +12,6 @@
 #include "wrapper/menu/menu_pool_wrapper.hpp"
 #include "wrapper/textdraw/textdraw_pool_wrapper.hpp"
 #include "wrapper/class/class_pool_wrapper.hpp"
-#include "wrapper/variable/variable_component_wrapper.hpp"
 
 #include "wrapper/entity/id_provider_wrapper.hpp"
 #include "wrapper/entity/entity_wrapper.hpp"
@@ -30,6 +29,9 @@
 #include "wrapper/textlabel/textlabel_base_wrapper.hpp"
 #include "wrapper/textlabel/textlabel_wrapper.hpp"
 #include "wrapper/textlabel/player_textlabel_wrapper.hpp"
+
+#include "wrapper/variable/variable_storage_base_wrapper.hpp"
+#include "wrapper/variable/variable_component_wrapper.hpp"
 
 #include "wrapper/checkpoint/player_checkpoint_data_wrapper.hpp"
 #include "wrapper/class/player_class_data_wrapper.hpp"
@@ -149,6 +151,9 @@ namespace ompnode {
         ADD_CONSTRUCTOR_TEMPLATE_INHERIT(ITextLabel, IEntity)
         ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IPlayerTextLabel, IEntity)
 
+        ADD_CONSTRUCTOR_TEMPLATE(IVariableStorageBase)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IVariablesComponent, IVariableStorageBase)
+
         ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IVehicle, IEntity)
         ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IPlayer, IEntity)
 
@@ -159,7 +164,7 @@ namespace ompnode {
         ADD_CONSTRUCTOR_TEMPLATE(IPlayerObjectData)
         ADD_CONSTRUCTOR_TEMPLATE(IPlayerTextDrawData)
         ADD_CONSTRUCTOR_TEMPLATE(IPlayerTextLabelData)
-        ADD_CONSTRUCTOR_TEMPLATE(IPlayerVariableData)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IPlayerVariableData, IVariableStorageBase)
         ADD_CONSTRUCTOR_TEMPLATE(IPlayerVehicleData)
 
         v8::Local<v8::Context> _context = node::NewContext(GetV8Isolate(), global);

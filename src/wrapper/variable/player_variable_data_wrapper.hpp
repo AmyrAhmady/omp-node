@@ -5,7 +5,7 @@
 
 CREATE_HANDLE_STORAGE_EXTENSION(0xe76bbd9069e21c25, PlayerVariableDataHandleStorage)
 
-WRAP_BASIC_DECLARE_WITH_CONSTRUCTOR(IPlayerVariableData);
+WRAP_BASIC_DECLARE_WITH_CONSTRUCTOR_INHERIT(IPlayerVariableData, IVariableStorageBase);
 
 std::vector<IExtension *> WrapPlayerVariableData(IPlayer *player,
                                                  IPlayerVariableData *playerVariableData,

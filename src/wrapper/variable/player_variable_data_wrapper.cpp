@@ -3,9 +3,7 @@
 #include "../../converter/entity.hpp"
 #include "variable_storage_base_wrapper.hpp"
 
-WRAP_BASIC_WITH_CONSTRUCTOR(IPlayerVariableData)
-
-WRAP_VARIABLE_STORAGE_BASE_METHODS(IPlayerVariableData)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IPlayerVariableData, IVariableStorageBase)
 
 std::vector<IExtension *> WrapPlayerVariableData(IPlayer *player,
                                                  IPlayerVariableData *playerVariableData,

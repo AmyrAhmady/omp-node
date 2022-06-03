@@ -2,12 +2,10 @@
 #include "../../converter/types.hpp"
 #include "variable_storage_base_wrapper.hpp"
 
-WRAP_BASIC(IVariablesComponent)
-
-WRAP_VARIABLE_STORAGE_BASE_METHODS(IVariablesComponent)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IVariablesComponent, IVariableStorageBase)
 
 void WrapVariableComponent(IVariablesComponent *component, v8::Local<v8::Context> context) {
-    auto coreHandle = InterfaceToObject(component, context, WRAPPED_METHODS(IVariablesComponent));
+    auto coreHandle = CREATE_INSTANCE(IVariablesComponent, component, context);
 
     component->addExtension(new IHandleStorage(context->GetIsolate(), coreHandle), true);
 }
