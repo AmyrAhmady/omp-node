@@ -7,7 +7,7 @@
 #include "../../converter/entity.hpp"
 #include "../entity/entity_wrapper.hpp"
 
-WRAP_BASIC(IActor)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IActor, IEntity)
 
 WRAP_BASIC_CALL(IActor, setSkin, (int, JSToInt<int>, id))
 WRAP_BASIC_CALL_RETURN(IActor, getSkin, (int, IntToJS<int>))
@@ -26,10 +26,8 @@ WRAP_BASIC_CALL(IActor, streamInForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, 
 WRAP_BASIC_CALL(IActor, streamOutForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 WRAP_BASIC_CALL_RETURN(IActor, getSpawnData, (const ActorSpawnData&, TO_JS_FN(ActorSpawnData)))
 
-WRAP_ENTITY_METHODS(IActor)
-
 void WrapActor(IActor *actor, v8::Local<v8::Context> context) {
-    auto actorHandle = InterfaceToObject(actor, context, WRAPPED_METHODS(IActor));
+    auto actorHandle = CREATE_INSTANCE(IActor, actor, context);
 
     actor->addExtension(new IHandleStorage(context->GetIsolate(), actorHandle), true);
 }

@@ -4,15 +4,13 @@
 #include "../../converter/entity.hpp"
 #include "../entity/entity_wrapper.hpp"
 
-WRAP_BASIC(IClass)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IClass, IIDProvider)
 
 WRAP_BASIC_CALL_RETURN(IClass, getClass, (const PlayerClass&, PlayerClassToJS))
 WRAP_BASIC_CALL(IClass, setClass, (const PlayerClass&, JSToPlayerClass, data))
 
-WRAP_IID_PROVIDER_METHODS(IClass)
-
 void WrapClass(IClass *playerClass, v8::Local<v8::Context> context) {
-    auto playerClassHandle = InterfaceToObject(playerClass, context, WRAPPED_METHODS(IClass));
+    auto playerClassHandle = CREATE_INSTANCE(IClass, playerClass, context);
 
     playerClass->addExtension(new IHandleStorage(context->GetIsolate(), playerClassHandle), true);
 }

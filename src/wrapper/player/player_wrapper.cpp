@@ -71,7 +71,6 @@ WRAP_BASIC_CALL(IPlayer,
                 (IPlayer & , JSToEntityRef<IPlayer>, other),
                 (Colour, FROM_JS_FN(Colour), colour))
 WRAP_BASIC_CODE(IPlayer, getOtherColour, {
-    ENTER_FUNCTION_CALLBACK(info);
     auto external = GetContextExternalPointer<IPlayer>(info);
     if (external == nullptr) {
         return;
@@ -292,13 +291,8 @@ WRAP_LAZILY_GET_EXTENSION_HANDLE(IPlayer,
                                  IPlayerTextDrawData,
                                  WrapPlayerTextDrawData)
 
-//WRAP_ENTITY_METHODS(IPlayer)
-
 void WrapPlayer(IPlayer *player, v8::Local<v8::Context> context) {
-    auto isolate = context->GetIsolate();
-
-    auto constructorHandle = context->Global()->Get(context, v8::String::NewFromUtf8(isolate, "IPlayer").ToLocalChecked()).ToLocalChecked().As<v8::Function>();
-    auto playerHandle = CreateInstance(player, constructorHandle, context);
+    auto playerHandle = CREATE_INSTANCE(IPlayer, player, context);
 
     player->addExtension(new IHandleStorage(context->GetIsolate(), playerHandle), true);
 }

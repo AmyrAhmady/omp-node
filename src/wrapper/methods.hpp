@@ -6,6 +6,7 @@
 #define CONSTRUCTOR_DECLARE_PARAM(ExternalType) v8::Local<v8::FunctionTemplate> constructorOf##ExternalType
 #define CONSTRUCTOR_INHERIT(ExternalType) constructorTemplate->Inherit(constructorOf##ExternalType);
 
+/// WITH CONSTRUCTOR
 #define WRAP_BASIC_DECLARE_WITH_CONSTRUCTOR(ExternalType) \
     namespace wrapper##_##ExternalType { \
         v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate); \
@@ -34,6 +35,10 @@
             return constructorTemplate; \
         } \
     }
+
+#define CREATE_INSTANCE(ExternalType, external, context) CreateInstance(external, context->Global()->Get(context, v8::String::NewFromUtf8(context->GetIsolate(), #ExternalType).ToLocalChecked()).ToLocalChecked().As<v8::Function>(), context)
+
+/// BASIC
 
 #define WRAP_BASIC(ExternalType) \
     namespace wrapper##_##ExternalType { \
@@ -74,7 +79,10 @@
 
 #define WRAP_BASIC_CODE(ExternalType, functionName, Code) \
     namespace wrapper##_##ExternalType { \
-        void functionName(const v8::FunctionCallbackInfo<v8::Value> &info) Code \
+        void functionName(const v8::FunctionCallbackInfo<v8::Value> &info) { \
+            ENTER_FUNCTION_CALLBACK(info) \
+            Code                                          \
+        }                                                  \
         AddObjectMethod AddObjectMethod##_##functionName(#functionName, functionName); \
     }
 
@@ -94,7 +102,6 @@
 
 #define WRAP_BASIC_CALL_RETURN_OVERLOAD(ExternalType, functionName, ...) \
     WRAP_BASIC_CODE(ExternalType, functionName, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         if (external == nullptr) { \
             return; \
@@ -115,7 +122,6 @@
 
 #define WRAP_BASIC_CALL_OVERLOAD(ExternalType, functionName, ...) \
     WRAP_BASIC_CODE(ExternalType, functionName, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         if (external == nullptr) { \
             return; \
@@ -124,11 +130,45 @@
         isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate, "Wrong parameter type").ToLocalChecked())); \
     })
 
+/// POLYMORPHIC
+
+#define WRAP_POLYMORPHIC_BASIC_CODE(ExternalType, functionName, Code) \
+    WRAP_BASIC_CODE(ExternalType, functionName, { \
+        auto externalType = GetValueInterfaceType(info.This(), context); \
+        Code \
+    })
+
+#define POLYMORPHIC_BASIC_CALL_RETURN(ExternalType, functionName, ReturnValueInfo, ...) \
+    if (externalType == typeid(ExternalType).name()) { \
+        auto external = GetContextExternalPointer<ExternalType>(info); \
+        if (external == nullptr) { \
+            return; \
+        } \
+        v8::TryCatch tryCatch(isolate); \
+        FOR_EACH_N(DEFINE_ARG, ##__VA_ARGS__) \
+        CALL(RETURN_VALUE_TYPE, ReturnValueInfo) value = external->functionName(FOR_EACH_N_JOIN(USE_ARG, ##__VA_ARGS__)); \
+        auto valueHandle = CALL(RETURN_VALUE_FN, ReturnValueInfo)(value, context); \
+        info.GetReturnValue().Set(valueHandle);                                                     \
+        return;                                                                                                \
+    }
+
+#define POLYMORPHIC_BASIC_CALL(ExternalType, functionName, ...) \
+    if (externalType == typeid(ExternalType).name()) { \
+        auto external = GetContextExternalPointer<ExternalType>(info); \
+        if (external == nullptr) { \
+            return; \
+        } \
+        v8::TryCatch tryCatch(isolate); \
+        FOR_EACH_N(DEFINE_ARG, ##__VA_ARGS__) \
+        external->functionName(FOR_EACH_N_JOIN(USE_ARG, ##__VA_ARGS__)); \
+        return;                                                                 \
+    }
+
+
 /// BASIC
 
 #define WRAP_BASIC_CALL_RETURN(ExternalType, functionName, ReturnValueInfo, ...) \
     WRAP_BASIC_CODE(ExternalType, functionName, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         if (external == nullptr) { \
             return; \
@@ -142,7 +182,6 @@
 
 #define WRAP_BASIC_CALL(ExternalType, functionName, ...) \
     WRAP_BASIC_CODE(ExternalType, functionName, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         if (external == nullptr) { \
             return; \
@@ -154,7 +193,6 @@
 
 #define WRAP_HANDLE_STORAGE_GET(ExternalType, functionName) \
     WRAP_BASIC_CODE(ExternalType, functionName, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         if (external == nullptr) { \
             return; \
@@ -168,7 +206,6 @@
 
 #define WRAP_LOCAL_EXT_HANDLE_STORAGE_GET(ExternalType, functionName, ExtensionType) \
     WRAP_BASIC_CODE(ExternalType, functionName, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         if (external == nullptr) { \
             return; \
@@ -180,7 +217,6 @@
 
 #define WRAP_LAZILY_GET_EXTENSION_HANDLE(ExternalType, functionName, StorageExtensionType, ExtensionType, WrapExtensionFn) \
     WRAP_BASIC_CODE(ExternalType, functionName, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         if (external == nullptr) { \
             return; \
@@ -211,7 +247,6 @@
 
 #define WRAP_EXT_BASIC_CALL_RETURN(ExternalType, ExtensionType, functionName, ReturnValueInfo, ...) \
     WRAP_BASIC_CODE(ExternalType, functionName, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         if (external == nullptr) { \
             return; \
@@ -230,7 +265,6 @@
 
 #define WRAP_EXT_BASIC_CALL(ExternalType, ExtensionType, functionName, ...) \
     WRAP_BASIC_CODE(ExternalType, functionName, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<ExternalType>(info); \
         if (external == nullptr) { \
             return; \

@@ -7,14 +7,10 @@
 #include "../entity/entity_wrapper.hpp"
 #include "textlabel_base_wrapper.hpp"
 
-WRAP_BASIC(IPlayerTextLabel)
-
-WRAP_TEXTLABEL_BASE_METHODS(IPlayerTextLabel)
-
-WRAP_ENTITY_METHODS(IPlayerTextLabel)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IPlayerTextLabel, ITextLabelBase)
 
 void WrapPlayerTextLabel(IPlayerTextLabel *playerTextLabel, v8::Local<v8::Context> context) {
-    auto textLabelHandle = InterfaceToObject(playerTextLabel, context, WRAPPED_METHODS(IPlayerTextLabel));
+    auto textLabelHandle = CREATE_INSTANCE(IPlayerTextLabel, playerTextLabel, context);
 
     playerTextLabel->addExtension(new IHandleStorage(context->GetIsolate(), textLabelHandle), true);
 }

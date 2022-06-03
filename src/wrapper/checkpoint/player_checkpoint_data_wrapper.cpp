@@ -7,7 +7,6 @@
 WRAP_BASIC(IPlayerCheckpointData)
 
 WRAP_BASIC_CODE(IPlayerCheckpointData, getCheckpoint, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto extensible = GetClosestExtensiblePointer<IPlayer>(info);
     if (extensible == nullptr) {
         return;
@@ -18,7 +17,6 @@ WRAP_BASIC_CODE(IPlayerCheckpointData, getCheckpoint, {
 })
 
 WRAP_BASIC_CODE(IPlayerCheckpointData, getRaceCheckpoint, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto extensible = GetClosestExtensiblePointer<IPlayer>(info);
     if (extensible == nullptr) {
         return;

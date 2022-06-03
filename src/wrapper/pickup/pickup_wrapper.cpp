@@ -5,7 +5,7 @@
 #include "../../converter/entity.hpp"
 #include "../entity/entity_wrapper.hpp"
 
-WRAP_BASIC(IPickup)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IPickup, IEntity)
 
 WRAP_BASIC_CALL(IPickup, setType, (PickupType, JSToUInt<PickupType>, type), (bool, JSToBool, update, true))
 
@@ -33,10 +33,8 @@ WRAP_BASIC_CALL(IPickup,
 
 WRAP_BASIC_CALL_RETURN(IPickup, isPickupHiddenForPlayer, (bool, BoolToJS), (IPlayer & , JSToEntityRef<IPlayer>, player))
 
-WRAP_ENTITY_METHODS(IPickup)
-
 void WrapPickup(IPickup *pickup, v8::Local<v8::Context> context) {
-    auto pickupHandle = InterfaceToObject(pickup, context, WRAPPED_METHODS(IPickup));
+    auto pickupHandle = CREATE_INSTANCE(IPickup, pickup, context);
 
     pickup->addExtension(new IHandleStorage(context->GetIsolate(), pickupHandle), true);
 }

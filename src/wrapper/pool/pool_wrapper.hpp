@@ -7,7 +7,6 @@
     WRAP_BASIC_CALL(Type, unlock, (int, JSToInt<int>, index)) \
     WRAP_BASIC_CALL_RETURN(Type, count, (size_t, IntToJS<size_t>)) \
     WRAP_BASIC_CODE(Type, entries, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<Type>(info); \
         if (external == nullptr) { \
             return; \

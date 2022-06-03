@@ -6,9 +6,7 @@
 #include "../../converter/entity.hpp"
 #include "../entity/entity_wrapper.hpp"
 
-WRAP_BASIC(ITextDraw)
-
-WRAP_TEXT_DRAW_BASE_METHODS(ITextDraw)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(ITextDraw, ITextDrawBase)
 
 WRAP_BASIC_CALL(ITextDraw, showForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 WRAP_BASIC_CALL(ITextDraw, hideForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
@@ -18,10 +16,8 @@ WRAP_BASIC_CALL(ITextDraw,
                 (IPlayer & , JSToEntityRef<IPlayer>, player),
                 (Impl::String, JSToString, text))
 
-WRAP_IID_PROVIDER_METHODS(ITextDraw)
-
 void WrapTextDraw(ITextDraw *textDraw, v8::Local<v8::Context> context) {
-    auto textDrawHandle = InterfaceToObject(textDraw, context, WRAPPED_METHODS(ITextDraw));
+    auto textDrawHandle = CREATE_INSTANCE(ITextDraw, textDraw, context);
 
     textDraw->addExtension(new IHandleStorage(context->GetIsolate(), textDrawHandle), true);
 }

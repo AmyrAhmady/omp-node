@@ -7,7 +7,6 @@
 WRAP_BASIC(IConfig)
 
 WRAP_BASIC_CODE(IConfig, getString, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto config = GetContextExternalPointer<IConfig>(info);
     auto key = JSToString(info[0], context);
     auto type = config->getType(key);
@@ -21,7 +20,6 @@ WRAP_BASIC_CODE(IConfig, getString, {
     info.GetReturnValue().Set(resultHandle);
 })
 WRAP_BASIC_CODE(IConfig, getInt, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto config = GetContextExternalPointer<IConfig>(info);
     auto key = JSToString(info[0], context);
     auto type = config->getType(key);
@@ -35,7 +33,6 @@ WRAP_BASIC_CODE(IConfig, getInt, {
     info.GetReturnValue().Set(resultHandle);
 })
 WRAP_BASIC_CODE(IConfig, getFloat, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto config = GetContextExternalPointer<IConfig>(info);
     auto key = JSToString(info[0], context);
     auto type = config->getType(key);
@@ -49,7 +46,6 @@ WRAP_BASIC_CODE(IConfig, getFloat, {
     info.GetReturnValue().Set(resultHandle);
 })
 WRAP_BASIC_CODE(IConfig, getStrings, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto config = GetContextExternalPointer<IConfig>(info);
     auto key = JSToString(info[0], context);
     auto type = config->getType(key);
@@ -69,7 +65,6 @@ WRAP_BASIC_CODE(IConfig, getStrings, {
     info.GetReturnValue().Set(arrayHandle);
 })
 WRAP_BASIC_CODE(IConfig, getStringsCount, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto config = GetContextExternalPointer<IConfig>(info);
     auto key = JSToString(info[0], context);
     auto type = config->getType(key);
@@ -83,7 +78,6 @@ WRAP_BASIC_CODE(IConfig, getStringsCount, {
     info.GetReturnValue().Set(countHandle);
 })
 WRAP_BASIC_CODE(IConfig, getType, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto config = GetContextExternalPointer<IConfig>(info);
     auto key = JSToString(info[0], context);
     auto type = config->getType(key);
@@ -91,7 +85,6 @@ WRAP_BASIC_CODE(IConfig, getType, {
     info.GetReturnValue().Set(typeHandle);
 })
 WRAP_BASIC_CODE(IConfig, get, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto config = GetContextExternalPointer<IConfig>(info);
     auto key = JSToString(info[0], context);
     auto type = config->getType(key);

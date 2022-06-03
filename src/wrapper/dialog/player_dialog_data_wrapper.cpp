@@ -15,7 +15,6 @@ WRAP_BASIC_CALL(IPlayerDialogData,
                 (Impl::String, JSToString, button1),
                 (Impl::String, JSToString, button2))
 WRAP_BASIC_CODE(IPlayerDialogData, get, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto external = GetContextExternalPointer<IPlayerDialogData>(info);
     if (external == nullptr) {
         return;

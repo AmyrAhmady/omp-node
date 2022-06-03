@@ -7,9 +7,7 @@
 #include "../../converter/object.hpp"
 #include "../entity/entity_wrapper.hpp"
 
-WRAP_BASIC(IPlayerObject)
-
-WRAP_OBJECT_BASE_METHODS(IPlayerObject)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IPlayerObject, IBaseObject)
 
 WRAP_BASIC_CALL(IPlayerObject,
                 attachToObject,
@@ -17,10 +15,8 @@ WRAP_BASIC_CALL(IPlayerObject,
                 (Vector3, JSToVector<Vector3>, offset),
                 (Vector3, JSToVector<Vector3>, rotation))
 
-WRAP_ENTITY_METHODS(IPlayerObject)
-
 void WrapPlayerObject(IPlayerObject *playerObject, v8::Local<v8::Context> context) {
-    auto objectHandle = InterfaceToObject(playerObject, context, WRAPPED_METHODS(IPlayerObject));
+    auto objectHandle = CREATE_INSTANCE(IPlayerObject, playerObject, context);
 
     playerObject->addExtension(new IHandleStorage(context->GetIsolate(), objectHandle), true);
 }

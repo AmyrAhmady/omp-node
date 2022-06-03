@@ -16,6 +16,21 @@
 
 #include "wrapper/entity/id_provider_wrapper.hpp"
 #include "wrapper/entity/entity_wrapper.hpp"
+#include "wrapper/actor/actor_wrapper.hpp"
+#include "wrapper/class/class_wrapper.hpp"
+#include "wrapper/gangzone/gangzone_wrapper.hpp"
+#include "wrapper/menu/menu_wrapper.hpp"
+#include "wrapper/object/object_base_wrapper.hpp"
+#include "wrapper/object/object_wrapper.hpp"
+#include "wrapper/object/player_object_wrapper.hpp"
+#include "wrapper/pickup/pickup_wrapper.hpp"
+#include "wrapper/textdraw/textdraw_base_wrapper.hpp"
+#include "wrapper/textdraw/textdraw_wrapper.hpp"
+#include "wrapper/textdraw/player_textdraw_wrapper.hpp"
+#include "wrapper/textlabel/textlabel_base_wrapper.hpp"
+#include "wrapper/textlabel/textlabel_wrapper.hpp"
+#include "wrapper/textlabel/player_textlabel_wrapper.hpp"
+
 #include "wrapper/vehicle/vehicle_wrapper.hpp"
 #include "wrapper/player/player_wrapper.hpp"
 
@@ -71,7 +86,7 @@ namespace ompnode {
             entryFile = entry;
             useInspector = false;
         } else {
-            entryFile = "index.js";
+            entryFile = "dist-omp/index.js";
             useInspector = false;
         }
 
@@ -103,6 +118,27 @@ namespace ompnode {
 
         ADD_CONSTRUCTOR_TEMPLATE(IIDProvider)
         ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IEntity, IIDProvider)
+
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IActor, IEntity)
+
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IClass, IIDProvider)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IGangZone, IIDProvider)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IMenu, IIDProvider)
+
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IBaseObject, IEntity)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IObject, IBaseObject)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IPlayerObject, IBaseObject)
+
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IPickup, IEntity)
+
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(ITextDrawBase, IIDProvider)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(ITextDraw, ITextDrawBase)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IPlayerTextDraw, ITextDrawBase)
+
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(ITextLabelBase, IEntity)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(ITextLabel, IEntity)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IPlayerTextLabel, IEntity)
+
         ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IVehicle, IEntity)
         ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IPlayer, IEntity)
 

@@ -16,7 +16,6 @@
                            (Impl::String, JSToString, key)) \
     WRAP_BASIC_CALL_RETURN(Type, erase, (bool, BoolToJS), (Impl::String, JSToString, key)) \
     WRAP_BASIC_CODE(Type, getKeyAtIndex, { \
-        ENTER_FUNCTION_CALLBACK(info) \
         auto external = GetContextExternalPointer<Type>(info); \
         if (external == nullptr) { \
             return; \

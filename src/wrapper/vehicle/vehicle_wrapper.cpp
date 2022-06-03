@@ -49,7 +49,6 @@ WRAP_BASIC_CALL(IVehicle,
                 (IPlayer * , JSToEntity<IPlayer>, vehicleUpdater, nullptr))
 
 WRAP_BASIC_CODE(IVehicle, getDamageStatus, {
-    ENTER_FUNCTION_CALLBACK(info);
     auto external = GetContextExternalPointer<IVehicle>(info);
     if (external == nullptr) {
         return;
@@ -160,13 +159,8 @@ WRAP_BASIC_CALL_RETURN(IVehicle, getHydraThrustAngle, (uint32_t, UIntToJS))
 
 WRAP_BASIC_CALL_RETURN(IVehicle, getTrainSpeed, (float, FloatToJS));
 
-//WRAP_ENTITY_METHODS(IVehicle)
-
 void WrapVehicle(IVehicle *vehicle, v8::Local<v8::Context> context) {
-    auto isolate = context->GetIsolate();
-
-    auto constructorHandle = context->Global()->Get(context, v8::String::NewFromUtf8(isolate, "IVehicle").ToLocalChecked()).ToLocalChecked().As<v8::Function>();
-    auto vehicleHandle = CreateInstance(vehicle, constructorHandle, context);
+    auto vehicleHandle = CREATE_INSTANCE(IVehicle, vehicle, context);
 
     vehicle->addExtension(new IHandleStorage(context->GetIsolate(), vehicleHandle), true);
 }

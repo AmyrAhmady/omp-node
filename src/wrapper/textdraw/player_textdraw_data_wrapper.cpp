@@ -31,7 +31,6 @@ WRAP_POOL_EVENT_DISPATCHER_CUSTOM_STORAGE(IPlayerTextDrawData,
                                           IPlayerTextDraw,
                                           PlayerTextDrawPoolEventDispatcherHandleStorage)
 WRAP_BASIC_CODE(IPlayerTextDrawData, getPoolEventDispatcher, {
-    ENTER_FUNCTION_CALLBACK(info)
     auto extensible = GetClosestExtensiblePointer<IPlayer>(info);
     if (extensible == nullptr) {
         return;

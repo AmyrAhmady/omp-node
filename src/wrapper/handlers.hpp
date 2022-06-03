@@ -57,7 +57,6 @@
     }
 
 #define WRAP_ADD_EVENT_HANDLER(Type) { \
-    ENTER_FUNCTION_CALLBACK(info) \
     auto dispatcher = GetContextExternalPointer<IEventDispatcher<handler_wrapper_##_##Type::HandlerType>>(info); \
     auto event = JSToString(info[0], context); \
     auto handler = info[1].As<v8::Function>(); \
@@ -82,7 +81,6 @@
 }
 
 #define WRAP_HAS_EVENT_HANDLER(Type) { \
-    ENTER_FUNCTION_CALLBACK(info) \
     auto dispatcher = GetContextExternalPointer<IEventDispatcher<handler_wrapper_##_##Type::HandlerType>>(info); \
     auto event = JSToString(info[0], context); \
     auto handler = info[1].As<v8::Function>(); \
@@ -103,7 +101,6 @@
 }
 
 #define WRAP_REMOVE_EVENT_HANDLER(Type) { \
-    ENTER_FUNCTION_CALLBACK(info) \
     auto dispatcher = GetContextExternalPointer<IEventDispatcher<handler_wrapper_##_##Type::HandlerType>>(info); \
     auto event = JSToString(info[0], context); \
     auto handler = info[1].As<v8::Function>(); \

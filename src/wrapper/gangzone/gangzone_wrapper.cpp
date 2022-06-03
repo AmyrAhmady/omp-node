@@ -7,7 +7,7 @@
 #include "../../converter/entity.hpp"
 #include "../entity/entity_wrapper.hpp"
 
-WRAP_BASIC(IGangZone)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IGangZone, IIDProvider)
 
 WRAP_BASIC_CALL_RETURN(IGangZone, isShownForPlayer, (bool, BoolToJS), (const IPlayer&, JSToEntityRef<IPlayer>, player))
 WRAP_BASIC_CALL_RETURN(IGangZone,
@@ -37,10 +37,8 @@ WRAP_BASIC_CALL_RETURN(IGangZone,
                        (const Colour, TO_JS_FN(Colour)),
                        (IPlayer & , JSToEntityRef<IPlayer>, player))
 
-WRAP_IID_PROVIDER_METHODS(IGangZone)
-
 void WrapGangZone(IGangZone *gangZone, v8::Local<v8::Context> context) {
-    auto gangZoneHandle = InterfaceToObject(gangZone, context, WRAPPED_METHODS(IGangZone));
+    auto gangZoneHandle = CREATE_INSTANCE(IGangZone, gangZone, context);
 
     gangZone->addExtension(new IHandleStorage(context->GetIsolate(), gangZoneHandle), true);
 }

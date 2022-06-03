@@ -4,7 +4,7 @@
 #include "../../converter/vehicle.hpp"
 #include "../../converter/entity.hpp"
 
-WRAP_BASIC(IMenu)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IMenu, IIDProvider)
 
 WRAP_BASIC_CALL(IMenu,
                 setColumnHeader,
@@ -36,10 +36,8 @@ WRAP_BASIC_CALL(IMenu, initForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, playe
 WRAP_BASIC_CALL(IMenu, showForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 WRAP_BASIC_CALL(IMenu, hideForPlayer, (IPlayer & , JSToEntityRef<IPlayer>, player))
 
-WRAP_IID_PROVIDER_METHODS(IMenu)
-
 void WrapMenu(IMenu *menu, v8::Local<v8::Context> context) {
-    auto menuHandle = InterfaceToObject(menu, context, WRAPPED_METHODS(IMenu));
+    auto menuHandle = CREATE_INSTANCE(IMenu, menu, context);
 
     menu->addExtension(new IHandleStorage(context->GetIsolate(), menuHandle), true);
 }
