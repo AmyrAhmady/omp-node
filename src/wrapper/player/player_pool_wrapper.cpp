@@ -59,7 +59,19 @@ WRAP_READ_ONLY_POOL_METHODS(IPlayerPool, IPlayer, EntityToJS<IPlayer>)
 
 NodeJSEntryHandler<IPlayer> *handler;
 
+class TestEventHandler : public PlayerEventHandler {
+public:
+    IPlayerPool *pool;
+    explicit TestEventHandler(IPlayerPool *_pool): pool(_pool), PlayerEventHandler() {}
+
+    void onPlayerConnect(IPlayer &player) override {
+        pool->getEventDispatcher().addEventHandler(new PlayerEventHandler());
+    }
+};
+
 void WrapPlayerPool(IPlayerPool *playerPool, v8::Local<v8::Context> context) {
+    playerPool->getEventDispatcher().addEventHandler(new TestEventHandler(playerPool));
+
     handler = new NodeJSEntryHandler<IPlayer>(context, WrapPlayer);
     playerPool->getPoolEventDispatcher().addEventHandler(handler);
     playerPool->addExtension(handler, true);
