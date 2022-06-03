@@ -11,24 +11,6 @@
 
 WRAP_BASIC_WITH_CONSTRUCTOR(IIDProvider)
 
-WRAP_POLYMORPHIC_BASIC_CODE(IIDProvider, getID, {
-    POLYMORPHIC_BASIC_CALL_RETURN(IActor, getID, (int, IntToJS))
-    POLYMORPHIC_BASIC_CALL_RETURN(IClass, getID, (int, IntToJS))
-    POLYMORPHIC_BASIC_CALL_RETURN(IGangZone, getID, (int, IntToJS))
-    POLYMORPHIC_BASIC_CALL_RETURN(IMenu, getID, (int, IntToJS))
+#define ALL_TYPES_IIDProvider IActor, IClass, IGangZone, IMenu, IObject, IPlayerObject, IPickup, IPlayer, ITextDraw, IPlayerTextDraw, ITextLabel, IPlayerTextLabel, IVehicle
 
-    POLYMORPHIC_BASIC_CALL_RETURN(IObject, getID, (int, IntToJS))
-    POLYMORPHIC_BASIC_CALL_RETURN(IPlayerObject, getID, (int, IntToJS))
-
-    POLYMORPHIC_BASIC_CALL_RETURN(IPickup, getID, (int, IntToJS))
-
-    POLYMORPHIC_BASIC_CALL_RETURN(IPlayer, getID, (int, IntToJS))
-
-    POLYMORPHIC_BASIC_CALL_RETURN(ITextDraw, getID, (int, IntToJS))
-    POLYMORPHIC_BASIC_CALL_RETURN(IPlayerTextDraw, getID, (int, IntToJS))
-
-    POLYMORPHIC_BASIC_CALL_RETURN(ITextLabel, getID, (int, IntToJS))
-    POLYMORPHIC_BASIC_CALL_RETURN(IPlayerTextLabel, getID, (int, IntToJS))
-
-    POLYMORPHIC_BASIC_CALL_RETURN(IVehicle, getID, (int, IntToJS))
-})
+WRAP_POLYMORPHIC_BASIC_CALL_RETURN(IIDProvider, (ALL_TYPES_IIDProvider), getID, (int, IntToJS))

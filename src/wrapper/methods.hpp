@@ -36,6 +36,16 @@
         } \
     }
 
+#define WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT_NO_TYPE(ExternalType, ...) \
+    WRAP_BASIC(ExternalType) \
+    namespace wrapper##_##ExternalType { \
+        v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate, FOR_EACH(CONSTRUCTOR_DECLARE_PARAM, ##__VA_ARGS__)) { \
+            auto constructorTemplate = CreateConstructorTemplate(isolate, WRAPPED_METHODS(ExternalType));                                 \
+            FOR_EACH(CONSTRUCTOR_INHERIT, ##__VA_ARGS__)                 \
+            return constructorTemplate; \
+        } \
+    }
+
 #define CREATE_INSTANCE(ExternalType, external, context) CreateInstance(external, context->Global()->Get(context, v8::String::NewFromUtf8(context->GetIsolate(), #ExternalType).ToLocalChecked()).ToLocalChecked().As<v8::Function>(), context)
 
 /// BASIC
@@ -132,38 +142,58 @@
 
 /// POLYMORPHIC
 
-#define WRAP_POLYMORPHIC_BASIC_CODE(ExternalType, functionName, Code) \
-    WRAP_BASIC_CODE(ExternalType, functionName, { \
-        auto externalType = GetValueInterfaceType(info.This(), context); \
-        Code \
-    })
+#define DEFINE_ARG_RETURN_TRUE(N, CURRENT, ArgInfo) \
+    CALL(ARG_TYPE, ArgInfo) CALL(ARG_NAME, ArgInfo) = CALL_FN(CALL(ARG_FN, ArgInfo), info[N - CURRENT], context CALL(ARG_DEFAULT, ArgInfo)); \
+    if (tryCatch.HasCaught()) { \
+        tryCatch.ReThrow(); \
+        return true; \
+    }
 
-#define POLYMORPHIC_BASIC_CALL_RETURN(ExternalType, functionName, ReturnValueInfo, ...) \
-    if (externalType == typeid(ExternalType).name()) { \
-        auto external = GetContextExternalPointer<ExternalType>(info); \
-        if (external == nullptr) { \
-            return; \
-        } \
+#define CALL_SUB_FN(Type) if (fn<Type>(isolate, context, externalType, info)) return;
+#define CALL_SUB_FNS_(...) FOR_EACH(CALL_SUB_FN, ##__VA_ARGS__)
+#define CALL_SUB_FNS(Args) CALL_SUB_FNS_ Args
+
+#define WRAP_POLYMORPHIC_BASIC_CODE(ExternalType, AllTypes, functionName, Code) \
+    namespace wrapper##_##ExternalType { \
+        namespace wrapper##_##ExternalType##_##functionName { \
+            template<class Interface> \
+            bool fn(v8::Isolate *isolate, v8::Local<v8::Context> context, const std::string &externalType, const v8::FunctionCallbackInfo<v8::Value> &info) { \
+                if (externalType == typeid(Interface).name()) { \
+                    auto external = GetContextExternalPointer<Interface>(info); \
+                    if (external == nullptr) { \
+                        return true; \
+                    } \
+                    Code \
+                    return true; \
+                } \
+                return false; \
+            } \
+            void functionName(const v8::FunctionCallbackInfo<v8::Value> &info) { \
+                ENTER_FUNCTION_CALLBACK(info) \
+                auto externalType = GetValueInterfaceType(info.This(), context);\
+                CALL_SUB_FNS(AllTypes) \
+            } \
+            AddObjectMethod AddObjectMethod##_##functionName(#functionName, functionName); \
+        }\
+    }
+
+
+
+#define WRAP_POLYMORPHIC_BASIC_CALL_RETURN(ExternalType, AllTypes, functionName, ReturnValueInfo, ...) \
+    WRAP_POLYMORPHIC_BASIC_CODE(ExternalType, AllTypes, functionName, { \
         v8::TryCatch tryCatch(isolate); \
-        FOR_EACH_N(DEFINE_ARG, ##__VA_ARGS__) \
+        FOR_EACH_N(DEFINE_ARG_RETURN_TRUE, ##__VA_ARGS__) \
         CALL(RETURN_VALUE_TYPE, ReturnValueInfo) value = external->functionName(FOR_EACH_N_JOIN(USE_ARG, ##__VA_ARGS__)); \
         auto valueHandle = CALL(RETURN_VALUE_FN, ReturnValueInfo)(value, context); \
-        info.GetReturnValue().Set(valueHandle);                                                     \
-        return;                                                                                                \
-    }
+        info.GetReturnValue().Set(valueHandle); \
+    })
 
-#define POLYMORPHIC_BASIC_CALL(ExternalType, functionName, ...) \
-    if (externalType == typeid(ExternalType).name()) { \
-        auto external = GetContextExternalPointer<ExternalType>(info); \
-        if (external == nullptr) { \
-            return; \
-        } \
+#define WRAP_POLYMORPHIC_BASIC_CALL(ExternalType, AllTypes, functionName, ...) \
+    WRAP_POLYMORPHIC_BASIC_CODE(ExternalType, AllTypes, functionName, {        \
         v8::TryCatch tryCatch(isolate); \
-        FOR_EACH_N(DEFINE_ARG, ##__VA_ARGS__) \
+        FOR_EACH_N(DEFINE_ARG_RETURN_TRUE, ##__VA_ARGS__) \
         external->functionName(FOR_EACH_N_JOIN(USE_ARG, ##__VA_ARGS__)); \
-        return;                                                                 \
-    }
-
+    })
 
 /// BASIC
 
