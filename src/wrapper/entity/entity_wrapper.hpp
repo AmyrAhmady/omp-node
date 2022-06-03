@@ -1,4 +1,9 @@
 #pragma once
+#include "sdk.hpp"
+#include "v8.h"
+#include "../utils.hpp"
+
+WRAP_BASIC_DECLARE_WITH_CONSTRUCTOR_INHERIT(IEntity, IIDProvider)
 
 #define WRAP_IID_PROVIDER_METHODS(Type) \
     WRAP_BASIC_CALL_RETURN(Type, getID, (int, IntToJS))

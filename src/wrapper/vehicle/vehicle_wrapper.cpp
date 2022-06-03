@@ -7,7 +7,7 @@
 #include "../../converter/entity.hpp"
 #include "../entity/entity_wrapper.hpp"
 
-WRAP_BASIC(IVehicle)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IVehicle, IEntity)
 
 WRAP_BASIC_CALL(IVehicle, setSpawnData, (const VehicleSpawnData&, FROM_JS_FN(VehicleSpawnData), data))
 
@@ -160,10 +160,13 @@ WRAP_BASIC_CALL_RETURN(IVehicle, getHydraThrustAngle, (uint32_t, UIntToJS))
 
 WRAP_BASIC_CALL_RETURN(IVehicle, getTrainSpeed, (float, FloatToJS));
 
-WRAP_ENTITY_METHODS(IVehicle)
+//WRAP_ENTITY_METHODS(IVehicle)
 
 void WrapVehicle(IVehicle *vehicle, v8::Local<v8::Context> context) {
-    auto vehicleHandle = InterfaceToObject(vehicle, context, WRAPPED_METHODS(IVehicle));
+    auto isolate = context->GetIsolate();
+
+    auto constructorHandle = context->Global()->Get(context, v8::String::NewFromUtf8(isolate, "IVehicle").ToLocalChecked()).ToLocalChecked().As<v8::Function>();
+    auto vehicleHandle = CreateInstance(vehicle, constructorHandle, context);
 
     vehicle->addExtension(new IHandleStorage(context->GetIsolate(), vehicleHandle), true);
 }

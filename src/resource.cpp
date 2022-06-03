@@ -14,6 +14,11 @@
 #include "wrapper/class/class_pool_wrapper.hpp"
 #include "wrapper/variable/variable_component_wrapper.hpp"
 
+#include "wrapper/entity/id_provider_wrapper.hpp"
+#include "wrapper/entity/entity_wrapper.hpp"
+#include "wrapper/vehicle/vehicle_wrapper.hpp"
+#include "wrapper/player/player_wrapper.hpp"
+
 v8::Isolate *GetV8Isolate() {
     return ompnode::nodeImpl.GetIsolate();
 }
@@ -33,6 +38,16 @@ static node::IsolateData *GetNodeIsolate() {
     _context->Global()->Set(_context, \
         v8::String::NewFromUtf8(GetV8Isolate(), #componentName).ToLocalChecked(), \
         componentName##ComponentHandle).Check();
+
+#define ADD_CONSTRUCTOR_TEMPLATE(ComponentType) \
+    auto constructorOf##ComponentType = wrapper##_##ComponentType::Wrapped_CreateConstructorTemplate(isolate); \
+    global->Set(isolate, #ComponentType, constructorOf##ComponentType);
+
+#define INHERIT_CONSTRUCTOR(ComponentType) constructorOf##ComponentType
+
+#define ADD_CONSTRUCTOR_TEMPLATE_INHERIT(ComponentType, ...) \
+    auto constructorOf##ComponentType = wrapper##_##ComponentType::Wrapped_CreateConstructorTemplate(isolate, FOR_EACH(INHERIT_CONSTRUCTOR, ##__VA_ARGS__)); \
+    global->Set(isolate, #ComponentType, constructorOf##ComponentType);
 
 namespace ompnode {
 
@@ -83,6 +98,13 @@ namespace ompnode {
 
         // create a global variable for resource
         v8val::add_definition("__resname", name, global);
+
+        auto isolate = GetV8Isolate();
+
+        ADD_CONSTRUCTOR_TEMPLATE(IIDProvider)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IEntity, IIDProvider)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IVehicle, IEntity)
+        ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IPlayer, IEntity)
 
         v8::Local<v8::Context> _context = node::NewContext(GetV8Isolate(), global);
         context.Reset(GetV8Isolate(), _context);

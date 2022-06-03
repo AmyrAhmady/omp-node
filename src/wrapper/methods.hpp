@@ -3,6 +3,38 @@
 #include "../converter/for_each_n_join.hpp"
 #include "../converter/find_function.hpp"
 
+#define CONSTRUCTOR_DECLARE_PARAM(ExternalType) v8::Local<v8::FunctionTemplate> constructorOf##ExternalType
+#define CONSTRUCTOR_INHERIT(ExternalType) constructorTemplate->Inherit(constructorOf##ExternalType);
+
+#define WRAP_BASIC_DECLARE_WITH_CONSTRUCTOR(ExternalType) \
+    namespace wrapper##_##ExternalType { \
+        v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate); \
+    }
+
+#define WRAP_BASIC_DECLARE_WITH_CONSTRUCTOR_INHERIT(ExternalType, ...) \
+    namespace wrapper##_##ExternalType { \
+        v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate, FOR_EACH(CONSTRUCTOR_DECLARE_PARAM, ##__VA_ARGS__)); \
+    }
+
+#define WRAP_BASIC_WITH_CONSTRUCTOR(ExternalType) \
+    WRAP_BASIC(ExternalType) \
+    namespace wrapper##_##ExternalType { \
+        v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate) { \
+            auto constructorTemplate = CreateConstructorTemplate<ExternalType>(isolate, WRAPPED_METHODS(ExternalType)); \
+            return constructorTemplate; \
+        } \
+    }
+
+#define WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(ExternalType, ...) \
+    WRAP_BASIC(ExternalType) \
+    namespace wrapper##_##ExternalType { \
+        v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate, FOR_EACH(CONSTRUCTOR_DECLARE_PARAM, ##__VA_ARGS__)) { \
+            auto constructorTemplate = CreateConstructorTemplate<ExternalType>(isolate, WRAPPED_METHODS(ExternalType));                                 \
+            FOR_EACH(CONSTRUCTOR_INHERIT, ##__VA_ARGS__)                 \
+            return constructorTemplate; \
+        } \
+    }
+
 #define WRAP_BASIC(ExternalType) \
     namespace wrapper##_##ExternalType { \
         ObjectMethods methods; \

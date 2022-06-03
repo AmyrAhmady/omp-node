@@ -14,7 +14,8 @@
 #include "../textdraw/player_textdraw_data_wrapper.hpp"
 #include "../variable/player_variable_data_wrapper.hpp"
 
-WRAP_BASIC(IPlayer)
+WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IPlayer, IEntity)
+
 WRAP_BASIC_CALL(IPlayer, kick)
 WRAP_BASIC_CALL(IPlayer, ban, (Impl::String, JSToString, reason, Impl::String()))
 WRAP_BASIC_CALL_RETURN(IPlayer, isBot, (bool, BoolToJS))
@@ -291,9 +292,13 @@ WRAP_LAZILY_GET_EXTENSION_HANDLE(IPlayer,
                                  IPlayerTextDrawData,
                                  WrapPlayerTextDrawData)
 
-WRAP_ENTITY_METHODS(IPlayer)
+//WRAP_ENTITY_METHODS(IPlayer)
 
 void WrapPlayer(IPlayer *player, v8::Local<v8::Context> context) {
-    auto playerHandle = InterfaceToObject(player, context, WRAPPED_METHODS(IPlayer));
+    auto isolate = context->GetIsolate();
+
+    auto constructorHandle = context->Global()->Get(context, v8::String::NewFromUtf8(isolate, "IPlayer").ToLocalChecked()).ToLocalChecked().As<v8::Function>();
+    auto playerHandle = CreateInstance(player, constructorHandle, context);
+
     player->addExtension(new IHandleStorage(context->GetIsolate(), playerHandle), true);
 }

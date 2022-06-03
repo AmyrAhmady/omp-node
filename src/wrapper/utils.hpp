@@ -57,6 +57,42 @@ IHandleStorage *GetHandleStorageExtension(IExtensible *extensible);
 typedef std::vector<std::pair<std::string, v8::FunctionCallback>> ObjectMethods;
 typedef std::vector<std::tuple<std::string, v8::FunctionCallback, v8::FunctionCallback>> ObjectAccessors;
 
+template<class Interface>
+v8::Local<v8::FunctionTemplate> CreateConstructorTemplate(v8::Isolate *isolate, const ObjectMethods &methods) {
+    v8::EscapableHandleScope hs(isolate);
+
+    auto functionTemplate = v8::FunctionTemplate::New(isolate);
+
+    auto instanceTemplate = functionTemplate->InstanceTemplate();
+    instanceTemplate->SetInternalFieldCount(2);
+
+    auto prototypeTemplate = functionTemplate->PrototypeTemplate();
+
+    auto interfaceTypeSymbol = v8::Symbol::For(isolate, v8::String::NewFromUtf8(isolate, "interfaceToObjectInterfaceType").ToLocalChecked());
+    prototypeTemplate->Set(interfaceTypeSymbol, v8::String::NewFromUtf8(isolate, typeid(Interface).name()).ToLocalChecked());
+
+    for (auto &entry: methods) {
+        prototypeTemplate->Set(v8::String::NewFromUtf8(isolate,
+                                                       entry.first.c_str(),
+                                                       v8::NewStringType::kNormal).ToLocalChecked(),
+                               v8::FunctionTemplate::New(isolate, entry.second));
+    }
+
+    return hs.Escape(functionTemplate);
+}
+
+template<class Interface, class ClosestExtensibleInterface = void>
+v8::Local<v8::Object> CreateInstance(Interface *pointer, v8::Local<v8::Function> constructor, v8::Local<v8::Context> context, ClosestExtensibleInterface *closestExtensiblePointer = nullptr) {
+    auto isolate = context->GetIsolate();
+
+    auto object = constructor->NewInstance(context).ToLocalChecked();
+
+    object->SetInternalField(0, v8::External::New(isolate, pointer));
+    object->SetInternalField(1, v8::External::New(isolate, closestExtensiblePointer));
+
+    return object;
+}
+
 template<class Interface, class ClosestExtensibleInterface = void>
 v8::Local<v8::Object> InterfaceToObject(Interface *pointer,
                                         v8::Local<v8::Context> context,
