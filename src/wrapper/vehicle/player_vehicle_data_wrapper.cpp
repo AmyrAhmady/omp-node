@@ -2,7 +2,7 @@
 #include "player_vehicle_data_wrapper.hpp"
 #include "../../converter/entity.hpp"
 
-WRAP_BASIC(IPlayerVehicleData)
+WRAP_BASIC_WITH_CONSTRUCTOR(IPlayerVehicleData)
 
 WRAP_BASIC_CALL_RETURN(IPlayerVehicleData, getVehicle, (IVehicle * , EntityToJS<IVehicle>))
 WRAP_BASIC_CALL_RETURN(IPlayerVehicleData, getSeat, (int, IntToJS))
@@ -14,7 +14,7 @@ std::vector<IExtension *> WrapPlayerVehicleData(IPlayer *player,
 
     std::vector<IExtension *> handleStorages;
 
-    auto objectPoolHandle = InterfaceToObject(playerVehicleData, context, WRAPPED_METHODS(IPlayerVehicleData), player);
+    auto objectPoolHandle = CREATE_INSTANCE_CLOSEST(IPlayerVehicleData, playerVehicleData, context, player);
     handleStorages.push_back(new PlayerVehicleDataHandleStorage(context->GetIsolate(), objectPoolHandle));
 
     return handleStorages;

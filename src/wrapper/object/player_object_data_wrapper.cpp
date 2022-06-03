@@ -9,7 +9,7 @@
 #include "../pool/read_only_pool_wrapper.hpp"
 #include "../pool/pool_wrapper.hpp"
 
-WRAP_BASIC(IPlayerObjectData)
+WRAP_BASIC_WITH_CONSTRUCTOR(IPlayerObjectData)
 
 WRAP_BASIC_CALL_RETURN(IPlayerObjectData,
                        create,
@@ -70,7 +70,7 @@ std::vector<IExtension *> WrapPlayerObjectData(IPlayer *player,
     objectPool->getPoolEventDispatcher().addEventHandler(handler);
     handleStorages.push_back(handler);
 
-    auto objectPoolHandle = InterfaceToObject(objectPool, context, WRAPPED_METHODS(IPlayerObjectData), player);
+    auto objectPoolHandle = CREATE_INSTANCE_CLOSEST(IPlayerObjectData, objectPool, context, player);
     handleStorages.push_back(new PlayerObjectPoolHandleStorage(context->GetIsolate(), objectPoolHandle));
 
     auto poolEventDispatcherHandleStorage =

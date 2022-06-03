@@ -3,7 +3,7 @@
 #include "../../converter/entity.hpp"
 #include "variable_storage_base_wrapper.hpp"
 
-WRAP_BASIC(IPlayerVariableData)
+WRAP_BASIC_WITH_CONSTRUCTOR(IPlayerVariableData)
 
 WRAP_VARIABLE_STORAGE_BASE_METHODS(IPlayerVariableData)
 
@@ -13,8 +13,7 @@ std::vector<IExtension *> WrapPlayerVariableData(IPlayer *player,
 
     std::vector<IExtension *> handleStorages;
 
-    auto
-        objectPoolHandle = InterfaceToObject(playerVariableData, context, WRAPPED_METHODS(IPlayerVariableData), player);
+    auto objectPoolHandle = CREATE_INSTANCE_CLOSEST(IPlayerVariableData, playerVariableData, context, player);
     handleStorages.push_back(new PlayerVariableDataHandleStorage(context->GetIsolate(), objectPoolHandle));
 
     return handleStorages;

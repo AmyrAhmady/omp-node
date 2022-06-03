@@ -9,7 +9,7 @@
 #include "../pool/read_only_pool_wrapper.hpp"
 #include "../pool/pool_wrapper.hpp"
 
-WRAP_BASIC(IPlayerTextLabelData)
+WRAP_BASIC_WITH_CONSTRUCTOR(IPlayerTextLabelData)
 
 WRAP_BASIC_CALL_RETURN_OVERLOAD(IPlayerTextLabelData,
                                 create,
@@ -56,7 +56,7 @@ std::vector<IExtension *> WrapPlayerTextLabelData(IPlayer *player,
     textLabelPool->getPoolEventDispatcher().addEventHandler(handler);
     handleStorages.push_back(handler);
 
-    auto textLabelPoolHandle = InterfaceToObject(textLabelPool, context, WRAPPED_METHODS(IPlayerTextLabelData), player);
+    auto textLabelPoolHandle = CREATE_INSTANCE_CLOSEST(IPlayerTextLabelData, textLabelPool, context, player);
     handleStorages.push_back(new PlayerTextLabelPoolHandleStorage(context->GetIsolate(), textLabelPoolHandle));
 
     auto poolEventDispatcherHandleStorage =

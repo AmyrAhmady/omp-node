@@ -81,6 +81,10 @@ v8::Local<v8::FunctionTemplate> CreateConstructorTemplate(v8::Isolate *isolate, 
     return hs.Escape(functionTemplate);
 }
 
+inline v8::Local<v8::FunctionTemplate> CreateConstructorTemplateNoType(v8::Isolate *isolate, const ObjectMethods &methods) {
+    return CreateConstructorTemplate<void>(isolate, methods);
+}
+
 template<class Interface, class ClosestExtensibleInterface = void>
 v8::Local<v8::Object> CreateInstance(Interface *pointer, v8::Local<v8::Function> constructor, v8::Local<v8::Context> context, ClosestExtensibleInterface *closestExtensiblePointer = nullptr) {
     auto isolate = context->GetIsolate();

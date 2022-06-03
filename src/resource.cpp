@@ -31,6 +31,16 @@
 #include "wrapper/textlabel/textlabel_wrapper.hpp"
 #include "wrapper/textlabel/player_textlabel_wrapper.hpp"
 
+#include "wrapper/checkpoint/player_checkpoint_data_wrapper.hpp"
+#include "wrapper/class/player_class_data_wrapper.hpp"
+#include "wrapper/dialog/player_dialog_data_wrapper.hpp"
+#include "wrapper/menu/player_menu_data_wrapper.hpp"
+#include "wrapper/object/player_object_data_wrapper.hpp"
+#include "wrapper/textdraw/player_textdraw_data_wrapper.hpp"
+#include "wrapper/textlabel/player_textlabel_data_wrapper.hpp"
+#include "wrapper/variable/player_variable_data_wrapper.hpp"
+#include "wrapper/vehicle/player_vehicle_data_wrapper.hpp"
+
 #include "wrapper/vehicle/vehicle_wrapper.hpp"
 #include "wrapper/player/player_wrapper.hpp"
 
@@ -141,6 +151,16 @@ namespace ompnode {
 
         ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IVehicle, IEntity)
         ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IPlayer, IEntity)
+
+        ADD_CONSTRUCTOR_TEMPLATE(IPlayerCheckpointData)
+        ADD_CONSTRUCTOR_TEMPLATE(IPlayerClassData)
+        ADD_CONSTRUCTOR_TEMPLATE(IPlayerDialogData)
+        ADD_CONSTRUCTOR_TEMPLATE(IPlayerMenuData)
+        ADD_CONSTRUCTOR_TEMPLATE(IPlayerObjectData)
+        ADD_CONSTRUCTOR_TEMPLATE(IPlayerTextDrawData)
+        ADD_CONSTRUCTOR_TEMPLATE(IPlayerTextLabelData)
+        ADD_CONSTRUCTOR_TEMPLATE(IPlayerVariableData)
+        ADD_CONSTRUCTOR_TEMPLATE(IPlayerVehicleData)
 
         v8::Local<v8::Context> _context = node::NewContext(GetV8Isolate(), global);
         context.Reset(GetV8Isolate(), _context);

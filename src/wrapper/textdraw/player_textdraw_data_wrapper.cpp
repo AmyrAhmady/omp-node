@@ -8,7 +8,7 @@
 #include "../pool/read_only_pool_wrapper.hpp"
 #include "../pool/pool_wrapper.hpp"
 
-WRAP_BASIC(IPlayerTextDrawData)
+WRAP_BASIC_WITH_CONSTRUCTOR(IPlayerTextDrawData)
 
 WRAP_BASIC_CALL_RETURN_OVERLOAD(IPlayerTextDrawData,
                                 create,
@@ -51,7 +51,7 @@ std::vector<IExtension *> WrapPlayerTextDrawData(IPlayer *player,
     textDrawPool->getPoolEventDispatcher().addEventHandler(handler);
     handleStorages.push_back(handler);
 
-    auto textDrawPoolHandle = InterfaceToObject(textDrawPool, context, WRAPPED_METHODS(IPlayerTextDrawData), player);
+    auto textDrawPoolHandle = CREATE_INSTANCE_CLOSEST(IPlayerTextDrawData, textDrawPool, context, player);
     handleStorages.push_back(new PlayerTextDrawPoolHandleStorage(context->GetIsolate(), textDrawPoolHandle));
 
     auto poolEventDispatcherHandleStorage =

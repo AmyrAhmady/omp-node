@@ -2,7 +2,7 @@
 #include "player_dialog_data_wrapper.hpp"
 #include "../../converter/entity.hpp"
 
-WRAP_BASIC(IPlayerDialogData)
+WRAP_BASIC_WITH_CONSTRUCTOR(IPlayerDialogData)
 
 WRAP_BASIC_CALL(IPlayerDialogData, hide, (IPlayer & , JSToEntityRef<IPlayer>, player))
 WRAP_BASIC_CALL(IPlayerDialogData,
@@ -53,7 +53,7 @@ std::vector<IExtension *> WrapPlayerDialogData(IPlayer *player,
 
     std::vector<IExtension *> handleStorages;
 
-    auto objectPoolHandle = InterfaceToObject(playerDialogData, context, WRAPPED_METHODS(IPlayerDialogData), player);
+    auto objectPoolHandle = CREATE_INSTANCE_CLOSEST(IPlayerDialogData, playerDialogData, context, player);
     handleStorages.push_back(new PlayerDialogDataHandleStorage(context->GetIsolate(), objectPoolHandle));
 
     return handleStorages;

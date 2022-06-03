@@ -4,7 +4,7 @@
 #include "race_checkpoint_data_wrapper.hpp"
 #include "../../converter/entity.hpp"
 
-WRAP_BASIC(IPlayerCheckpointData)
+WRAP_BASIC_WITH_CONSTRUCTOR(IPlayerCheckpointData)
 
 WRAP_BASIC_CODE(IPlayerCheckpointData, getCheckpoint, {
     auto extensible = GetClosestExtensiblePointer<IPlayer>(info);
@@ -32,8 +32,7 @@ std::vector<IExtension *> WrapPlayerCheckpointData(IPlayer *player,
 
     std::vector<IExtension *> handleStorages;
 
-    auto objectPoolHandle =
-        InterfaceToObject(playerCheckpointData, context, WRAPPED_METHODS(IPlayerCheckpointData), player);
+    auto objectPoolHandle = CREATE_INSTANCE_CLOSEST(IPlayerCheckpointData, playerCheckpointData, context, player);
     handleStorages.push_back(new PlayerCheckpointDataHandleStorage(context->GetIsolate(), objectPoolHandle));
 
     auto checkpointDataHandleStorage = WrapCheckpointData(playerCheckpointData->getCheckpoint(), context);

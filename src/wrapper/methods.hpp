@@ -26,6 +26,15 @@
         } \
     }
 
+#define WRAP_BASIC_WITH_CONSTRUCTOR_NO_TYPE(ExternalType) \
+    WRAP_BASIC(ExternalType) \
+    namespace wrapper##_##ExternalType { \
+        v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate) { \
+            auto constructorTemplate = CreateConstructorTemplateNoType(isolate, WRAPPED_METHODS(ExternalType)); \
+            return constructorTemplate; \
+        } \
+    }
+
 #define WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(ExternalType, ...) \
     WRAP_BASIC(ExternalType) \
     namespace wrapper##_##ExternalType { \
@@ -40,13 +49,14 @@
     WRAP_BASIC(ExternalType) \
     namespace wrapper##_##ExternalType { \
         v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate, FOR_EACH(CONSTRUCTOR_DECLARE_PARAM, ##__VA_ARGS__)) { \
-            auto constructorTemplate = CreateConstructorTemplate(isolate, WRAPPED_METHODS(ExternalType));                                 \
+            auto constructorTemplate = CreateConstructorTemplateNoType(isolate, WRAPPED_METHODS(ExternalType));                                 \
             FOR_EACH(CONSTRUCTOR_INHERIT, ##__VA_ARGS__)                 \
             return constructorTemplate; \
         } \
     }
 
 #define CREATE_INSTANCE(ExternalType, external, context) CreateInstance(external, context->Global()->Get(context, v8::String::NewFromUtf8(context->GetIsolate(), #ExternalType).ToLocalChecked()).ToLocalChecked().As<v8::Function>(), context)
+#define CREATE_INSTANCE_CLOSEST(ExternalType, external, context, closest) CreateInstance(external, context->Global()->Get(context, v8::String::NewFromUtf8(context->GetIsolate(), #ExternalType).ToLocalChecked()).ToLocalChecked().As<v8::Function>(), context, closest)
 
 /// BASIC
 
