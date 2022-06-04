@@ -58,10 +58,10 @@ typedef std::vector<std::pair<std::string, v8::FunctionCallback>> ObjectMethods;
 typedef std::vector<std::tuple<std::string, v8::FunctionCallback, v8::FunctionCallback>> ObjectAccessors;
 
 template<class Interface>
-v8::Local<v8::FunctionTemplate> CreateConstructorTemplate(v8::Isolate *isolate, const ObjectMethods &methods) {
+v8::Local<v8::FunctionTemplate> CreateConstructorTemplate(v8::Isolate *isolate, const ObjectMethods &methods, const ObjectAccessors &accessors, v8::FunctionCallback callback = nullptr) {
     v8::EscapableHandleScope hs(isolate);
 
-    auto functionTemplate = v8::FunctionTemplate::New(isolate);
+    auto functionTemplate = v8::FunctionTemplate::New(isolate, callback);
 
     auto instanceTemplate = functionTemplate->InstanceTemplate();
     instanceTemplate->SetInternalFieldCount(2);
@@ -78,11 +78,15 @@ v8::Local<v8::FunctionTemplate> CreateConstructorTemplate(v8::Isolate *isolate, 
                                v8::FunctionTemplate::New(isolate, entry.second));
     }
 
-    return hs.Escape(functionTemplate);
-}
+    for (auto &entry: accessors) {
+        prototypeTemplate->SetAccessorProperty(v8::String::NewFromUtf8(isolate,
+                                                       std::get<0>(entry).c_str(),
+                                                       v8::NewStringType::kNormal).ToLocalChecked(),
+                                               v8::FunctionTemplate::New(isolate, std::get<1>(entry)),
+                                               v8::FunctionTemplate::New(isolate, std::get<2>(entry)));
+    }
 
-inline v8::Local<v8::FunctionTemplate> CreateConstructorTemplateNoType(v8::Isolate *isolate, const ObjectMethods &methods) {
-    return CreateConstructorTemplate<void>(isolate, methods);
+    return hs.Escape(functionTemplate);
 }
 
 template<class Interface, class ClosestExtensibleInterface = void>
@@ -127,30 +131,6 @@ v8::Local<v8::Object> InterfaceToObject(Interface *pointer,
 }
 
 Impl::String GetValueInterfaceType(v8::Local<v8::Value> value, v8::Local<v8::Context> context);
-
-template<class Interface>
-v8::Local<v8::Object> MutableToObject(Interface *pointer,
-                                      v8::Local<v8::Context> context,
-                                      const ObjectAccessors &accessors) {
-    auto isolate = context->GetIsolate();
-
-    auto objectTemplate = v8::ObjectTemplate::New(isolate);
-
-    objectTemplate->SetInternalFieldCount(1);
-
-    for (auto &entry: accessors) {
-        objectTemplate->SetAccessorProperty(v8::String::NewFromUtf8(isolate,
-                                                                    std::get<0>(entry).c_str()).ToLocalChecked(),
-                                            v8::FunctionTemplate::New(isolate, std::get<1>(entry)),
-                                            v8::FunctionTemplate::New(isolate, std::get<2>(entry)));
-    }
-
-    auto object = objectTemplate->NewInstance(context).ToLocalChecked();
-
-    object->SetInternalField(0, v8::External::New(isolate, pointer));
-
-    return object;
-}
 
 template<class Interface>
 Interface *GetContextExternalPointer(const v8::FunctionCallbackInfo<v8::Value> &info) {

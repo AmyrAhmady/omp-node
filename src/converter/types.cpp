@@ -225,12 +225,6 @@ v8::Local<v8::Integer> ColourToJS(const Colour &colour, v8::Local<v8::Context> c
     return UIntToJS(colour.RGBA(), context);
 }
 
-OBJECT_CONVERTER_DEFINE(GTAQuat,
-                        (float, w, FloatToJS, JSToFloat, data.q.w),
-                        (float, x, FloatToJS, JSToFloat, data.q.x),
-                        (float, y, FloatToJS, JSToFloat, data.q.y),
-                        (float, z, FloatToJS, JSToFloat, data.q.z))
-
 OBJECT_CONVERTER_DEFINE_TO_JS(SemanticVersion,
                               (uint8_t, major, UIntToJS<uint8_t>, JSToUInt<uint8_t>),
                               (uint8_t, minor, UIntToJS<uint8_t>, JSToUInt<uint8_t>),

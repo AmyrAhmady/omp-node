@@ -2,6 +2,8 @@
 #include "../../converter/primitive.hpp"
 #include "../../converter/types.hpp"
 
+#include "../gtaquat/gtaquat_wrapper.hpp"
+
 #include "Server/Components/Vehicles/vehicles.hpp"
 #include "Server/Components/Actors/actors.hpp"
 #include "Server/Components/Objects/objects.hpp"

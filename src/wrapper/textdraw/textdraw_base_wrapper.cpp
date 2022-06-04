@@ -2,6 +2,7 @@
 #include "../../converter/types.hpp"
 #include "../../converter/entity.hpp"
 #include "../../converter/vehicle.hpp"
+#include "../gtaquat/gtaquat_wrapper.hpp"
 
 WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(ITextDrawBase, IIDProvider)
 

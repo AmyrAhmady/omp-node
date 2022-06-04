@@ -46,6 +46,8 @@
 #include "wrapper/vehicle/vehicle_wrapper.hpp"
 #include "wrapper/player/player_wrapper.hpp"
 
+#include "wrapper/gtaquat/gtaquat_wrapper.hpp"
+
 v8::Isolate *GetV8Isolate() {
     return ompnode::nodeImpl.GetIsolate();
 }
@@ -127,6 +129,8 @@ namespace ompnode {
         v8val::add_definition("__resname", name, global);
 
         auto isolate = GetV8Isolate();
+
+        ADD_CONSTRUCTOR_TEMPLATE(GTAQuat)
 
         ADD_CONSTRUCTOR_TEMPLATE(IIDProvider)
         ADD_CONSTRUCTOR_TEMPLATE_INHERIT(IEntity, IIDProvider)

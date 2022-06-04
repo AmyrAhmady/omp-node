@@ -111,5 +111,4 @@ v8::Local<v8::Array> VectorToJS(const VectorType &vector, v8::Local<v8::Context>
 
 v8::Local<v8::Integer> ColourToJS(const Colour &colour, v8::Local<v8::Context> context);
 
-OBJECT_CONVERTER_DECLARE(GTAQuat)
 OBJECT_CONVERTER_DECLARE_TO_JS(SemanticVersion)

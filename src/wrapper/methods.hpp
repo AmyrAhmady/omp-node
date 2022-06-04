@@ -21,7 +21,16 @@
     WRAP_BASIC(ExternalType) \
     namespace wrapper##_##ExternalType { \
         v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate) { \
-            auto constructorTemplate = CreateConstructorTemplate<ExternalType>(isolate, WRAPPED_METHODS(ExternalType)); \
+            auto constructorTemplate = CreateConstructorTemplate<ExternalType>(isolate, WRAPPED_METHODS(ExternalType), WRAPPED_ACCESSORS(ExternalType)); \
+            return constructorTemplate; \
+        } \
+    }
+
+#define WRAP_BASIC_WITH_CONSTRUCTOR_CALLBACK(ExternalType, Callback) \
+    WRAP_BASIC(ExternalType) \
+    namespace wrapper##_##ExternalType { \
+        v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate) { \
+            auto constructorTemplate = CreateConstructorTemplate<ExternalType>(isolate, WRAPPED_METHODS(ExternalType), WRAPPED_ACCESSORS(ExternalType), Callback); \
             return constructorTemplate; \
         } \
     }
@@ -30,7 +39,7 @@
     WRAP_BASIC(ExternalType) \
     namespace wrapper##_##ExternalType { \
         v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate) { \
-            auto constructorTemplate = CreateConstructorTemplateNoType(isolate, WRAPPED_METHODS(ExternalType)); \
+            auto constructorTemplate = CreateConstructorTemplate<void>(isolate, WRAPPED_METHODS(ExternalType), WRAPPED_ACCESSORS(ExternalType)); \
             return constructorTemplate; \
         } \
     }
@@ -39,7 +48,7 @@
     WRAP_BASIC(ExternalType) \
     namespace wrapper##_##ExternalType { \
         v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate, FOR_EACH(CONSTRUCTOR_DECLARE_PARAM, ##__VA_ARGS__)) { \
-            auto constructorTemplate = CreateConstructorTemplate<ExternalType>(isolate, WRAPPED_METHODS(ExternalType));                                 \
+            auto constructorTemplate = CreateConstructorTemplate<ExternalType>(isolate, WRAPPED_METHODS(ExternalType), WRAPPED_ACCESSORS(ExternalType));                                 \
             FOR_EACH(CONSTRUCTOR_INHERIT, ##__VA_ARGS__)                 \
             return constructorTemplate; \
         } \
@@ -49,7 +58,7 @@
     WRAP_BASIC(ExternalType) \
     namespace wrapper##_##ExternalType { \
         v8::Local<v8::FunctionTemplate> Wrapped_CreateConstructorTemplate(v8::Isolate *isolate, FOR_EACH(CONSTRUCTOR_DECLARE_PARAM, ##__VA_ARGS__)) { \
-            auto constructorTemplate = CreateConstructorTemplateNoType(isolate, WRAPPED_METHODS(ExternalType));                                 \
+            auto constructorTemplate = CreateConstructorTemplate<void>(isolate, WRAPPED_METHODS(ExternalType), WRAPPED_ACCESSORS(ExternalType));                                 \
             FOR_EACH(CONSTRUCTOR_INHERIT, ##__VA_ARGS__)                 \
             return constructorTemplate; \
         } \
@@ -62,15 +71,22 @@
 
 #define WRAP_BASIC(ExternalType) \
     namespace wrapper##_##ExternalType { \
-        ObjectMethods methods; \
+        ObjectMethods methods;   \
+        ObjectAccessors accessors; \
         struct AddObjectMethod { \
             AddObjectMethod(std::string name, v8::FunctionCallback cb) { \
                 methods.push_back({ name, cb }); \
+            } \
+        };                       \
+        struct AddObjectAccessor { \
+            AddObjectAccessor(std::string name, v8::FunctionCallback getter, v8::FunctionCallback setter) { \
+                accessors.push_back({ name, getter, setter }); \
             } \
         }; \
     }
 
 #define WRAPPED_METHODS(ExternalType) wrapper##_##ExternalType::methods
+#define WRAPPED_ACCESSORS(ExternalType) wrapper##_##ExternalType::accessors
 
 #define CALL(MACRO, ARGS) MACRO ARGS
 
@@ -106,6 +122,40 @@
         AddObjectMethod AddObjectMethod##_##functionName(#functionName, functionName); \
     }
 
+/// ACCESSOR
+
+#define WRAP_ACCESSOR_CODE(ExternalType, propertyName, Getter, Setter) \
+    namespace wrapper##_##ExternalType { \
+        void Get##_##propertyName(const v8::FunctionCallbackInfo<v8::Value> &info) { \
+            ENTER_FUNCTION_CALLBACK(info) \
+            Getter                                          \
+        } \
+        void Set##_##propertyName(const v8::FunctionCallbackInfo<v8::Value> &info) { \
+            ENTER_FUNCTION_CALLBACK(info) \
+            Setter                                          \
+        }                                                  \
+        AddObjectAccessor AddObjectAccessor##_##propertyName(#propertyName, Get##_##propertyName, Set##_##propertyName); \
+    }
+
+#define WRAP_ACCESSOR(ExternalType, propertyName, path, GetterInfo, SetterInfo) \
+    WRAP_ACCESSOR_CODE(ExternalType, propertyName, {                                    \
+        auto external = GetContextExternalPointer<ExternalType>(info); \
+        if (external == nullptr) { \
+            return; \
+        } \
+        v8::TryCatch tryCatch(isolate); \
+        CALL(RETURN_VALUE_TYPE, GetterInfo) value = external->path; \
+        auto valueHandle = CALL(RETURN_VALUE_FN, GetterInfo)(value, context); \
+        info.GetReturnValue().Set(valueHandle); \
+    }, {                                                                                  \
+        auto external = GetContextExternalPointer<ExternalType>(info); \
+        if (external == nullptr) { \
+            return; \
+        } \
+        v8::TryCatch tryCatch(isolate);                                         \
+        DEFINE_ARG(1, 1, SetterInfo);                                           \
+        external->path = USE_ARG(1, 1, SetterInfo); \
+    })
 /// BASIC OVERLOADED
 
 #define HANDLE_OVERLOAD_RETURN_(functionName, Condition, ReturnValueInfo, ...) \

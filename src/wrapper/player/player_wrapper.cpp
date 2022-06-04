@@ -13,6 +13,7 @@
 #include "../object/player_object_data_wrapper.hpp"
 #include "../textdraw/player_textdraw_data_wrapper.hpp"
 #include "../variable/player_variable_data_wrapper.hpp"
+#include "../gtaquat/gtaquat_wrapper.hpp"
 
 WRAP_BASIC_WITH_CONSTRUCTOR_INHERIT(IPlayer, IEntity)
 
