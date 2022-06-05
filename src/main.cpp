@@ -2,7 +2,7 @@
 
 #include "nodeimpl.hpp"
 
-struct NodeJSComponent final : IComponent, CoreEventHandler {
+struct NodeJSComponent final : IComponent {
     PROVIDE_UID(0x8b256881a3704e81);
 
     StringView componentName() const override {
@@ -11,10 +11,6 @@ struct NodeJSComponent final : IComponent, CoreEventHandler {
 
     SemanticVersion componentVersion() const override {
         return SemanticVersion(0, 0, 0, 0);
-    }
-
-    void onTick(Microseconds elapsed, TimePoint now) override {
-        ompnode::nodeImpl.Tick();
     }
 
     void onLoad(ICore *c) override {
@@ -35,7 +31,13 @@ struct NodeJSComponent final : IComponent, CoreEventHandler {
 
         ompnode::nodeImpl.LoadResource("");
 
-        core->getEventDispatcher().addEventHandler(this);
+        core->getEventDispatcher().addEventHandler(&ompnode::nodeImpl);
+    }
+
+    void provideConfiguration(ILogger& logger, IEarlyConfig& config, bool defaults) override {
+        if (defaults) {
+            config.setString("node_js.entry_file", "index.js");
+        }
     }
 
     void onFree(IComponent *component) override {
@@ -56,7 +58,7 @@ struct NodeJSComponent final : IComponent, CoreEventHandler {
     ~NodeJSComponent() {
         // Clean up what you did above
         if (core != nullptr) {
-            core->getEventDispatcher().removeEventHandler(this);
+            core->getEventDispatcher().removeEventHandler(&ompnode::nodeImpl);
             ompnode::nodeImpl.Stop();
         }
     }

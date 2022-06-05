@@ -89,6 +89,8 @@ namespace ompnode {
     }
 
     void Resource::Init(const std::string &entry) {
+        auto core = ompnode::nodeImpl.GetCore();
+
         std::string entryFile;
         std::vector<std::string> node_flags;
 
@@ -100,7 +102,10 @@ namespace ompnode {
             entryFile = entry;
             useInspector = false;
         } else {
-            entryFile = "dist-omp/index.js";
+            auto &config = core->getConfig();
+
+            entryFile = config.getString("node_js.entry_file").data();
+
             useInspector = false;
         }
 
@@ -175,7 +180,6 @@ namespace ompnode {
         context.Reset(GetV8Isolate(), _context);
         v8::Context::Scope scope(_context);
 
-        auto core = ompnode::nodeImpl.GetCore();
         WrapCore(core, _context);
         auto coreHandle = GetHandleStorageExtension(core)->get();
 

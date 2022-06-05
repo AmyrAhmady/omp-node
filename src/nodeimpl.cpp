@@ -4,7 +4,6 @@
 #include "nodeimpl.hpp"
 
 void OnMessage(v8::Local<v8::Message> message, v8::Local<v8::Value> error) {
-    L_DEBUG << "OnMessage";
     auto isolate = ompnode::nodeImpl.GetIsolate();
     v8::Locker locker(isolate);
     v8::Isolate::Scope isolateScope(isolate);
@@ -17,7 +16,7 @@ void OnMessage(v8::Local<v8::Message> message, v8::Local<v8::Value> error) {
 
 namespace ompnode {
     NodeImpl nodeImpl;
-    std::unordered_map<node::Environment *, std::shared_ptr<Resource>> NodeImpl::resourcesPool;
+    FlatHashMap<node::Environment *, std::shared_ptr<Resource>> NodeImpl::resourcesPool;
 
     void NodeImpl::LoadAllResources(const std::vector<std::string> &resources, bool enable_resources) {
         if (enable_resources) {
@@ -35,7 +34,7 @@ namespace ompnode {
     NodeImpl::~NodeImpl() {
     }
 
-    void NodeImpl::Tick() {
+    void NodeImpl::onTick(Microseconds elapsed, TimePoint now) {
         v8::Locker locker(v8Isolate);
         v8::Isolate::Scope isolateScope(v8Isolate);
         v8::HandleScope hs(v8Isolate);

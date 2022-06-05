@@ -38,6 +38,8 @@ void IHandleStorage::freeExtension() {
 
     IExtension::freeExtension();
     L_DEBUG << "IHandleStorage::freeExtension";
+
+    delete this;
 }
 
 void IHandleStorage::reset() {

@@ -12,9 +12,9 @@
 #include "wrapper/core/core_wrapper.hpp"
 
 namespace ompnode {
-    class NodeImpl {
+    class NodeImpl : public CoreEventHandler {
     public:
-        static std::unordered_map<node::Environment *, std::shared_ptr<Resource>> resourcesPool;
+        static FlatHashMap<node::Environment *, std::shared_ptr<Resource>> resourcesPool;
 
         static void LoadAllResources(const std::vector<std::string> &resources, bool enable_resources = true);
 
@@ -55,7 +55,7 @@ namespace ompnode {
             return componentList;
         }
 
-        void Tick();
+        void onTick(Microseconds elapsed, TimePoint now) override;
 
         void Stop();
 

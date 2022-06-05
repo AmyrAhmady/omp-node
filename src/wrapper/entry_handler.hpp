@@ -39,8 +39,11 @@ struct NodeJSEntryHandler : PoolEventHandler<Interface>, public IExtension {
         isolate = nullptr;
 
         IExtension::freeExtension();
+
+        delete this;
     }
 
     void reset() override {
+        freeExtension();
     }
 };
