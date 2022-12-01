@@ -1,0 +1,6 @@
+[submodule "native/deps/cmake-conan"]
+	path = native/deps/cmake-conan
+	url = https://github.com/conan-io/cmake-conan
+[submodule "native/deps/napi"]
+	path = native/deps/napi
+	url = https://github.com/nodejs/node-addon-api
