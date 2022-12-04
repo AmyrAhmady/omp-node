@@ -46,8 +46,8 @@ include_directories(
 # Linking
 
 conan_cmake_run(REQUIRES nng/1.5.2
-                 BASIC_SETUP CMAKE_TARGETS
-                 BUILD missing)
+                BASIC_SETUP CMAKE_TARGETS
+                BUILD missing)
 
 file(GLOB_RECURSE OMPIPCNODE_FILES
     *.hpp
@@ -67,6 +67,7 @@ if (WIN32)
     target_link_libraries(${PROJECT_NAME}
         ${LIBRARIES}
         CONAN_PKG::nng
+        CONAN_PKG::pthreads4w
         ${CMAKE_SOURCE_DIR}/deps/node/node.lib
     )
 else ()
