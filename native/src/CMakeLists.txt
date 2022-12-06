@@ -67,7 +67,6 @@ if (WIN32)
     target_link_libraries(${PROJECT_NAME}
         ${LIBRARIES}
         CONAN_PKG::nng
-        CONAN_PKG::pthreads4w
         ${CMAKE_SOURCE_DIR}/deps/node/node.lib
     )
 else ()
@@ -75,3 +74,4 @@ else ()
 endif ()
 
 GroupSourcesByFolder(${PROJECT_NAME})
+set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".node")
