@@ -56,6 +56,7 @@ bool MessageSocket::CreateClient()
 	bool result = MessageSocket::SendRequest("{\"name\":\"create_omp_ipc_client\"}");
 	if (!result)
 	{
+		std::cout << "[Fatal Error] failed to send create_omp_ipc_client" << std::endl;
 		clientInitialized_ = false;
 		return false;
 	}
@@ -64,6 +65,7 @@ bool MessageSocket::CreateClient()
 	result = ReceiveResponseBlocking(recieveMessage);
 	if (!result)
 	{
+		std::cout << "[Fatal Error] failed to recieve response after create_omp_ipc_client" << std::endl;
 		clientInitialized_ = false;
 		return false;
 	}
@@ -163,7 +165,7 @@ bool MessageSocket::SendRequest(const std::string& message)
 	}
 
 	int ret_value = 0;
-
+	//auto start = std::chrono::high_resolution_clock::now();
 	ret_value = nng_send(socketServer_, static_cast<void*>(const_cast<char*>(message.data())), message.size(), 0);
 	if (ret_value != 0)
 	{
@@ -171,6 +173,14 @@ bool MessageSocket::SendRequest(const std::string& message)
 		return false;
 	}
 
+	//char* buf = NULL;
+	//size_t sz = 0;
+	//ret_value = nng_recv(socketServer_, &buf, &sz, NNG_FLAG_ALLOC);
+	// Get ending timepoint
+	//auto stop = std::chrono::high_resolution_clock::now();
+	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	//std::cout << "Time taken by function: "
+	//	<< duration.count() << " microseconds" << std::endl;
 	return true;
 }
 
