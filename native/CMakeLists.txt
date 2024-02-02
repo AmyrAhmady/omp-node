@@ -42,14 +42,17 @@ function(download_file url destination)
 
 endfunction(download_file)
 
-find_program(NODE_PATH node)
-execute_process(COMMAND ${NODE_PATH} -v OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE NODE_VERSION)
-
 if(NOT DEFINED NODE_VERSION OR NODE_VERSION STREQUAL "")
-    message(FATAL_ERROR "Could't specify your system's node version")
+    find_program(NODE_PATH node)
+    execute_process(COMMAND ${NODE_PATH} -v OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE NODE_VERSION)
+
+    if(NOT DEFINED NODE_VERSION OR NODE_VERSION STREQUAL "")
+        message(FATAL_ERROR "Could't specify your system's node version")
+    endif()
+
 endif()
 
-if(NOT EXISTS "${CMAKE_SOURCE_DIR}/deps/node/node.lib")
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/deps/node/node-${NODE_VERSION}.lib")
     if (WIN32)
     add_definitions(
             -D_CRT_SECURE_NO_WARNINGS
@@ -58,7 +61,7 @@ if(NOT EXISTS "${CMAKE_SOURCE_DIR}/deps/node/node.lib")
 
     download_file(
         https://nodejs.org/download/release/${NODE_VERSION}/win-x64/node.lib
-        ${CMAKE_SOURCE_DIR}/deps/node/node.lib
+        ${CMAKE_SOURCE_DIR}/deps/node/node-${NODE_VERSION}.lib
     )
 
     endif ()
@@ -69,7 +72,7 @@ if(NOT EXISTS "${CMAKE_SOURCE_DIR}/deps/node/node-${NODE_VERSION}")
     # Download node include headers
 
     download_file(
-        https://nodejs.org/download/release/v16.17.0/node-${NODE_VERSION}-headers.tar.gz
+        https://nodejs.org/download/release/${NODE_VERSION}/node-${NODE_VERSION}-headers.tar.gz
         ${CMAKE_SOURCE_DIR}/deps/node/headers.tar.gz
     )
 
@@ -112,7 +115,7 @@ if (WIN32)
     target_link_libraries(${PROJECT_NAME}
         ${LIBRARIES}
         CONAN_PKG::nng
-        ${CMAKE_SOURCE_DIR}/deps/node/node.lib
+        ${CMAKE_SOURCE_DIR}/deps/node/node-${NODE_VERSION}.lib
     )
 else ()
 

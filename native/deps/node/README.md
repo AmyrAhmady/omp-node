@@ -1,1 +1,1 @@
-# Just a dummy file to keep this directory on git
+# Just a dummy file to keep this directory on git, it's used during cmake build file generation to retrieve nodejs files
