@@ -11,7 +11,7 @@ void OnMessage(v8::Local<v8::Message> message, v8::Local<v8::Value> error) {
     v8::Local<v8::Context> context = isolate->GetCurrentContext();
     v8::Context::Scope ctxScope(context);
 
-    PrintException(isolate, context, error, message);
+    // PrintException(isolate, context, error, message);
 }
 
 namespace ompnode {
@@ -142,6 +142,6 @@ namespace ompnode {
         }
         node::FreeIsolateData(nodeData.get());
         v8::V8::Dispose();
-        v8::V8::ShutdownPlatform();
+        v8::V8::DisposePlatform();
     }
 }

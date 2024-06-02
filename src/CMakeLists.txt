@@ -11,23 +11,15 @@ else ()
 endif ()
 
 if (WIN32)
-    set(SYS_PATH win32)
+    set(SYS_PATH win)
 else ()
     set(SYS_PATH linux)
 endif ()
 
-set(NODE_PATH "${PROJECT_SOURCE_DIR}/deps/node/lib/Release/${SYS_PATH}")
-
-# Dependencies
-
-add_subdirectory(
-        ${PROJECT_SOURCE_DIR}/deps/sdk deps/sdk
-)
+set(NODE_PATH "${PROJECT_SOURCE_DIR}/deps/node/lib/${SYS_PATH}")
 
 include_directories(
-        ${PROJECT_SOURCE_DIR}/deps/node/include
-        ${PROJECT_SOURCE_DIR}/deps/v8
-        ${PROJECT_SOURCE_DIR}/deps/uv
+    ${PROJECT_SOURCE_DIR}/deps/node/include/node
 )
 
 # Linking
@@ -35,21 +27,22 @@ include_directories(
 link_directories(${NODE_PATH})
 
 file(GLOB_RECURSE OMPNODE_FILES
-        *.hpp
-        *.cpp
-        )
+    *.hpp
+    *.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${OMPNODE_FILES})
 
 if (WIN32)
-    set(LIBRARIES ${NODE_FILE} shlwapi dbghelp winmm)
+    set(LIBRARIES libnode shlwapi dbghelp winmm)
 else ()
-    target_link_libraries(${PROJECT_NAME} ${NODE_PATH}/${NODE_FILE})
+    target_link_libraries(${PROJECT_NAME} ${NODE_PATH}/libnode.so.93)
 
     set(LIBRARIES ${node} pthread dl m)
 endif ()
 
 target_link_libraries(${PROJECT_NAME}
-        ${LIBRARIES}
-        OMP-SDK
-        )
+    ${LIBRARIES}
+    OMP-SDK
+    node-lib
+)

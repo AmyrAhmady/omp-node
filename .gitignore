@@ -292,3 +292,4 @@ __pycache__/
 *.amx
 *.i
 .vscode/
+test/*

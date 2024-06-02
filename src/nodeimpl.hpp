@@ -2,14 +2,10 @@
 #include <unordered_map>
 #include "node.h"
 #include "node_api.h"
-#include "env.h"
-#include "env-inl.h"
 #include "v8.h"
 #include "uv.h"
-#include "libplatform/libplatform.h"
 #include "resource.hpp"
 #include "uvloop.hpp"
-#include "wrapper/core/core_wrapper.hpp"
 
 namespace ompnode {
     class NodeImpl : public CoreEventHandler {

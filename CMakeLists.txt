@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
-project(NodeJS LANGUAGES C CXX VERSION 0.0.1)
+project(omp-node LANGUAGES C CXX VERSION 0.0.1)
+
+set(CMAKE_CXX_STANDARD 17)
 
 if (WIN32)
     add_definitions(
@@ -8,5 +10,6 @@ if (WIN32)
     )
 endif ()
 
-
+add_subdirectory(deps/node)
+add_subdirectory(deps/sdk)
 add_subdirectory(src)
