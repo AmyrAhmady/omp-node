@@ -1,45 +1,70 @@
 #pragma once
-#define NODE_WANT_INTERNALS 1
-#define USING_UV_SHARED 1
 
-#include "node.h"
-#include "v8.h"
-#include "uv.h"
-#include "utils.hpp"
-#include "logger.hpp"
-#include "sdk.hpp"
+#include "common.hpp"
 
-namespace ompnode {
-    class Resource {
-    public:
-        Resource(std::string name, std::string path);
-        ~Resource();
+class Runtime;
 
-        void Init(const std::string &entry = "");
-        void Stop();
+class Resource
+{
+public:
+	Resource(Runtime* _runtime, const ResourceInfo& _resource);
 
-        inline v8::UniquePersistent<v8::Context> &GetContext() {
-            return context;
-        }
+	Resource(const Resource&) = delete;
 
-        node::Environment *GetEnv() {
-            return nodeEnvironment.get();
-        }
+	bool Start();
+	bool Stop();
 
-    private:
-        v8::UniquePersistent<v8::Context> context;
-        std::unique_ptr<node::Environment, decltype(&node::FreeEnvironment)> nodeEnvironment;
-        std::string path;
-        std::string name;
-    };
+	void Tick();
 
-    namespace v8val {
-        inline std::string to_string(v8::Isolate *isolate, const v8::Local<v8::Value> &val) {
-            return utils::js_to_string(isolate, val);
-        }
-        inline const char *to_cstring(v8::Isolate *isolate, const v8::Local<v8::Value> &val) {
-            return utils::js_to_cstr(isolate, val);
-        }
-        void add_definition(const std::string &name, const std::string &value, v8::Local<v8::ObjectTemplate> &global);
-    }
-}
+	void Started();
+
+	node::Environment* GetEnv()
+	{
+		return env;
+	}
+
+	node::async_context GetAsyncContext()
+	{
+		return asyncContext;
+	}
+
+	v8::Local<v8::Object> GetAsyncResource()
+	{
+		return asyncResource.Get(isolate);
+	}
+
+	bool IsEnvStarted()
+	{
+		return envStarted;
+	}
+
+	inline v8::Isolate* GetIsolate()
+	{
+		return isolate;
+	}
+
+	inline v8::Local<v8::Context> GetContext()
+	{
+		return context.Get(isolate);
+	}
+
+	const std::string& GetName()
+	{
+		return resource.name;
+	}
+
+private:
+	Runtime* runtime;
+
+	bool envStarted = false;
+	bool startError = false;
+	ResourceInfo resource;
+
+	v8::Isolate* isolate;
+	helpers::CopyablePersistent<v8::Context> context;
+	node::IsolateData* nodeData = nullptr;
+	node::Environment* env = nullptr;
+	uv_loop_t* uvLoop = nullptr;
+	helpers::CopyablePersistent<v8::Object> asyncResource;
+	node::async_context asyncContext{};
+};

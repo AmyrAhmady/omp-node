@@ -33,6 +33,8 @@ file(GLOB_RECURSE OMPNODE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${OMPNODE_FILES})
 
+GroupSourcesByFolder(${PROJECT_NAME})
+
 if (WIN32)
     set(LIBRARIES libnode shlwapi dbghelp winmm)
 else ()

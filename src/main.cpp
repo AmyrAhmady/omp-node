@@ -1,71 +1,79 @@
 #include <sdk.hpp>
 
-#include "nodeimpl.hpp"
+#include "runtime.hpp"
 
-struct NodeJSComponent final : IComponent {
-    PROVIDE_UID(0x8b256881a3704e81);
+struct OmpNodeComponent final : IComponent {
+	PROVIDE_UID(0x8b256881a3704e81);
 
-    StringView componentName() const override {
-        return "NodeJS";
-    }
+	StringView componentName() const override {
+		return "OmpNode";
+	}
 
-    SemanticVersion componentVersion() const override {
-        return SemanticVersion(0, 0, 0, 0);
-    }
+	SemanticVersion componentVersion() const override {
+		return SemanticVersion(0, 0, 0, 0);
+	}
 
-    void onLoad(ICore *c) override {
-        // Cache core, player pool here
-        core = c;
+	void onLoad(ICore* c) override {
+		// Cache core, player pool here
+		core = c;
 
-        Log::Init(LogLevel::Debug);
+		Log::Init(LogLevel::Debug);
 
-        ompnode::nodeImpl.Initialize(c);
+		runtime = &Runtime::Instance();
+		runtime->Init(c);
 
-        c->printLn("on load");
-    }
+		c->printLn("OmpNode component loaded");
+	}
 
-    void onInit(IComponentList *components) override {
-        // Cache components, add event handlers here
+	void onInit(IComponentList* components) override {
+		// Cache components, add event handlers here
 
-        ompnode::nodeImpl.SetComponentList(components);
+		// core->getEventDispatcher().addEventHandler(&ompnode::nodeImpl);
+	}
 
-        ompnode::nodeImpl.LoadResource("");
+	void provideConfiguration(ILogger& logger, IEarlyConfig& config, bool defaults) override {
+		if (defaults) {
+			config.setString("node_js.entry_file", "index.js");
+		}
+	}
 
-        core->getEventDispatcher().addEventHandler(&ompnode::nodeImpl);
-    }
+	void onFree(IComponent* component) override {
+	}
 
-    void provideConfiguration(ILogger& logger, IEarlyConfig& config, bool defaults) override {
-        if (defaults) {
-            config.setString("node_js.entry_file", "index.js");
-        }
-    }
+	void onReady() override {
+		// Fire events here at earliest
 
-    void onFree(IComponent *component) override {
-    }
+		// TODO: use config
+		ResourceInfo info;
+		info.name = "Test Resource";
+		info.entryFile = "./index.js";
+		info.path = "./";
+		info.configVersion = ConfigVersion::Version1;
 
-    void onReady() override {
-        // Fire events here at earliest
-    }
+		auto resource = runtime->CreateImpl(info);
+		resource->Start();
+	}
 
-    void reset() override {
-        free();
-    }
+	void reset() override {
+		free();
+	}
 
-    void free() override {
-        delete this;
-    }
+	void free() override {
+		delete this;
+	}
 
-    ~NodeJSComponent() {
-        // Clean up what you did above
-        if (core != nullptr) {
-            core->getEventDispatcher().removeEventHandler(&ompnode::nodeImpl);
-            ompnode::nodeImpl.Stop();
-        }
-    }
+	~OmpNodeComponent() {
+		// Clean up what you did above
+		if (core != nullptr) {
+			// core->getEventDispatcher().removeEventHandler(&ompnode::nodeImpl);
+			runtime->Dispose();
+		}
+	}
 
-    ICore *core = nullptr;
+	ICore* core = nullptr;
+	Runtime* runtime = nullptr;
 };
 
 COMPONENT_ENTRY_POINT() {
-    return new NodeJSComponent();
+	return new OmpNodeComponent();
 }

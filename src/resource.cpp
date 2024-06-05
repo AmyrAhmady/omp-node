@@ -1,110 +1,161 @@
+#include "common.hpp"
 #include "resource.hpp"
-#include "nodeimpl.hpp"
+#include "runtime.hpp"
 
-v8::Isolate *GetV8Isolate() {
-    return ompnode::nodeImpl.GetIsolate();
+#include "bootstrap.hpp"
+
+static void ResourceLoaded(const v8::FunctionCallbackInfo<v8::Value>& info)
+{
+	std::string resourceName;
+	v8::Isolate* isolate = info.GetIsolate();
+	v8::Local<v8::Context> ctx = isolate->GetEnteredOrMicrotaskContext();
+
+	v8::MaybeLocal maybeVal = info[0]->ToString(ctx);
+	if (maybeVal.IsEmpty()) return;
+
+	resourceName = *v8::String::Utf8Value(isolate, maybeVal.ToLocalChecked());
+
+	auto resource = Runtime::Instance().GetResource(resourceName);
+	if (resource)
+	{
+		resource->Started();
+	}
 }
 
-static v8::Platform *GetV8Platform() {
-    return ompnode::nodeImpl.GetPlatform();
+static void OmpLogBridge(const v8::FunctionCallbackInfo<v8::Value>& info)
+{
+	v8::Isolate* isolate = info.GetIsolate();
+
+	auto core = Runtime::Instance().GetCore();
+	if (core)
+	{
+		std::stringstream stream;
+		for (size_t i = 0; i < info.Length(); i++)
+		{
+			std::string arg = *v8::String::Utf8Value(isolate, info[i]);
+			stream << arg;
+			if (i != info.Length() - 1) stream << " ";
+		}
+
+		core->logLn(LogLevel::Message, stream.str().c_str());
+	}
 }
 
-static node::IsolateData *GetNodeIsolate() {
-    return ompnode::nodeImpl.GetNodeIsolate();
+Resource::Resource(Runtime* _runtime, const ResourceInfo& _resource) : resource(_resource), runtime(_runtime)
+{
+	uvLoop = new uv_loop_t;
+	uv_loop_init(uvLoop);
+
+	auto allocator = node::CreateArrayBufferAllocator();
+	auto platform = runtime->GetPlatform();
+	isolate = node::NewIsolate(allocator, uvLoop, platform);
+	nodeData = node::CreateIsolateData(isolate, uvLoop, runtime->GetPlatform(), allocator);
+
+	v8::Locker locker(isolate);
+	v8::Isolate::Scope isolateScope(isolate);
+	v8::HandleScope handleScope(isolate);
+
+	v8::Local<v8::Context> _context = node::NewContext(isolate);
+	_context->SetAlignedPointerInEmbedderData(1, this);
+
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "omp").ToLocalChecked(), v8::String::NewFromUtf8(isolate, "unset").ToLocalChecked());
+
+	context.Reset(isolate, _context);
 }
 
-namespace ompnode {
+bool Resource::Start()
+{
+	v8::Locker locker(isolate);
+	v8::Isolate::Scope isolateScope(isolate);
+	v8::HandleScope handleScope(isolate);
 
-    Resource::Resource(std::string name, std::string path)
-        : name(std::move(name)), path(path), nodeEnvironment(nullptr, node::FreeEnvironment) {
-    }
+	auto _context = GetContext();
+	v8::Context::Scope scope(_context);
 
-    Resource::~Resource() {
-        Stop();
-    }
+	v8::Local<v8::Object> resourceObj = v8::Object::New(isolate);
+	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "name").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.name.c_str()).ToLocalChecked());
+	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "path").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.path.c_str()).ToLocalChecked());
+	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "entryFile").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.entryFile.c_str()).ToLocalChecked());
 
-    void Resource::Init(const std::string &entry) {
-        auto core = ompnode::nodeImpl.GetCore();
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resource").ToLocalChecked(), resourceObj);
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resourceLoaded").ToLocalChecked(), v8::Function::New(_context, &ResourceLoaded).ToLocalChecked());
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_ompLogBridge").ToLocalChecked(), v8::Function::New(_context, &OmpLogBridge).ToLocalChecked());
 
-        std::string entryFile;
-        std::vector<std::string> node_flags;
 
-        L_DEBUG << "init :)";
+	node::ThreadId threadId = node::AllocateEnvironmentThreadId();
+	auto flags = static_cast<node::EnvironmentFlags::Flags>(node::EnvironmentFlags::kNoFlags);
+	auto inspector = node::GetInspectorParentHandle(runtime->GetParentEnv(), threadId, resource.entryFile.c_str());
 
-        bool useInspector;
+	std::vector<std::string> args{ resource.entryFile };
+	std::vector<std::string> execArgs{ };
 
-        if (!entry.empty()) {
-            entryFile = entry;
-            useInspector = false;
-        } else {
-            auto &config = core->getConfig();
+	env = node::CreateEnvironment(nodeData, _context, args, execArgs, flags, threadId, std::move(inspector));
 
-            entryFile = config.getString("node_js.entry_file").data();
+	node::LoadEnvironment(env, bootstrap.c_str());
 
-            useInspector = false;
-        }
+	// Not sure it's needed anymore
+	asyncResource.Reset(isolate, v8::Object::New(isolate));
+	asyncContext = node::EmitAsyncInit(isolate, asyncResource.Get(isolate), "Resource");
 
-        std::vector<std::string> args;
-        args.emplace_back("node");
+	while (!envStarted && !startError)
+	{
+		runtime->Tick();
+		Tick();
+	}
 
-        for (auto &flag: node_flags) {
-            args.emplace_back(flag.c_str());
-        }
+	L_DEBUG << "Started";
 
-        args.emplace_back(entryFile.c_str());
-
-        for (auto &flag: args) {
-            L_DEBUG << "node flags: " << flag;
-        }
-
-        std::vector<std::string> exec_args;
-
-        v8::Locker locker(GetV8Isolate());
-        v8::Isolate::Scope isolateScope(GetV8Isolate());
-        v8::HandleScope handleScope(GetV8Isolate());
-
-        v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(GetV8Isolate());
-
-        // create a global variable for resource
-        v8val::add_definition("__resname", name, global);
-
-        auto isolate = GetV8Isolate();
-
-        v8::Local<v8::Context> _context = node::NewContext(GetV8Isolate(), global);
-        context.Reset(GetV8Isolate(), _context);
-        v8::Context::Scope scope(_context);
-
-        node::EnvironmentFlags::Flags flags = node::EnvironmentFlags::kOwnsProcessState;
-
-        if (useInspector) {
-            flags = static_cast<node::EnvironmentFlags::Flags>(flags | node::EnvironmentFlags::kOwnsInspector);
-        }
-
-        auto env = node::CreateEnvironment(GetNodeIsolate(), _context, args, exec_args, flags, {});
-
-        node::LoadEnvironment(env, node::StartExecutionCallback{});
-
-        nodeEnvironment.reset(env);
-
-        return;
-    }
-
-    void Resource::Stop() {
-        node::Stop(nodeEnvironment.get());
-        node::FreeEnvironment(nodeEnvironment.get());
-        context.Reset();
-    }
-
-    void v8val::add_definition(const std::string &name,
-                               const std::string &value,
-                               v8::Local<v8::ObjectTemplate> &global) {
-        v8::Local<v8::Value> test = v8::String::NewFromUtf8(GetV8Isolate(),
-                                                            value.c_str(),
-                                                            v8::NewStringType::kNormal,
-                                                            static_cast<int>(value.length())).ToLocalChecked();
-        global->Set(v8::String::NewFromUtf8(GetV8Isolate(), name.c_str(), v8::NewStringType::kNormal).ToLocalChecked(),
-                    test,
-                    v8::PropertyAttribute(v8::ReadOnly | v8::DontDelete));
-    }
+	return !startError;
 }
 
+bool Resource::Stop()
+{
+	v8::Locker locker(isolate);
+	v8::Isolate::Scope isolateScope(isolate);
+	v8::HandleScope handleScope(isolate);
+
+	L_DEBUG << "Before stop";
+
+	{
+		v8::Context::Scope scope(GetContext());
+
+		node::EmitAsyncDestroy(isolate, asyncContext);
+		asyncResource.Reset();
+	}
+
+	L_DEBUG << "After stop";
+
+	node::EmitProcessBeforeExit(env);
+	node::EmitProcessExit(env);
+
+	context.Reset();
+
+	node::Stop(env);
+
+	node::FreeEnvironment(env);
+	node::FreeIsolateData(nodeData);
+
+	envStarted = false;
+
+	uv_loop_close(uvLoop);
+	delete uvLoop;
+
+	return true;
+}
+
+void Resource::Started()
+{
+	envStarted = true;
+}
+void Resource::Tick()
+{
+	v8::Locker locker(isolate);
+	v8::Isolate::Scope isolateScope(isolate);
+	v8::HandleScope handleScope(isolate);
+
+	v8::Context::Scope scope(GetContext());
+	node::CallbackScope callbackScope(isolate, asyncResource.Get(isolate), asyncContext);
+
+	runtime->GetPlatform()->DrainTasks(isolate);
+	uv_run(uvLoop, UV_RUN_NOWAIT);
+}
