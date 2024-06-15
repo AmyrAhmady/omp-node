@@ -4,3 +4,6 @@
 [submodule "deps/node"]
 	path = deps/node
 	url = https://github.com/omp-node/node-dep
+[submodule "deps/omp-capi"]
+	path = deps/omp-capi
+	url = https://github.com/openmultiplayer/omp-capi
