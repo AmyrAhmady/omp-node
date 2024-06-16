@@ -19,8 +19,11 @@ struct OmpNodeComponent final : IComponent {
 
 		Log::Init(LogLevel::Debug);
 
+		omp_initialize_capi(&ompapi);
+
+
 		runtime = &Runtime::Instance();
-		runtime->Init(c);
+		runtime->Init(c, &ompapi);
 
 		c->printLn("OmpNode component loaded");
 	}
@@ -72,6 +75,7 @@ struct OmpNodeComponent final : IComponent {
 
 	ICore* core = nullptr;
 	Runtime* runtime = nullptr;
+	OMPAPI_t ompapi;
 };
 
 COMPONENT_ENTRY_POINT() {

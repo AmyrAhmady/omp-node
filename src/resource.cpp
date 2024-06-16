@@ -1,6 +1,7 @@
 #include "common.hpp"
 #include "resource.hpp"
 #include "runtime.hpp"
+#include "wrappers/Impl.hpp"
 
 #include "bootstrap.hpp"
 
@@ -41,7 +42,9 @@ static void OmpLogBridge(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 }
 
-Resource::Resource(Runtime* _runtime, const ResourceInfo& _resource) : resource(_resource), runtime(_runtime)
+Resource::Resource(Runtime* _runtime, const ResourceInfo& _resource)
+	: resource(_resource)
+	, runtime(_runtime)
 {
 	uvLoop = new uv_loop_t;
 	uv_loop_init(uvLoop);
@@ -57,8 +60,6 @@ Resource::Resource(Runtime* _runtime, const ResourceInfo& _resource) : resource(
 
 	v8::Local<v8::Context> _context = node::NewContext(isolate);
 	_context->SetAlignedPointerInEmbedderData(1, this);
-
-	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "omp").ToLocalChecked(), v8::String::NewFromUtf8(isolate, "unset").ToLocalChecked());
 
 	context.Reset(isolate, _context);
 }
@@ -76,6 +77,18 @@ bool Resource::Start()
 	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "name").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.name.c_str()).ToLocalChecked());
 	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "path").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.path.c_str()).ToLocalChecked());
 	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "entryFile").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.entryFile.c_str()).ToLocalChecked());
+
+	v8::Local<v8::Object> ompObj = v8::Object::New(isolate);
+	for (auto group : APIManager::Instance().apiContainer)
+	{
+		v8::Local<v8::Object> groupObj = v8::Object::New(isolate);
+		for (auto funcs : group.second)
+		{
+			groupObj->Set(_context, v8::String::NewFromUtf8(isolate, funcs.first.c_str()).ToLocalChecked(), v8::Function::New(_context, funcs.second).ToLocalChecked());
+		}
+		ompObj->Set(_context, v8::String::NewFromUtf8(isolate, group.first.c_str()).ToLocalChecked(), groupObj);
+	}
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "omp").ToLocalChecked(), ompObj);
 
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resource").ToLocalChecked(), resourceObj);
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resourceLoaded").ToLocalChecked(), v8::Function::New(_context, &ResourceLoaded).ToLocalChecked());
