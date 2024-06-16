@@ -82,3 +82,44 @@ Object.entries(apis).forEach(([key, funcs]) => {
     );
   });
 });
+
+// Object.entries(events).forEach(([key, funcs]) => {
+//   if (key == "Component") return;
+//   const dir = `../src/wrappers/${key}`;
+
+//   if (!existsSync(dir)) mkdirSync(dir);
+
+//   const filePath = dir + "/APIs.cpp";
+
+//   writeFileSync(
+//     filePath,
+//     `#include "../Impl.hpp"
+// #include "../MacroMagic.hpp"\n`
+//   );
+
+//   funcs.forEach((func) => {
+//     const retArgs = func.params.filter((arg) => isRetArg(arg.type));
+//     const group = func.name.split("_")[0];
+//     const name = func.name.split("_")[1];
+//     appendFileSync(
+//       filePath,
+//       `\nDECLARE_API(${group}, ${name}${
+//         func.params.length ? ", " : ""
+//       }${func.params
+//         .map((arg) => `${convertType(arg.type)} ${arg.name}`)
+//         .join(", ")})
+// {
+//     ${convertType(
+//       func.ret
+//     )} ret = Runtime::Instance().GetOMPAPI()->${group}.${name}(${func.params
+//         .map((arg) => `${arg.name}`)
+//         .join(", ")});
+//     API_RETURN(${convertType(func.ret)} ret${
+//         retArgs.length ? ", " : ""
+//       }${retArgs
+//         .map((arg) => `${convertType(arg.type)} ${arg.name}`)
+//         .join(", ")});
+// }\n`
+//     );
+//   });
+// });
