@@ -94,7 +94,7 @@ using objectPtr = void*;
 #define CAST_TYPE_FOR_RETURN_BoolRef *
 #define CAST_TYPE_FOR_RETURN_UInt32Ref *
 #define CAST_TYPE_FOR_RETURN_UInt8Ref *
-#define CAST_TYPE_FOR_RETURN_OutputStringViewPtr(x) std::string(x->data, x->len)
+#define CAST_TYPE_FOR_RETURN_OutputStringViewPtr(x) Impl::String(x->data, x->len)
 
 #define DECLARE_VARIABLE_NATIVELY_(x, y, idx) CAT2(V8_TO_, x)(info[idx], y)
 #define DECLARE_VARIABLE_NATIVELY(idx, A) SPLIT_INDEX(DECLARE_VARIABLE_NATIVELY_, A, idx)

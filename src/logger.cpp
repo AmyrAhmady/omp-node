@@ -70,8 +70,8 @@ Log::~Log() {
 	}
 }
 
-std::string Log::GetLevelName(LogLevel level) {
-	std::string levelName = "[LOG_UNKNOWN]";
+Impl::String Log::GetLevelName(LogLevel level) {
+	Impl::String levelName = "[LOG_UNKNOWN]";
 	switch (level) {
 	case LogLevel::Error: levelName = "[ERROR]";
 		break;

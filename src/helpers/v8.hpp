@@ -2,6 +2,7 @@
 #include "node.h"
 #include "v8.h"
 #include "json.hpp"
+#include "ompcapi.h"
 
 // Parts of this file is taken from altv-js-module, thanks to altv team
 // https://github.com/altmp/altv-js-module
@@ -11,7 +12,7 @@ namespace helpers
 template <typename T>
 using CopyablePersistent = v8::Persistent<T, v8::CopyablePersistentTraits<T>>;
 
-inline void Throw(v8::Isolate* isolate, const std::string& msg)
+inline void Throw(v8::Isolate* isolate, const Impl::String& msg)
 {
 	isolate->ThrowException(v8::Exception::Error(v8::String::NewFromUtf8(isolate, msg.data(), v8::NewStringType::kNormal, (int)msg.size()).ToLocalChecked()));
 }
@@ -85,7 +86,7 @@ inline bool SafeToFloat(v8::Local<v8::Value> val, v8::Local<v8::Context> ctx, fl
 	return true;
 }
 
-inline bool SafeToString(v8::Local<v8::Value> val, v8::Isolate* isolate, v8::Local<v8::Context> ctx, std::string& out)
+inline bool SafeToString(v8::Local<v8::Value> val, v8::Isolate* isolate, v8::Local<v8::Context> ctx, Impl::String& out)
 {
 	v8::MaybeLocal maybeVal = val->ToString(ctx);
 	if (maybeVal.IsEmpty())
@@ -110,7 +111,7 @@ inline v8::Local<v8::Value> JsonToV8(v8::Isolate* isolate, const nlohmann::json&
 	}
 	else if (j.is_string())
 	{
-		return v8::String::NewFromUtf8(isolate, j.get<std::string>().c_str(), v8::NewStringType::kNormal).ToLocalChecked();
+		return v8::String::NewFromUtf8(isolate, j.get<Impl::String>().c_str(), v8::NewStringType::kNormal).ToLocalChecked();
 	}
 	else if (j.is_array())
 	{
@@ -137,6 +138,51 @@ inline v8::Local<v8::Value> JsonToV8(v8::Isolate* isolate, const nlohmann::json&
 	{
 		return v8::Undefined(isolate);
 	}
+}
+
+inline v8::Local<v8::String> JSValue(const CAPIStringView& val)
+{
+	return v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), val.data, v8::NewStringType::kNormal, val.len).ToLocalChecked();
+}
+
+inline v8::Local<v8::String> JSValue(const char* val)
+{
+	return v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), val).ToLocalChecked();
+}
+
+inline v8::Local<v8::String> JSValue(const Impl::String& val)
+{
+	return v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), val.c_str(), v8::NewStringType::kNormal, (int)val.size()).ToLocalChecked();
+}
+
+inline v8::Local<v8::Boolean> JSValue(bool val)
+{
+	return v8::Boolean::New(v8::Isolate::GetCurrent(), val);
+}
+
+inline v8::Local<v8::Number> JSValue(float val)
+{
+	return v8::Number::New(v8::Isolate::GetCurrent(), val);
+}
+
+inline v8::Local<v8::Integer> JSValue(int32_t val)
+{
+	return v8::Integer::New(v8::Isolate::GetCurrent(), val);
+}
+
+inline v8::Local<v8::Integer> JSValue(uint32_t val)
+{
+	return v8::Integer::NewFromUnsigned(v8::Isolate::GetCurrent(), val);
+}
+
+inline v8::Local<v8::BigInt> JSValue(int64_t val)
+{
+	return v8::BigInt::New(v8::Isolate::GetCurrent(), val);
+}
+
+inline v8::Local<v8::BigInt> JSValue(uint64_t val)
+{
+	return v8::BigInt::NewFromUnsigned(v8::Isolate::GetCurrent(), val);
 }
 }
 
@@ -180,11 +226,11 @@ inline v8::Local<v8::Value> JsonToV8(v8::Isolate* isolate, const nlohmann::json&
 	V8_CHECK(helpers::SafeToUInt32((v8Val), ctx, val), "Failed to convert value to unsigned 32bit integer")
 
 #define V8_TO_UINT8(v8Val, val) \
-	uint8_t val;               \
+	uint8_t val;                \
 	V8_CHECK(helpers::SafeToUInt8((v8Val), ctx, val), "Failed to convert value to unsigned 8bit integer")
 
 #define V8_TO_STRING(v8Val, val) \
-	std::string val;             \
+	Impl::String val;             \
 	V8_CHECK(helpers::SafeToString((v8Val), isolate, ctx, val), "Failed to convert value to string")
 
 #define V8_TO_UINTPTR(v8Val, val)                                                                                                                                                  \

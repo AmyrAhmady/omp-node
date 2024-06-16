@@ -87,10 +87,10 @@ void Runtime::Dispose()
 	v8::V8::ShutdownPlatform();
 }
 
-std::vector<std::string> Runtime::GetNodeArgs()
+std::vector<Impl::String> Runtime::GetNodeArgs()
 {
 	// https://nodejs.org/docs/latest-v17.x/api/cli.html#options
-	std::vector<std::string> args = { "omp-server", "--no-warnings", "--experimental-default-type=module" };
+	std::vector<Impl::String> args = { "omp-server", "--no-warnings", "--experimental-default-type=module" };
 
 	return args;
 }

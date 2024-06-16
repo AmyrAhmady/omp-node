@@ -29,7 +29,7 @@ public:
 	void Tick();
 	void Dispose();
 
-	std::vector<std::string> GetNodeArgs();
+	std::vector<Impl::String> GetNodeArgs();
 	void ProcessConfigOptions();
 
 	node::MultiIsolatePlatform* GetPlatform() const
@@ -37,12 +37,12 @@ public:
 		return platform.get();
 	}
 
-	FlatHashSet<Resource*> GetResources()
+	FlatHashSet<Resource*>* GetResources()
 	{
-		return resources;
+		return &resources;
 	}
 
-	Resource* GetResource(const std::string& name)
+	Resource* GetResource(const Impl::String& name)
 	{
 		for (auto resource : resources)
 		{

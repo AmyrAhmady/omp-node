@@ -24,7 +24,7 @@ protected:
 private:
 	LogLevel currentLevel;
 
-	std::string GetLevelName(LogLevel messageLevel);
+	Impl::String GetLevelName(LogLevel messageLevel);
 
 	Log(const Log&);
 };

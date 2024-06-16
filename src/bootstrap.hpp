@@ -1,6 +1,6 @@
 #pragma once
 
-const std::string bootstrap = R"(
+const Impl::String bootstrap = R"(
 // clang-format off
 const { esmLoader } = require("internal/process/esm_loader");
 const path = require("path");
