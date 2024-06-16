@@ -19,3 +19,20 @@ public:
 
 	FlatHashMap<std::string, FlatHashMap<std::string, APIHandlerFunc_t>> apiContainer;
 };
+
+class EventManager
+{
+public:
+	void Register(const std::string& space, const std::string name, EventCallback_Common func)
+	{
+		eventContainer[name] = func;
+	}
+
+	static EventManager& Instance()
+	{
+		static EventManager _Instance;
+		return _Instance;
+	}
+
+	FlatHashMap<std::string, EventCallback_Common> eventContainer;
+};

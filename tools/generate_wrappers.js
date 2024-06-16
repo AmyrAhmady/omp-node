@@ -44,7 +44,7 @@ const isRetArg = (type) => {
 
 Object.entries(apis).forEach(([key, funcs]) => {
   if (key == "Component") return;
-  const dir = `../src/wrappers/${key}`;
+  const dir = `../src/api/${key}`;
 
   if (!existsSync(dir)) mkdirSync(dir);
 
