@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.hpp"
+#include "ompcapi.h"
 
 class Runtime;
 
@@ -66,5 +67,5 @@ private:
 	node::Environment* env = nullptr;
 	uv_loop_t* uvLoop = nullptr;
 	helpers::CopyablePersistent<v8::Object> asyncResource;
-	node::async_context asyncContext{};
+	node::async_context asyncContext {};
 };

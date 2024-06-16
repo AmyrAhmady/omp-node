@@ -6,7 +6,7 @@ class Runtime
 {
 public:
 	Runtime() = default;
-	bool Init(ICore* c);
+	bool Init(ICore* c, OMPAPI_t* oapi);
 
 	node::Environment* GetParentEnv() const
 	{
@@ -59,6 +59,11 @@ public:
 		return core;
 	}
 
+	OMPAPI_t* GetOMPAPI()
+	{
+		return ompapi;
+	}
+
 	static Runtime& Instance()
 	{
 		static Runtime _Instance;
@@ -67,6 +72,7 @@ public:
 
 private:
 	ICore* core = nullptr;
+	OMPAPI_t* ompapi = nullptr;
 
 	v8::Isolate* isolate;
 	helpers::CopyablePersistent<v8::Context> context;

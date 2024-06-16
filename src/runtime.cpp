@@ -1,9 +1,11 @@
 #include "common.hpp"
 #include "runtime.hpp"
 
-bool Runtime::Init(ICore* c)
+bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 {
 	core = c;
+	ompapi = oapi;
+
 	ProcessConfigOptions();
 	auto result = node::InitializeOncePerProcess(GetNodeArgs());
 
@@ -51,7 +53,7 @@ bool Runtime::Init(ICore* c)
 
 Resource* Runtime::CreateImpl(const ResourceInfo& resource)
 {
-	auto res = new Resource{ this, resource };
+	auto res = new Resource { this, resource };
 	resources.insert(res);
 	return res;
 }
@@ -72,7 +74,8 @@ void Runtime::Dispose()
 	{
 		v8::SealHandleScope seal(isolate);
 
-		do {
+		do
+		{
 			uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 			platform->DrainTasks(isolate);
 		} while (uv_loop_alive(uv_default_loop()));
@@ -94,5 +97,4 @@ std::vector<std::string> Runtime::GetNodeArgs()
 
 void Runtime::ProcessConfigOptions()
 {
-
 }
