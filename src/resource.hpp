@@ -49,9 +49,33 @@ public:
 		return context.Get(isolate);
 	}
 
-	const std::string& GetName()
+	const Impl::String& GetName()
 	{
 		return resource.name;
+	}
+
+	v8::Local<v8::Function> GetEventHandlerFunction()
+	{
+		return eventHandlerFunction.Get(isolate);
+	}
+
+	void SetEventHandlerFunction(v8::Local<v8::Function> function)
+	{
+		eventHandlerFunction.Reset(isolate, function);
+	}
+
+	bool CallEventHandler(const Impl::String& name, std::vector<v8::Local<v8::Value>>& args)
+	{
+		v8::Local<v8::Function> handler = GetEventHandlerFunction();
+		auto returnValue = handler->Call(context.Get(isolate), v8::Undefined(isolate), args.size(), args.data());
+		if (returnValue.IsEmpty())
+		{
+			return true;
+		}
+		else
+		{
+			return returnValue.ToLocalChecked()->BooleanValue(isolate);
+		}
 	}
 
 private:
@@ -68,4 +92,5 @@ private:
 	uv_loop_t* uvLoop = nullptr;
 	helpers::CopyablePersistent<v8::Object> asyncResource;
 	node::async_context asyncContext {};
+	helpers::CopyablePersistent<v8::Function> eventHandlerFunction;
 };

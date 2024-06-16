@@ -42,6 +42,28 @@ static void OmpLogBridge(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 }
 
+static void SetEventHandlerFunction_(const v8::FunctionCallbackInfo<v8::Value>& info)
+{
+	Impl::String resourceName;
+	v8::Isolate* isolate = info.GetIsolate();
+	v8::Local<v8::Context> ctx = isolate->GetEnteredOrMicrotaskContext();
+
+	v8::MaybeLocal maybeVal = info[0]->ToString(ctx);
+	if (maybeVal.IsEmpty())
+		return;
+
+	resourceName = *v8::String::Utf8Value(isolate, maybeVal.ToLocalChecked());
+
+	auto resource = Runtime::Instance().GetResource(resourceName);
+	if (resource)
+	{
+		v8::Local<v8::Value> function = info[1];
+		if (!function->IsFunction())
+			return;
+		resource->SetEventHandlerFunction(function.As<v8::Function>());
+	}
+}
+
 Resource::Resource(Runtime* _runtime, const ResourceInfo& _resource)
 	: resource(_resource)
 	, runtime(_runtime)
@@ -88,19 +110,19 @@ bool Resource::Start()
 		}
 		ompObj->Set(_context, v8::String::NewFromUtf8(isolate, group.first.c_str()).ToLocalChecked(), groupObj);
 	}
-	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "omp").ToLocalChecked(), ompObj);
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_omp").ToLocalChecked(), ompObj);
 
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resource").ToLocalChecked(), resourceObj);
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resourceLoaded").ToLocalChecked(), v8::Function::New(_context, &ResourceLoaded).ToLocalChecked());
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_ompLogBridge").ToLocalChecked(), v8::Function::New(_context, &OmpLogBridge).ToLocalChecked());
-
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_setEventHandlerFunction").ToLocalChecked(), v8::Function::New(_context, &SetEventHandlerFunction_).ToLocalChecked());
 
 	node::ThreadId threadId = node::AllocateEnvironmentThreadId();
 	auto flags = static_cast<node::EnvironmentFlags::Flags>(node::EnvironmentFlags::kNoFlags);
 	auto inspector = node::GetInspectorParentHandle(runtime->GetParentEnv(), threadId, resource.entryFile.c_str());
 
-	std::vector<std::string> args{ resource.entryFile };
-	std::vector<std::string> execArgs{ };
+	std::vector<Impl::String> args { resource.entryFile };
+	std::vector<Impl::String> execArgs {};
 
 	env = node::CreateEnvironment(nodeData, _context, args, execArgs, flags, threadId, std::move(inspector));
 
