@@ -11,15 +11,17 @@ else ()
 endif ()
 
 if (WIN32)
-    set(SYS_PATH win)
+    set(SYS_PATH "win_${TARGET_BUILD_ARCH}")
 else ()
-    set(SYS_PATH linux)
+    set(SYS_PATH "linux_${TARGET_BUILD_ARCH}")
 endif ()
 
 set(NODE_PATH "${PROJECT_SOURCE_DIR}/deps/node/lib/${SYS_PATH}")
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/deps/node/include/node
+    ${PROJECT_SOURCE_DIR}/deps/omp-capi/include
+    ${PROJECT_SOURCE_DIR}/deps/json
 )
 
 # Linking
