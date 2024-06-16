@@ -28,6 +28,14 @@ public:
 		eventContainer[name] = func;
 	}
 
+	void Initialize(OMPAPI_t* ompapi)
+	{
+		for (auto event : eventContainer)
+		{
+			ompapi->Event.AddHandler(event.first.c_str(), EventPriorityType_Default, event.second);
+		}
+	}
+
 	static EventManager& Instance()
 	{
 		static EventManager _Instance;

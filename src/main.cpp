@@ -21,7 +21,6 @@ struct OmpNodeComponent final : IComponent {
 
 		omp_initialize_capi(&ompapi);
 
-
 		runtime = &Runtime::Instance();
 		runtime->Init(c, &ompapi);
 

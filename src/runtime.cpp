@@ -1,5 +1,6 @@
 #include "common.hpp"
 #include "runtime.hpp"
+#include "api/Impl.hpp"
 
 bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 {
@@ -47,6 +48,8 @@ bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 
 		// node::LoadEnvironment(parentEnv, "console.log('PARENT INIT'); setInterval(() => {}, 1000);");
 	}
+
+	EventManager::Instance().Initialize(ompapi);
 
 	return true;
 }
