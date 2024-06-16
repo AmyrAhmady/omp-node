@@ -83,43 +83,50 @@ Object.entries(apis).forEach(([key, funcs]) => {
   });
 });
 
-// Object.entries(events).forEach(([key, funcs]) => {
-//   if (key == "Component") return;
-//   const dir = `../src/wrappers/${key}`;
+const filePathEvents = "../src/api/Events.cpp";
+writeFileSync(
+  filePathEvents,
+  `#include "./Impl.hpp"
 
-//   if (!existsSync(dir)) mkdirSync(dir);
+class OMP_NODE_Events
+{
+public:
+    OMP_NODE_Events()
+    {
+`
+);
 
-//   const filePath = dir + "/APIs.cpp";
+Object.entries(events).forEach(([key, funcs]) => {
+  funcs.forEach((func) => {
+    appendFileSync(
+      filePathEvents,
+      `        EventManager::Instance().Register("${func.name}", EventCallback_Common(&${func.name}));\n`
+    );
+  });
+});
 
-//   writeFileSync(
-//     filePath,
-//     `#include "../Impl.hpp"
-// #include "../MacroMagic.hpp"\n`
-//   );
+appendFileSync(filePathEvents, `    }\n`);
 
-//   funcs.forEach((func) => {
-//     const retArgs = func.params.filter((arg) => isRetArg(arg.type));
-//     const group = func.name.split("_")[0];
-//     const name = func.name.split("_")[1];
-//     appendFileSync(
-//       filePath,
-//       `\nDECLARE_API(${group}, ${name}${
-//         func.params.length ? ", " : ""
-//       }${func.params
-//         .map((arg) => `${convertType(arg.type)} ${arg.name}`)
-//         .join(", ")})
-// {
-//     ${convertType(
-//       func.ret
-//     )} ret = Runtime::Instance().GetOMPAPI()->${group}.${name}(${func.params
-//         .map((arg) => `${arg.name}`)
-//         .join(", ")});
-//     API_RETURN(${convertType(func.ret)} ret${
-//         retArgs.length ? ", " : ""
-//       }${retArgs
-//         .map((arg) => `${convertType(arg.type)} ${arg.name}`)
-//         .join(", ")});
-// }\n`
-//     );
-//   });
-// });
+Object.entries(events).forEach(([key, funcs]) => {
+  funcs.forEach((func) => {
+    appendFileSync(
+      filePathEvents,
+      `\n    static bool ${func.name}(EventArgs_${func.name}* args)
+    {
+        std::vector<v8::Local<v8::Value>> argv;\n\n`
+    );
+
+    func.args.map((arg) =>
+      appendFileSync(
+        filePathEvents,
+        `        argv.push_back(helpers::JSValue(${
+          arg.type == "void*" ? "uintptr_t(" : ""
+        }*(args->list->${arg.name})${arg.type == "void*" ? ")" : ""}));\n`
+      )
+    );
+
+    appendFileSync(filePathEvents, `    }\n`);
+  });
+});
+
+appendFileSync(filePathEvents, `};\n\nOMP_NODE_Events OMP_NODE_Events_instance;\n`);
