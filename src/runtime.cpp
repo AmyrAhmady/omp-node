@@ -90,15 +90,16 @@ void Runtime::RunResources()
 		{
 			ResourceInfo resourceInfo;
 
-			if (resourceConfig["name"].is_null() || resourceConfig["path"].is_null() || resourceConfig["entryFile"].is_null() || resourceConfig["configVersion"].is_null())
+			if (resourceConfig["name"].is_null() || resourceConfig["entry"].is_null())
 			{
 				core->logLn(LogLevel::Error, "Error while parsing resource %s config file: Unable to retrieve basic resource config values", resourcePath.data());
+				continue;
 			}
 
+			resourceInfo.path = Impl::String(resourcePath.data(), resourcePath.size());
 			resourceInfo.name = resourceConfig["name"];
-			resourceInfo.path = resourceConfig["path"];
-			resourceInfo.entryFile = resourceConfig["entryFile"];
-			resourceInfo.configVersion = resourceConfig["configVersion"];
+			resourceInfo.entryFile = resourceConfig["entry"];
+			resourceInfo.configVersion = (!resourceConfig["configVersion"].is_null()) ? ConfigVersion(resourceConfig["configVersion"].get<int>()) : ConfigVersion::Unknown;
 
 			auto resource = CreateImpl(resourceInfo);
 			resource->Start();
