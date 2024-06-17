@@ -113,13 +113,15 @@ Object.entries(events).forEach(([key, funcs]) => {
       filePathEvents,
       `\n    static bool ${func.name}(EventArgs_${func.name}* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;\n\n`
     );
 
     func.args.map((arg) =>
       appendFileSync(
         filePathEvents,
-        `        argv.push_back(helpers::JSValue(${
+        `        argv.push_back(helpers::JSValue(isolate, ${
           arg.type == "void*" ? "uintptr_t(" : ""
         }*(args->list->${arg.name})${arg.type == "void*" ? ")" : ""}));\n`
       )

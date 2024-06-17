@@ -78,631 +78,769 @@ public:
 
     static bool onPlayerGiveDamageActor(EventArgs_onPlayerGiveDamageActor* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->actor))));
-        argv.push_back(helpers::JSValue(*(args->list->amount)));
-        argv.push_back(helpers::JSValue(*(args->list->weapon)));
-        argv.push_back(helpers::JSValue(*(args->list->part)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->actor))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->amount)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->weapon)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->part)));
     }
 
     static bool onActorStreamIn(EventArgs_onActorStreamIn* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->actor))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->forPlayer))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->actor))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->forPlayer))));
     }
 
     static bool onActorStreamOut(EventArgs_onActorStreamOut* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->actor))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->forPlayer))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->actor))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->forPlayer))));
     }
 
     static bool onPlayerEnterCheckpoint(EventArgs_onPlayerEnterCheckpoint* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onPlayerLeaveCheckpoint(EventArgs_onPlayerLeaveCheckpoint* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onPlayerEnterRaceCheckpoint(EventArgs_onPlayerEnterRaceCheckpoint* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onPlayerLeaveRaceCheckpoint(EventArgs_onPlayerLeaveRaceCheckpoint* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onPlayerRequestClass(EventArgs_onPlayerRequestClass* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->classId)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->classId)));
     }
 
     static bool onConsoleText(EventArgs_onConsoleText* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(*(args->list->command)));
-        argv.push_back(helpers::JSValue(*(args->list->parameters)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->command)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->parameters)));
     }
 
     static bool onRconLoginAttempt(EventArgs_onRconLoginAttempt* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(*(args->list->address)));
-        argv.push_back(helpers::JSValue(*(args->list->password)));
-        argv.push_back(helpers::JSValue(*(args->list->success)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->address)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->password)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->success)));
     }
 
     static bool onTick(EventArgs_onTick* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(*(args->list->elapsed)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->elapsed)));
     }
 
     static bool onPlayerFinishedDownloading(EventArgs_onPlayerFinishedDownloading* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->vw)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->vw)));
     }
 
     static bool onPlayerRequestDownload(EventArgs_onPlayerRequestDownload* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->type)));
-        argv.push_back(helpers::JSValue(*(args->list->checksum)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->type)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->checksum)));
     }
 
     static bool onDialogResponse(EventArgs_onDialogResponse* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->dialogId)));
-        argv.push_back(helpers::JSValue(*(args->list->response)));
-        argv.push_back(helpers::JSValue(*(args->list->listItem)));
-        argv.push_back(helpers::JSValue(*(args->list->inputText)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->dialogId)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->response)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->listItem)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->inputText)));
     }
 
     static bool onPlayerEnterGangZone(EventArgs_onPlayerEnterGangZone* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->zone))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->zone))));
     }
 
     static bool onPlayerLeaveGangZone(EventArgs_onPlayerLeaveGangZone* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->zone))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->zone))));
     }
 
     static bool onPlayerClickGangZone(EventArgs_onPlayerClickGangZone* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->zone))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->zone))));
     }
 
     static bool onPlayerSelectedMenuRow(EventArgs_onPlayerSelectedMenuRow* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->row)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->row)));
     }
 
     static bool onPlayerExitedMenu(EventArgs_onPlayerExitedMenu* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onObjectMove(EventArgs_onObjectMove* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->object))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->object))));
     }
 
     static bool onPlayerObjectMove(EventArgs_onPlayerObjectMove* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->object))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->object))));
     }
 
     static bool onPlayerEditObject(EventArgs_onPlayerEditObject* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->object))));
-        argv.push_back(helpers::JSValue(*(args->list->response)));
-        argv.push_back(helpers::JSValue(*(args->list->offsetX)));
-        argv.push_back(helpers::JSValue(*(args->list->offsetY)));
-        argv.push_back(helpers::JSValue(*(args->list->offsetZ)));
-        argv.push_back(helpers::JSValue(*(args->list->rotationX)));
-        argv.push_back(helpers::JSValue(*(args->list->rotationY)));
-        argv.push_back(helpers::JSValue(*(args->list->rotationZ)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->object))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->response)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->offsetX)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->offsetY)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->offsetZ)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->rotationX)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->rotationY)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->rotationZ)));
     }
 
     static bool onPlayerEditPlayerObject(EventArgs_onPlayerEditPlayerObject* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->object))));
-        argv.push_back(helpers::JSValue(*(args->list->response)));
-        argv.push_back(helpers::JSValue(*(args->list->offsetX)));
-        argv.push_back(helpers::JSValue(*(args->list->offsetY)));
-        argv.push_back(helpers::JSValue(*(args->list->offsetZ)));
-        argv.push_back(helpers::JSValue(*(args->list->rotationX)));
-        argv.push_back(helpers::JSValue(*(args->list->rotationY)));
-        argv.push_back(helpers::JSValue(*(args->list->rotationZ)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->object))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->response)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->offsetX)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->offsetY)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->offsetZ)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->rotationX)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->rotationY)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->rotationZ)));
     }
 
     static bool onPlayerEditAttachedObject(EventArgs_onPlayerEditAttachedObject* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->saved)));
-        argv.push_back(helpers::JSValue(*(args->list->index)));
-        argv.push_back(helpers::JSValue(*(args->list->model)));
-        argv.push_back(helpers::JSValue(*(args->list->bone)));
-        argv.push_back(helpers::JSValue(*(args->list->offsetX)));
-        argv.push_back(helpers::JSValue(*(args->list->offsetY)));
-        argv.push_back(helpers::JSValue(*(args->list->offsetZ)));
-        argv.push_back(helpers::JSValue(*(args->list->rotationX)));
-        argv.push_back(helpers::JSValue(*(args->list->rotationY)));
-        argv.push_back(helpers::JSValue(*(args->list->rotationZ)));
-        argv.push_back(helpers::JSValue(*(args->list->scaleX)));
-        argv.push_back(helpers::JSValue(*(args->list->scaleY)));
-        argv.push_back(helpers::JSValue(*(args->list->scaleZ)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->saved)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->index)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->model)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->bone)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->offsetX)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->offsetY)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->offsetZ)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->rotationX)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->rotationY)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->rotationZ)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->scaleX)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->scaleY)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->scaleZ)));
     }
 
     static bool onPlayerSelectObject(EventArgs_onPlayerSelectObject* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->object))));
-        argv.push_back(helpers::JSValue(*(args->list->model)));
-        argv.push_back(helpers::JSValue(*(args->list->x)));
-        argv.push_back(helpers::JSValue(*(args->list->y)));
-        argv.push_back(helpers::JSValue(*(args->list->z)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->object))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->model)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->x)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->y)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->z)));
     }
 
     static bool onPlayerSelectPlayerObject(EventArgs_onPlayerSelectPlayerObject* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->object))));
-        argv.push_back(helpers::JSValue(*(args->list->model)));
-        argv.push_back(helpers::JSValue(*(args->list->x)));
-        argv.push_back(helpers::JSValue(*(args->list->y)));
-        argv.push_back(helpers::JSValue(*(args->list->z)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->object))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->model)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->x)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->y)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->z)));
     }
 
     static bool onPlayerPickUpPickup(EventArgs_onPlayerPickUpPickup* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->pickup))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->pickup))));
     }
 
     static bool onPlayerCancelTextDrawSelection(EventArgs_onPlayerCancelTextDrawSelection* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onPlayerCancelPlayerTextDrawSelection(EventArgs_onPlayerCancelPlayerTextDrawSelection* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onPlayerClickTextDraw(EventArgs_onPlayerClickTextDraw* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->textdraw))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->textdraw))));
     }
 
     static bool onPlayerClickPlayerTextDraw(EventArgs_onPlayerClickPlayerTextDraw* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->textdraw))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->textdraw))));
     }
 
     static bool onPlayerConnect(EventArgs_onPlayerConnect* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onPlayerSpawn(EventArgs_onPlayerSpawn* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onPlayerCommandText(EventArgs_onPlayerCommandText* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->command)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->command)));
     }
 
     static bool onPlayerKeyStateChange(EventArgs_onPlayerKeyStateChange* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->newKeys)));
-        argv.push_back(helpers::JSValue(*(args->list->oldKeys)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->newKeys)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->oldKeys)));
     }
 
     static bool onIncomingConnection(EventArgs_onIncomingConnection* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->ipAddress)));
-        argv.push_back(helpers::JSValue(*(args->list->port)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->ipAddress)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->port)));
     }
 
     static bool onPlayerDisconnect(EventArgs_onPlayerDisconnect* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->reason)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->reason)));
     }
 
     static bool onPlayerRequestSpawn(EventArgs_onPlayerRequestSpawn* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onPlayerStreamIn(EventArgs_onPlayerStreamIn* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->forPlayer))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->forPlayer))));
     }
 
     static bool onPlayerStreamOut(EventArgs_onPlayerStreamOut* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->forPlayer))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->forPlayer))));
     }
 
     static bool onPlayerText(EventArgs_onPlayerText* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->text)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->text)));
     }
 
     static bool onPlayerShotMissed(EventArgs_onPlayerShotMissed* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->weapon)));
-        argv.push_back(helpers::JSValue(*(args->list->x)));
-        argv.push_back(helpers::JSValue(*(args->list->y)));
-        argv.push_back(helpers::JSValue(*(args->list->z)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->weapon)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->x)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->y)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->z)));
     }
 
     static bool onPlayerShotPlayer(EventArgs_onPlayerShotPlayer* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->target))));
-        argv.push_back(helpers::JSValue(*(args->list->weapon)));
-        argv.push_back(helpers::JSValue(*(args->list->x)));
-        argv.push_back(helpers::JSValue(*(args->list->y)));
-        argv.push_back(helpers::JSValue(*(args->list->z)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->target))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->weapon)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->x)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->y)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->z)));
     }
 
     static bool onPlayerShotVehicle(EventArgs_onPlayerShotVehicle* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->target))));
-        argv.push_back(helpers::JSValue(*(args->list->weapon)));
-        argv.push_back(helpers::JSValue(*(args->list->x)));
-        argv.push_back(helpers::JSValue(*(args->list->y)));
-        argv.push_back(helpers::JSValue(*(args->list->z)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->target))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->weapon)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->x)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->y)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->z)));
     }
 
     static bool onPlayerShotObject(EventArgs_onPlayerShotObject* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->target))));
-        argv.push_back(helpers::JSValue(*(args->list->weapon)));
-        argv.push_back(helpers::JSValue(*(args->list->x)));
-        argv.push_back(helpers::JSValue(*(args->list->y)));
-        argv.push_back(helpers::JSValue(*(args->list->z)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->target))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->weapon)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->x)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->y)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->z)));
     }
 
     static bool onPlayerShotPlayerObject(EventArgs_onPlayerShotPlayerObject* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->target))));
-        argv.push_back(helpers::JSValue(*(args->list->weapon)));
-        argv.push_back(helpers::JSValue(*(args->list->x)));
-        argv.push_back(helpers::JSValue(*(args->list->y)));
-        argv.push_back(helpers::JSValue(*(args->list->z)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->target))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->weapon)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->x)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->y)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->z)));
     }
 
     static bool onPlayerDeath(EventArgs_onPlayerDeath* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->killer))));
-        argv.push_back(helpers::JSValue(*(args->list->reason)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->killer))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->reason)));
     }
 
     static bool onPlayerTakeDamage(EventArgs_onPlayerTakeDamage* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->from))));
-        argv.push_back(helpers::JSValue(*(args->list->amount)));
-        argv.push_back(helpers::JSValue(*(args->list->weapon)));
-        argv.push_back(helpers::JSValue(*(args->list->bodypart)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->from))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->amount)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->weapon)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->bodypart)));
     }
 
     static bool onPlayerGiveDamage(EventArgs_onPlayerGiveDamage* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->to))));
-        argv.push_back(helpers::JSValue(*(args->list->amount)));
-        argv.push_back(helpers::JSValue(*(args->list->weapon)));
-        argv.push_back(helpers::JSValue(*(args->list->bodypart)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->to))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->amount)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->weapon)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->bodypart)));
     }
 
     static bool onPlayerInteriorChange(EventArgs_onPlayerInteriorChange* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->newInterior)));
-        argv.push_back(helpers::JSValue(*(args->list->oldInterior)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->newInterior)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->oldInterior)));
     }
 
     static bool onPlayerStateChange(EventArgs_onPlayerStateChange* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->newState)));
-        argv.push_back(helpers::JSValue(*(args->list->oldState)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->newState)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->oldState)));
     }
 
     static bool onPlayerClickMap(EventArgs_onPlayerClickMap* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->x)));
-        argv.push_back(helpers::JSValue(*(args->list->y)));
-        argv.push_back(helpers::JSValue(*(args->list->z)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->x)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->y)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->z)));
     }
 
     static bool onPlayerClickPlayer(EventArgs_onPlayerClickPlayer* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->clicked))));
-        argv.push_back(helpers::JSValue(*(args->list->source)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->clicked))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->source)));
     }
 
     static bool onClientCheckResponse(EventArgs_onClientCheckResponse* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->actionType)));
-        argv.push_back(helpers::JSValue(*(args->list->address)));
-        argv.push_back(helpers::JSValue(*(args->list->result)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->actionType)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->address)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->result)));
     }
 
     static bool onPlayerUpdate(EventArgs_onPlayerUpdate* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onVehicleStreamIn(EventArgs_onVehicleStreamIn* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onVehicleStreamOut(EventArgs_onVehicleStreamOut* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onVehicleDeath(EventArgs_onVehicleDeath* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onPlayerEnterVehicle(EventArgs_onPlayerEnterVehicle* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
-        argv.push_back(helpers::JSValue(*(args->list->passenger)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->passenger)));
     }
 
     static bool onPlayerExitVehicle(EventArgs_onPlayerExitVehicle* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
     }
 
     static bool onVehicleDamageStatusUpdate(EventArgs_onVehicleDamageStatusUpdate* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
     }
 
     static bool onVehiclePaintJob(EventArgs_onVehiclePaintJob* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
-        argv.push_back(helpers::JSValue(*(args->list->paintJob)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->paintJob)));
     }
 
     static bool onVehicleMod(EventArgs_onVehicleMod* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
-        argv.push_back(helpers::JSValue(*(args->list->component)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->component)));
     }
 
     static bool onVehicleRespray(EventArgs_onVehicleRespray* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
-        argv.push_back(helpers::JSValue(*(args->list->color1)));
-        argv.push_back(helpers::JSValue(*(args->list->color2)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->color1)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->color2)));
     }
 
     static bool onEnterExitModShop(EventArgs_onEnterExitModShop* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->enterexit)));
-        argv.push_back(helpers::JSValue(*(args->list->interiorId)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->enterexit)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->interiorId)));
     }
 
     static bool onVehicleSpawn(EventArgs_onVehicleSpawn* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
     }
 
     static bool onUnoccupiedVehicleUpdate(EventArgs_onUnoccupiedVehicleUpdate* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(*(args->list->seat)));
-        argv.push_back(helpers::JSValue(*(args->list->posX)));
-        argv.push_back(helpers::JSValue(*(args->list->posY)));
-        argv.push_back(helpers::JSValue(*(args->list->posZ)));
-        argv.push_back(helpers::JSValue(*(args->list->velocityX)));
-        argv.push_back(helpers::JSValue(*(args->list->velocityY)));
-        argv.push_back(helpers::JSValue(*(args->list->velocityZ)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->seat)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->posX)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->posY)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->posZ)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->velocityX)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->velocityY)));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->velocityZ)));
     }
 
     static bool onTrailerUpdate(EventArgs_onTrailerUpdate* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->trailer))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->trailer))));
     }
 
     static bool onVehicleSirenStateChange(EventArgs_onVehicleSirenStateChange* args)
     {
+        auto isolate = Runtime::Instance().GetIsolate();
+        V8_ISOLATE_SCOPE(isolate);
         std::vector<v8::Local<v8::Value>> argv;
 
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->player))));
-        argv.push_back(helpers::JSValue(uintptr_t(*(args->list->vehicle))));
-        argv.push_back(helpers::JSValue(*(args->list->sirenState)));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->player))));
+        argv.push_back(helpers::JSValue(isolate, uintptr_t(*(args->list->vehicle))));
+        argv.push_back(helpers::JSValue(isolate, *(args->list->sirenState)));
     }
 };
 
