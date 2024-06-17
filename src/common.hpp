@@ -6,7 +6,6 @@
 #include <sdk.hpp>
 
 #include "helpers/v8.hpp"
-#include "logger.hpp"
 
 enum class ConfigVersion
 {
