@@ -98,9 +98,12 @@ public:
 
 Object.entries(events).forEach(([key, funcs]) => {
   funcs.forEach((func) => {
+    const no_on = func.name.slice(2);
     appendFileSync(
       filePathEvents,
-      `        EventManager::Instance().Register("${func.name}", EventCallback_Common(&${func.name}));\n`
+      `        EventManager::Instance().Register("${
+        no_on.charAt(0).toLowerCase() + no_on.slice(1)
+      }", EventCallback_Common(&${func.name}));\n`
     );
   });
 });
@@ -109,26 +112,31 @@ appendFileSync(filePathEvents, `    }\n`);
 
 Object.entries(events).forEach(([key, funcs]) => {
   funcs.forEach((func) => {
+    const no_on = func.name.slice(2);
     appendFileSync(
       filePathEvents,
-      `\n    static bool ${func.name}(EventArgs_${func.name}* args)
-    {
-        auto isolate = Runtime::Instance().GetIsolate();
-        V8_ISOLATE_SCOPE(isolate);
-        std::vector<v8::Local<v8::Value>> argv;\n\n`
+      `\n    static bool ${func.name}(EventArgs_${func.name}* args)\n    {\n`
     );
 
-    func.args.map((arg) =>
-      appendFileSync(
-        filePathEvents,
-        `        argv.push_back(helpers::JSValue(isolate, ${
-          arg.type == "void*" ? "uintptr_t(" : ""
-        }*(args->list->${arg.name})${arg.type == "void*" ? ")" : ""}));\n`
-      )
+    appendFileSync(
+      filePathEvents,
+      `        return Runtime::Instance().DispatchEvents("${no_on}", true, EventBadRet::${
+        func.badret.charAt(0).toUpperCase() + func.badret.slice(1)
+      }, ${func.args
+        .map(
+          (arg) =>
+            `${arg.type == "void*" ? "uintptr_t(" : ""}*(args->list->${
+              arg.name
+            })${arg.type == "void*" ? ")" : ""}`
+        )
+        .join(", ")});\n`
     );
 
     appendFileSync(filePathEvents, `    }\n`);
   });
 });
 
-appendFileSync(filePathEvents, `};\n\nOMP_NODE_Events OMP_NODE_Events_instance;\n`);
+appendFileSync(
+  filePathEvents,
+  `};\n\nOMP_NODE_Events OMP_NODE_Events_instance;\n`
+);
