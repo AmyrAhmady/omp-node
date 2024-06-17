@@ -49,4 +49,5 @@ target_link_libraries(${PROJECT_NAME}
     ${LIBRARIES}
     OMP-SDK
     node-lib
+    CONAN_PKG::ghc-filesystem
 )
