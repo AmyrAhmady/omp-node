@@ -55,6 +55,11 @@ public:
 		return resource.name;
 	}
 
+	const Impl::String& GetPath()
+	{
+		return resource.path;
+	}
+
 	v8::Local<v8::Function> GetEventHandlerFunction()
 	{
 		return eventHandlerFunction.Get(isolate);
