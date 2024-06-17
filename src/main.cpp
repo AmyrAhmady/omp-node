@@ -21,8 +21,6 @@ struct OmpNodeComponent final : IComponent, CoreEventHandler
 		// Cache core, player pool here
 		core = c;
 
-		Log::Init(LogLevel::Debug);
-
 		omp_initialize_capi(&ompapi);
 
 		runtime = &Runtime::Instance();
