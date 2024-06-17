@@ -98,12 +98,9 @@ public:
 
 Object.entries(events).forEach(([key, funcs]) => {
   funcs.forEach((func) => {
-    const no_on = func.name.slice(2);
     appendFileSync(
       filePathEvents,
-      `        EventManager::Instance().Register("${
-        no_on.charAt(0).toLowerCase() + no_on.slice(1)
-      }", EventCallback_Common(&${func.name}));\n`
+      `        EventManager::Instance().Register("${func.name}", EventCallback_Common(&${func.name}));\n`
     );
   });
 });
@@ -112,7 +109,7 @@ appendFileSync(filePathEvents, `    }\n`);
 
 Object.entries(events).forEach(([key, funcs]) => {
   funcs.forEach((func) => {
-    const no_on = func.name.slice(2);
+    const no_on = func.name.slice(2).charAt(0).toLowerCase() + func.name.slice(3);
     appendFileSync(
       filePathEvents,
       `\n    static bool ${func.name}(EventArgs_${func.name}* args)\n    {\n`
