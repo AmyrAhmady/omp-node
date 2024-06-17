@@ -13,6 +13,7 @@ public:
 	Resource(const Resource&) = delete;
 
 	bool Start();
+
 	bool Stop();
 
 	void Tick();

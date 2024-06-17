@@ -1,18 +1,19 @@
 #include "common.hpp"
 #include "resource.hpp"
 #include "runtime.hpp"
-#include "wrappers/Impl.hpp"
+#include "api/Impl.hpp"
 
 #include "bootstrap.hpp"
 
 static void ResourceLoaded(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
-	std::string resourceName;
+	Impl::String resourceName;
 	v8::Isolate* isolate = info.GetIsolate();
 	v8::Local<v8::Context> ctx = isolate->GetEnteredOrMicrotaskContext();
 
 	v8::MaybeLocal maybeVal = info[0]->ToString(ctx);
-	if (maybeVal.IsEmpty()) return;
+	if (maybeVal.IsEmpty())
+		return;
 
 	resourceName = *v8::String::Utf8Value(isolate, maybeVal.ToLocalChecked());
 
@@ -33,9 +34,10 @@ static void OmpLogBridge(const v8::FunctionCallbackInfo<v8::Value>& info)
 		std::stringstream stream;
 		for (size_t i = 0; i < info.Length(); i++)
 		{
-			std::string arg = *v8::String::Utf8Value(isolate, info[i]);
+			Impl::String arg = *v8::String::Utf8Value(isolate, info[i]);
 			stream << arg;
-			if (i != info.Length() - 1) stream << " ";
+			if (i != info.Length() - 1)
+				stream << " ";
 		}
 
 		core->logLn(LogLevel::Message, stream.str().c_str());
