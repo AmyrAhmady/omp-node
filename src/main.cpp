@@ -2,18 +2,22 @@
 
 #include "runtime.hpp"
 
-struct OmpNodeComponent final : IComponent {
+struct OmpNodeComponent final : IComponent, CoreEventHandler
+{
 	PROVIDE_UID(0x8b256881a3704e81);
 
-	StringView componentName() const override {
+	StringView componentName() const override
+	{
 		return "OmpNode";
 	}
 
-	SemanticVersion componentVersion() const override {
+	SemanticVersion componentVersion() const override
+	{
 		return SemanticVersion(0, 0, 0, 0);
 	}
 
-	void onLoad(ICore* c) override {
+	void onLoad(ICore* c) override
+	{
 		// Cache core, player pool here
 		core = c;
 
@@ -27,47 +31,55 @@ struct OmpNodeComponent final : IComponent {
 		c->printLn("OmpNode component loaded");
 	}
 
-	void onInit(IComponentList* components) override {
+	void onInit(IComponentList* components) override
+	{
 		// Cache components, add event handlers here
-
-		// core->getEventDispatcher().addEventHandler(&ompnode::nodeImpl);
 	}
 
-	void provideConfiguration(ILogger& logger, IEarlyConfig& config, bool defaults) override {
-		if (defaults) {
+	void provideConfiguration(ILogger& logger, IEarlyConfig& config, bool defaults) override
+	{
+		if (defaults)
+		{
 			config.setString("node_js.entry_file", "index.js");
 		}
 	}
 
-	void onFree(IComponent* component) override {
+	void onFree(IComponent* component) override
+	{
 	}
 
-	void onReady() override {
+	void onReady() override
+	{
 		// Fire events here at earliest
 
-		// TODO: use config
-		ResourceInfo info;
-		info.name = "Test Resource";
-		info.entryFile = "./index.js";
-		info.path = "./";
-		info.configVersion = ConfigVersion::Version1;
-
-		auto resource = runtime->CreateImpl(info);
-		resource->Start();
+		runtime->RunResources();
 	}
 
-	void reset() override {
+	void onTick(Microseconds elapsed, TimePoint now) override
+	{
+		runtime->Tick();
+		auto resources = *runtime->GetResources();
+		for (auto resource : resources)
+		{
+			resource->Tick();
+		}
+	}
+
+	void reset() override
+	{
 		free();
 	}
 
-	void free() override {
+	void free() override
+	{
 		delete this;
 	}
 
-	~OmpNodeComponent() {
+	~OmpNodeComponent()
+	{
 		// Clean up what you did above
-		if (core != nullptr) {
-			// core->getEventDispatcher().removeEventHandler(&ompnode::nodeImpl);
+		if (core != nullptr)
+		{
 			runtime->Dispose();
 		}
 	}
@@ -77,6 +89,7 @@ struct OmpNodeComponent final : IComponent {
 	OMPAPI_t ompapi;
 };
 
-COMPONENT_ENTRY_POINT() {
+COMPONENT_ENTRY_POINT()
+{
 	return new OmpNodeComponent();
 }
