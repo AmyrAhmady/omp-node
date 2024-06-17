@@ -8,9 +8,7 @@ const dns = require('dns');
 const url = require("url");
 // const inspector = require("inspector");
 
-//omp = {};
-
-omp.log = (...args) => {
+__internal_omp.log = (...args) => {
     __internal_ompLogBridge("[node:" +  __internal_resource.name + "]", ...args);
 }
 
