@@ -140,49 +140,49 @@ inline v8::Local<v8::Value> JsonToV8(v8::Isolate* isolate, const nlohmann::json&
 	}
 }
 
-inline v8::Local<v8::String> JSValue(const CAPIStringView& val)
+inline v8::Local<v8::String> JSValue(v8::Isolate* isolate, const CAPIStringView& val)
 {
-	return v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), val.data, v8::NewStringType::kNormal, val.len).ToLocalChecked();
+	return v8::String::NewFromUtf8(isolate, val.data, v8::NewStringType::kNormal, val.len).ToLocalChecked();
 }
 
-inline v8::Local<v8::String> JSValue(const char* val)
+inline v8::Local<v8::String> JSValue(v8::Isolate* isolate, const char* val)
 {
-	return v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), val).ToLocalChecked();
+	return v8::String::NewFromUtf8(isolate, val).ToLocalChecked();
 }
 
-inline v8::Local<v8::String> JSValue(const Impl::String& val)
+inline v8::Local<v8::String> JSValue(v8::Isolate* isolate, const Impl::String& val)
 {
-	return v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), val.c_str(), v8::NewStringType::kNormal, (int)val.size()).ToLocalChecked();
+	return v8::String::NewFromUtf8(isolate, val.c_str(), v8::NewStringType::kNormal, (int)val.size()).ToLocalChecked();
 }
 
-inline v8::Local<v8::Boolean> JSValue(bool val)
+inline v8::Local<v8::Boolean> JSValue(v8::Isolate* isolate, bool val)
 {
-	return v8::Boolean::New(v8::Isolate::GetCurrent(), val);
+	return v8::Boolean::New(isolate, val);
 }
 
-inline v8::Local<v8::Number> JSValue(float val)
+inline v8::Local<v8::Number> JSValue(v8::Isolate* isolate, float val)
 {
-	return v8::Number::New(v8::Isolate::GetCurrent(), val);
+	return v8::Number::New(isolate, val);
 }
 
-inline v8::Local<v8::Integer> JSValue(int32_t val)
+inline v8::Local<v8::Integer> JSValue(v8::Isolate* isolate, int32_t val)
 {
-	return v8::Integer::New(v8::Isolate::GetCurrent(), val);
+	return v8::Integer::New(isolate, val);
 }
 
-inline v8::Local<v8::Integer> JSValue(uint32_t val)
+inline v8::Local<v8::Integer> JSValue(v8::Isolate* isolate, uint32_t val)
 {
-	return v8::Integer::NewFromUnsigned(v8::Isolate::GetCurrent(), val);
+	return v8::Integer::NewFromUnsigned(isolate, val);
 }
 
-inline v8::Local<v8::BigInt> JSValue(int64_t val)
+inline v8::Local<v8::BigInt> JSValue(v8::Isolate* isolate, int64_t val)
 {
-	return v8::BigInt::New(v8::Isolate::GetCurrent(), val);
+	return v8::BigInt::New(isolate, val);
 }
 
-inline v8::Local<v8::BigInt> JSValue(uint64_t val)
+inline v8::Local<v8::BigInt> JSValue(v8::Isolate* isolate, uint64_t val)
 {
-	return v8::BigInt::NewFromUnsigned(v8::Isolate::GetCurrent(), val);
+	return v8::BigInt::NewFromUnsigned(isolate, val);
 }
 }
 
@@ -235,7 +235,7 @@ inline v8::Local<v8::BigInt> JSValue(uint64_t val)
 	V8_CHECK(helpers::SafeToUInt8((v8Val), ctx, val), "Failed to convert value to unsigned 8bit integer")
 
 #define V8_TO_STRING(v8Val, val) \
-	Impl::String val;             \
+	Impl::String val;            \
 	V8_CHECK(helpers::SafeToString((v8Val), isolate, ctx, val), "Failed to convert value to string")
 
 #define V8_TO_UINTPTR(v8Val, val)                                                                                                                                                  \
