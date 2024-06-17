@@ -77,6 +77,9 @@ public:
 		{
 			return returnValue.ToLocalChecked()->BooleanValue(isolate);
 		}
+	static Resource* Get(v8::Local<v8::Context> ctx)
+	{
+		return static_cast<Resource*>(ctx->GetAlignedPointerFromEmbedderData(1));
 	}
 
 private:
