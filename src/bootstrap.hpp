@@ -6,10 +6,11 @@ const { esmLoader } = require("internal/process/esm_loader");
 const path = require("path");
 const dns = require('dns');
 const url = require("url");
+const util = require("util");
 // const inspector = require("inspector");
 
 __internal_omp.log = (...args) => {
-    __internal_ompLogBridge("[node:" +  __internal_resource.name + "]", ...args);
+    __internal_ompLogBridge(util.format(...args));
 }
 
 (async () => {

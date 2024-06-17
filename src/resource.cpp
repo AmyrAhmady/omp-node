@@ -38,7 +38,7 @@ static void OmpLogBridge(const v8::FunctionCallbackInfo<v8::Value>& info)
 	if (core)
 	{
 		std::stringstream stream;
-		stream << "[" << resource->GetName() << "]";
+		stream << "[" << resource->GetName() << "] ";
 
 		for (size_t i = 0; i < info.Length(); i++)
 		{
