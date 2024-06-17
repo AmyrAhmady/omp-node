@@ -10,6 +10,7 @@
 
 enum class ConfigVersion
 {
+	None,
 	Version1,
 	Unknown
 };
