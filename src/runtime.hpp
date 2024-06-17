@@ -16,9 +16,35 @@ public:
 
 	Resource* CreateImpl(const ResourceInfo& resource);
 
-	v8::Isolate* GetIsolate()
+	template <typename... Args>
+	bool DispatchEvents(const Impl::String& name, bool waitForPromise, EventBadRet badRet, Args... args)
 	{
-		return isolate;
+		auto resources = *GetResources();
+		bool result = true;
+		for (auto resource : resources)
+		{
+			result = resource->DispatchEvent(name, waitForPromise, badRet, args...);
+			switch (badRet)
+			{
+			case EventBadRet::False:
+				if (!result)
+				{
+					return false;
+				}
+				break;
+			case EventBadRet::True:
+				if (result)
+				{
+					return true;
+				}
+				break;
+			case EventBadRet::None:
+			default:
+				break;
+			}
+		}
+
+		return result;
 	}
 
 	node::Environment* GetParentEnv() const

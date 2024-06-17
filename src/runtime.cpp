@@ -2,6 +2,7 @@
 #include "runtime.hpp"
 #include "api/Impl.hpp"
 #include "json.hpp"
+#include "helpers/v8.hpp"
 #include <ghc/filesystem.hpp>
 #include <fstream>
 
@@ -16,7 +17,7 @@ bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 	{
 		for (auto& error : result->errors())
 		{
-			L_ERROR << "Error while initializing node: " << error;
+			core->logLn(LogLevel::Error, "Error while initializing node: %s", error.c_str());
 		}
 
 		return false;
