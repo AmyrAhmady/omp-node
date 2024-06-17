@@ -1,12 +1,25 @@
 #pragma once
-
 #include "resource.hpp"
 
 class Runtime
 {
 public:
 	Runtime() = default;
+
 	bool Init(ICore* c, OMPAPI_t* oapi);
+
+	void Tick();
+
+	void Dispose();
+
+	void RunResources();
+
+	Resource* CreateImpl(const ResourceInfo& resource);
+
+	v8::Isolate* GetIsolate()
+	{
+		return isolate;
+	}
 
 	node::Environment* GetParentEnv() const
 	{
@@ -18,19 +31,11 @@ public:
 		return context.Get(isolate);
 	}
 
-	Resource* CreateImpl(const ResourceInfo& resource);
-
 	void DestroyImpl(Resource* impl)
 	{
 		resources.erase(impl);
 		delete impl;
 	}
-
-	void Tick();
-	void Dispose();
-
-	std::vector<Impl::String> GetNodeArgs();
-	void ProcessConfigOptions();
 
 	node::MultiIsolatePlatform* GetPlatform() const
 	{
@@ -77,7 +82,11 @@ private:
 	v8::Isolate* isolate;
 	helpers::CopyablePersistent<v8::Context> context;
 	node::Environment* parentEnv;
-
 	std::unique_ptr<node::MultiIsolatePlatform> platform;
 	FlatHashSet<Resource*> resources;
+	std::vector<ResourceInfo> resourcesInfo;
+
+	std::vector<Impl::String> GetNodeArgs();
+
+	std::vector<StringView> GetResourcePathsFromconfig();
 };

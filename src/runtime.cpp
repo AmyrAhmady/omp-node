@@ -1,13 +1,15 @@
 #include "common.hpp"
 #include "runtime.hpp"
 #include "api/Impl.hpp"
+#include "json.hpp"
+#include <ghc/filesystem.hpp>
+#include <fstream>
 
 bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 {
 	core = c;
 	ompapi = oapi;
 
-	ProcessConfigOptions();
 	auto result = node::InitializeOncePerProcess(GetNodeArgs());
 
 	if (result->early_return())
@@ -54,6 +56,55 @@ bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 	return true;
 }
 
+void Runtime::RunResources()
+{
+	auto resourcePaths = GetResourcePathsFromconfig();
+
+	for (auto resourcePath : resourcePaths)
+	{
+		std::ifstream ifs;
+		auto path = ghc::filesystem::canonical("./");
+		path /= resourcePath.data();
+		path /= "omp-node.json";
+
+		core->logLn(LogLevel::Message, "Loading omp-node resource: %s", path.string().c_str());
+
+		ifs.open(path.string(), std::ifstream::in);
+
+		nlohmann::json resourceConfig;
+		try
+		{
+			resourceConfig = nlohmann::json::parse(ifs, nullptr, true /* allow_exceptions */, true /* ignore_comments */);
+		}
+		catch (nlohmann::json::exception const& e)
+		{
+			core->logLn(LogLevel::Error, "Error while parsing resource %s config file: %s", resourcePath.data(), e.what());
+		}
+		catch (std::ios_base::failure const& e)
+		{
+			core->logLn(LogLevel::Error, "Error while parsing resource %s config file: %s", resourcePath.data(), e.what());
+		}
+
+		if (!(resourceConfig.is_null() || resourceConfig.is_discarded() || !resourceConfig.is_object()))
+		{
+			ResourceInfo resourceInfo;
+
+			if (resourceConfig["name"].is_null() || resourceConfig["path"].is_null() || resourceConfig["entryFile"].is_null() || resourceConfig["configVersion"].is_null())
+			{
+				core->logLn(LogLevel::Error, "Error while parsing resource %s config file: Unable to retrieve basic resource config values", resourcePath.data());
+			}
+
+			resourceInfo.name = resourceConfig["name"];
+			resourceInfo.path = resourceConfig["path"];
+			resourceInfo.entryFile = resourceConfig["entryFile"];
+			resourceInfo.configVersion = resourceConfig["configVersion"];
+
+			auto resource = CreateImpl(resourceInfo);
+			resource->Start();
+		}
+	}
+}
+
 Resource* Runtime::CreateImpl(const ResourceInfo& resource)
 {
 	auto res = new Resource { this, resource };
@@ -92,12 +143,31 @@ void Runtime::Dispose()
 
 std::vector<Impl::String> Runtime::GetNodeArgs()
 {
-	// https://nodejs.org/docs/latest-v17.x/api/cli.html#options
+	// https://nodejs.org/docs/latest-v18.x/api/cli.html#options
 	std::vector<Impl::String> args = { "omp-server", "--no-warnings", "--experimental-default-type=module" };
+
+	if (core)
+	{
+		std::vector<StringView> args(core->getConfig().getStringsCount("node.cli_args"));
+		core->getConfig().getStrings("node.cli_args", Span<StringView>(args.data(), args.size()));
+
+		for (auto arg : args)
+		{
+			args.push_back(arg);
+		}
+	}
 
 	return args;
 }
 
-void Runtime::ProcessConfigOptions()
+std::vector<StringView> Runtime::GetResourcePathsFromconfig()
 {
+	std::vector<StringView> resourcePaths;
+	if (core)
+	{
+		resourcePaths = std::vector<StringView>(core->getConfig().getStringsCount("node.resources"));
+		core->getConfig().getStrings("node.resources", Span<StringView>(resourcePaths.data(), resourcePaths.size()));
+	}
+
+	return resourcePaths;
 }
