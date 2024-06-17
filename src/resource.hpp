@@ -70,18 +70,64 @@ public:
 		eventHandlerFunction.Reset(isolate, function);
 	}
 
-	bool CallEventHandler(const Impl::String& name, std::vector<v8::Local<v8::Value>>& args)
+	template <typename... Args>
+	bool DispatchEvent(const Impl::String& name, bool waitForPromise, EventBadRet badRet, Args... args)
 	{
+		V8_ISOLATE_SCOPE(isolate);
+
 		v8::Local<v8::Function> handler = GetEventHandlerFunction();
-		auto returnValue = handler->Call(context.Get(isolate), v8::Undefined(isolate), args.size(), args.data());
-		if (returnValue.IsEmpty())
+
+		std::vector<v8::Local<v8::Value>> args_;
+		args_.push_back(helpers::JSValue(isolate, name));
+		args_.push_back(helpers::JSValue(isolate, int(badRet)));
+
+		([&]
+			{
+				args_.push_back(helpers::JSValue(isolate, args));
+			}(),
+			...);
+
+		auto retn = handler->Call(context.Get(isolate), v8::Undefined(isolate), args_.size(), args_.data());
+		if (retn.IsEmpty())
 		{
 			return true;
 		}
 		else
 		{
-			return returnValue.ToLocalChecked()->BooleanValue(isolate);
+			auto returnValue = retn.ToLocalChecked();
+			if (waitForPromise && returnValue->IsPromise())
+			{
+				v8::Local<v8::Promise> promise = returnValue.As<v8::Promise>();
+				while (true)
+				{
+					v8::Promise::PromiseState state = promise->State();
+					if (state == v8::Promise::PromiseState::kPending)
+					{
+						Runtime::Instance().Tick();
+						// Run event loop
+						Tick();
+					}
+					else if (state == v8::Promise::PromiseState::kFulfilled)
+					{
+						v8::Local<v8::Value> value = promise->Result();
+						if (value->IsFalse())
+						{
+							return false;
+						}
+
+						return true;
+					}
+					else if (state == v8::Promise::PromiseState::kRejected)
+					{
+						// TODO: Do something about rejection in here
+						return true;
+					}
+				}
+			}
+
+			return returnValue->BooleanValue(isolate);
 		}
+	}
 	static Resource* Get(v8::Local<v8::Context> ctx)
 	{
 		return static_cast<Resource*>(ctx->GetAlignedPointerFromEmbedderData(1));
