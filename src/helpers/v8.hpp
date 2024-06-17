@@ -186,6 +186,11 @@ inline v8::Local<v8::BigInt> JSValue(uint64_t val)
 }
 }
 
+#define V8_ISOLATE_SCOPE(isolate)             \
+	v8::Locker locker(isolate);               \
+	v8::Isolate::Scope isolateScope(isolate); \
+	v8::HandleScope handleScope(isolate)
+
 #define V8_CHECK_RETN(a, b, c)        \
 	if (!(a))                         \
 	{                                 \
