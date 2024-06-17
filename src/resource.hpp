@@ -77,6 +77,15 @@ public:
 
 		v8::Local<v8::Function> handler = GetEventHandlerFunction();
 
+		if (handler.IsEmpty() || !handler->IsFunction() || !handler->IsCallable())
+		{
+			if (badRet == EventBadRet::None || badRet == EventBadRet::False)
+			{
+				return true;
+			}
+			return false;
+		}
+
 		std::vector<v8::Local<v8::Value>> args_;
 		args_.push_back(helpers::JSValue(isolate, name));
 		args_.push_back(helpers::JSValue(isolate, int(badRet)));
