@@ -128,6 +128,22 @@ public:
 			return returnValue->BooleanValue(isolate);
 		}
 	}
+
+	void DispatchStartEvent(bool error)
+	{
+		DispatchEvent("resourceStart", true, EventBadRet::None, error);
+	}
+
+	void DispatchStopEvent()
+	{
+		DispatchEvent("resourceStop", true, EventBadRet::None);
+	}
+
+	void DispatchErrorEvent(const std::string& errorMsg, const std::string& file, int32_t line, const std::string& stackTrace)
+	{
+		DispatchEvent("resourceError", true, EventBadRet::None, errorMsg, file, line, stackTrace);
+	}
+
 	static Resource* Get(v8::Local<v8::Context> ctx)
 	{
 		return static_cast<Resource*>(ctx->GetAlignedPointerFromEmbedderData(1));

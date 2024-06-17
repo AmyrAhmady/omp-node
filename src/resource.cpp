@@ -84,7 +84,6 @@ Resource::Resource(Runtime* _runtime, const ResourceInfo& _resource)
 
 	v8::Local<v8::Context> _context = node::NewContext(isolate);
 	_context->SetAlignedPointerInEmbedderData(1, this);
-
 	context.Reset(isolate, _context);
 }
 
@@ -140,7 +139,7 @@ bool Resource::Start()
 		Tick();
 	}
 
-	L_DEBUG << "Started";
+	DispatchStartEvent(startError);
 
 	return !startError;
 }
@@ -151,16 +150,13 @@ bool Resource::Stop()
 	v8::Isolate::Scope isolateScope(isolate);
 	v8::HandleScope handleScope(isolate);
 
-	L_DEBUG << "Before stop";
-
 	{
 		v8::Context::Scope scope(GetContext());
+		DispatchStopEvent();
 
 		node::EmitAsyncDestroy(isolate, asyncContext);
 		asyncResource.Reset();
 	}
-
-	L_DEBUG << "After stop";
 
 	node::EmitProcessBeforeExit(env);
 	node::EmitProcessExit(env);
