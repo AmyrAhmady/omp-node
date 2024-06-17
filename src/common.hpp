@@ -10,9 +10,8 @@
 
 enum class ConfigVersion
 {
-	None,
-	Version1,
-	Unknown
+	Unknown,
+	Version1
 };
 
 struct ResourceInfo
@@ -21,4 +20,11 @@ struct ResourceInfo
 	Impl::String path;
 	Impl::String entryFile;
 	ConfigVersion configVersion;
+};
+
+enum class EventBadRet
+{
+	None,
+	False,
+	True
 };
