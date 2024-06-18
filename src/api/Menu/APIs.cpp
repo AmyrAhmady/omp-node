@@ -13,6 +13,18 @@ DECLARE_API(Menu, Destroy, objectPtr menu)
 	API_RETURN(bool ret);
 }
 
+DECLARE_API(Menu, FromID, int menuid)
+{
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->Menu.FromID(menuid);
+	API_RETURN(objectPtr ret);
+}
+
+DECLARE_API(Menu, GetID, objectPtr menu)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Menu.GetID(menu);
+	API_RETURN(int ret);
+}
+
 DECLARE_API(Menu, AddItem, objectPtr menu, uint8_t column, StringCharPtr text)
 {
 	int ret = Runtime::Instance().GetOMPAPI()->Menu.AddItem(menu, column, text);

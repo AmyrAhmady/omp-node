@@ -7,6 +7,18 @@ DECLARE_API(Class, Add, uint8_t team, int skin, float x, float y, float z, float
 	API_RETURN(objectPtr ret, IntRef id);
 }
 
+DECLARE_API(Class, FromID, int classid)
+{
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->Class.FromID(classid);
+	API_RETURN(objectPtr ret);
+}
+
+DECLARE_API(Class, GetID, objectPtr cls)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Class.GetID(cls);
+	API_RETURN(int ret);
+}
+
 DECLARE_API(Class, Count)
 {
 	int ret = Runtime::Instance().GetOMPAPI()->Class.Count();

@@ -7,10 +7,22 @@ DECLARE_API(TextLabel, Create, StringCharPtr text, uint32_t color, float x, floa
 	API_RETURN(objectPtr ret, IntRef id);
 }
 
-DECLARE_API(TextLabel, Delete, objectPtr textlabel)
+DECLARE_API(TextLabel, Destroy, objectPtr textlabel)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->TextLabel.Delete(textlabel);
+	bool ret = Runtime::Instance().GetOMPAPI()->TextLabel.Destroy(textlabel);
 	API_RETURN(bool ret);
+}
+
+DECLARE_API(TextLabel, FromID, int textlabelid)
+{
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->TextLabel.FromID(textlabelid);
+	API_RETURN(objectPtr ret);
+}
+
+DECLARE_API(TextLabel, GetID, objectPtr textlabel)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->TextLabel.GetID(textlabel);
+	API_RETURN(int ret);
 }
 
 DECLARE_API(TextLabel, AttachToPlayer, objectPtr textlabel, objectPtr player, float offsetX, float offsetY, float offsetZ)

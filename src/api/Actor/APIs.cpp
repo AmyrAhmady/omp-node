@@ -7,10 +7,16 @@ DECLARE_API(Actor, Create, int model, float x, float y, float z, float rot, IntR
 	API_RETURN(objectPtr ret, IntRef id);
 }
 
-DECLARE_API(Actor, Destroy, objectPtr actor)
+DECLARE_API(Actor, FromID, int actorid)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->Actor.Destroy(actor);
-	API_RETURN(bool ret);
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->Actor.FromID(actorid);
+	API_RETURN(objectPtr ret);
+}
+
+DECLARE_API(Actor, GetID, objectPtr actor)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Actor.GetID(actor);
+	API_RETURN(int ret);
 }
 
 DECLARE_API(Actor, IsStreamedInFor, objectPtr actor, objectPtr player)

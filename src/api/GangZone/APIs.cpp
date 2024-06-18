@@ -13,6 +13,18 @@ DECLARE_API(GangZone, Destroy, objectPtr gangzone)
 	API_RETURN(bool ret);
 }
 
+DECLARE_API(GangZone, FromID, int gangzoneid)
+{
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->GangZone.FromID(gangzoneid);
+	API_RETURN(objectPtr ret);
+}
+
+DECLARE_API(GangZone, GetID, objectPtr gangzone)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->GangZone.GetID(gangzone);
+	API_RETURN(int ret);
+}
+
 DECLARE_API(GangZone, ShowForPlayer, objectPtr player, objectPtr gangzone, uint32_t color)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->GangZone.ShowForPlayer(player, gangzone, color);

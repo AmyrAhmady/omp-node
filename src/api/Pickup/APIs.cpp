@@ -19,6 +19,18 @@ DECLARE_API(Pickup, Destroy, objectPtr pickup)
 	API_RETURN(bool ret);
 }
 
+DECLARE_API(Pickup, FromID, int pickupid)
+{
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->Pickup.FromID(pickupid);
+	API_RETURN(objectPtr ret);
+}
+
+DECLARE_API(Pickup, GetID, objectPtr pickup)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Pickup.GetID(pickup);
+	API_RETURN(int ret);
+}
+
 DECLARE_API(Pickup, IsValid, objectPtr pickup)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Pickup.IsValid(pickup);

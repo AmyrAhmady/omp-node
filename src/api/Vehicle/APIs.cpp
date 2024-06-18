@@ -7,16 +7,28 @@ DECLARE_API(Vehicle, Create, int modelid, float x, float y, float z, float rotat
 	API_RETURN(objectPtr ret, IntRef id);
 }
 
-DECLARE_API(Vehicle, GetMaxPassengerSeats, int modelid)
-{
-	int ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetMaxPassengerSeats(modelid);
-	API_RETURN(int ret);
-}
-
 DECLARE_API(Vehicle, Destroy, objectPtr vehicle)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.Destroy(vehicle);
 	API_RETURN(bool ret);
+}
+
+DECLARE_API(Vehicle, FromID, int vehicleid)
+{
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->Vehicle.FromID(vehicleid);
+	API_RETURN(objectPtr ret);
+}
+
+DECLARE_API(Vehicle, GetID, objectPtr vehicle)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetID(vehicle);
+	API_RETURN(int ret);
+}
+
+DECLARE_API(Vehicle, GetMaxPassengerSeats, int modelid)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetMaxPassengerSeats(modelid);
+	API_RETURN(int ret);
 }
 
 DECLARE_API(Vehicle, IsStreamedIn, objectPtr vehicle, objectPtr player)

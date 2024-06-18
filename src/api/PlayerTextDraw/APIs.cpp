@@ -13,6 +13,18 @@ DECLARE_API(PlayerTextDraw, Destroy, objectPtr player, objectPtr textdraw)
 	API_RETURN(bool ret);
 }
 
+DECLARE_API(PlayerTextDraw, FromID, objectPtr player, int textdrawid)
+{
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.FromID(player, textdrawid);
+	API_RETURN(objectPtr ret);
+}
+
+DECLARE_API(PlayerTextDraw, GetID, objectPtr player, objectPtr textdraw)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.GetID(player, textdraw);
+	API_RETURN(int ret);
+}
+
 DECLARE_API(PlayerTextDraw, IsValid, objectPtr player, objectPtr textdraw)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.IsValid(player, textdraw);
