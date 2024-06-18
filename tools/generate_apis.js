@@ -68,12 +68,12 @@ Object.entries(apis).forEach(([key, funcs]) => {
         .map((arg) => `${convertType(arg.type)} ${arg.name}`)
         .join(", ")})
 {
-    ${convertType(
+\t${convertType(
       func.ret
     )} ret = Runtime::Instance().GetOMPAPI()->${group}.${name}(${func.params
         .map((arg) => `${arg.name}`)
         .join(", ")});
-    API_RETURN(${convertType(func.ret)} ret${
+\tAPI_RETURN(${convertType(func.ret)} ret${
         retArgs.length ? ", " : ""
       }${retArgs
         .map((arg) => `${convertType(arg.type)} ${arg.name}`)
@@ -91,8 +91,8 @@ writeFileSync(
 class OMP_NODE_Events
 {
 public:
-    OMP_NODE_Events()
-    {
+\tOMP_NODE_Events()
+\t{
 `
 );
 
@@ -102,7 +102,7 @@ Object.entries(events).forEach(([key, funcs]) => {
   funcs.forEach((func) => {
     appendFileSync(
       filePathEvents,
-      `        EventManager::Instance().Register("${func.name}", EventCallback_Common(&${func.name}));\n`
+      `\t\tEventManager::Instance().Register("${func.name}", EventCallback_Common(&${func.name}));\n`
     );
   });
 });
@@ -117,12 +117,12 @@ Object.entries(events).forEach(([key, funcs]) => {
       func.name.slice(2).charAt(0).toLowerCase() + func.name.slice(3);
     appendFileSync(
       filePathEvents,
-      `\n    static bool ${func.name}(EventArgs_${func.name}* args)\n    {\n`
+      `\n\tstatic bool ${func.name}(EventArgs_${func.name}* args)\n\t{\n`
     );
 
     appendFileSync(
       filePathEvents,
-      `        return Runtime::Instance().DispatchEvents("${no_on}", true, EventBadRet::${
+      `\t\treturn Runtime::Instance().DispatchEvents("${no_on}", true, EventBadRet::${
         func.badret.charAt(0).toUpperCase() + func.badret.slice(1)
       }, ${func.args
         .map(
@@ -134,7 +134,7 @@ Object.entries(events).forEach(([key, funcs]) => {
         .join(", ")});\n`
     );
 
-    appendFileSync(filePathEvents, `    }\n`);
+    appendFileSync(filePathEvents, `\t}\n`);
   });
 });
 
