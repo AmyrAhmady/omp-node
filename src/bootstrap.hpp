@@ -9,8 +9,13 @@ const url = require("url");
 const util = require("util");
 // const inspector = require("inspector");
 
+function __internal_globalEventHandler(name, badret, ...args)
+{
+  console.log(name, badret, ...args);
+}
+
 __internal_omp.log = (...args) => {
-    __internal_ompLogBridge(util.format(...args));
+  __internal_ompLogBridge(util.format(...args));
 }
 
 (async () => {
@@ -24,6 +29,7 @@ __internal_omp.log = (...args) => {
   // https://github.com/nodejs/node/issues/40702#issuecomment-958157082
   dns.setDefaultResultOrder('ipv4first');
 
+  startError = false;
   try {
     // const config = __internal_resource_config;
     // if (config.inspector) {
@@ -40,8 +46,10 @@ __internal_omp.log = (...args) => {
 
   } catch (e) {
     console.error(e);
+    startError = true;
   }
 
-  __internal_resourceLoaded(resource.name);
+  __internal_setEventHandlerFunction(__internal_globalEventHandler)
+  __internal_resourceLoaded(resource.name, startError);
 })();
 )";

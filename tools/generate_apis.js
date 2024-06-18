@@ -97,6 +97,8 @@ public:
 );
 
 Object.entries(events).forEach(([key, funcs]) => {
+  // ignore onTick event generation
+  if (key == "Core") return;
   funcs.forEach((func) => {
     appendFileSync(
       filePathEvents,
@@ -108,8 +110,11 @@ Object.entries(events).forEach(([key, funcs]) => {
 appendFileSync(filePathEvents, `    }\n`);
 
 Object.entries(events).forEach(([key, funcs]) => {
+  // ignore onTick event generation
+  if (key == "Core") return;
   funcs.forEach((func) => {
-    const no_on = func.name.slice(2).charAt(0).toLowerCase() + func.name.slice(3);
+    const no_on =
+      func.name.slice(2).charAt(0).toLowerCase() + func.name.slice(3);
     appendFileSync(
       filePathEvents,
       `\n    static bool ${func.name}(EventArgs_${func.name}* args)\n    {\n`
