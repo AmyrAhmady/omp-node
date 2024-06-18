@@ -24,7 +24,7 @@ static void ResourceLoaded(const v8::FunctionCallbackInfo<v8::Value>& info)
 	auto resource = Resource::Get(ctx);
 	if (resource && foundResource && resource->GetPath() == foundResource->GetPath())
 	{
-		auto startError = info[0]->BooleanValue(isolate);
+		auto startError = info[1]->BooleanValue(isolate);
 		resource->Started(startError);
 	}
 }
