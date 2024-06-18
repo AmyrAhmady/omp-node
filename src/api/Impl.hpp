@@ -32,7 +32,7 @@ public:
 	{
 		for (auto event : eventContainer)
 		{
-			ompapi->Event.AddHandler(event.first.c_str(), EventPriorityType_Default, event.second);
+			ompapi->Event.AddHandler(event.first.c_str(), EventPriorityType_FairlyHigh, event.second);
 		}
 	}
 
