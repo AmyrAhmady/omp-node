@@ -24,7 +24,8 @@ static void ResourceLoaded(const v8::FunctionCallbackInfo<v8::Value>& info)
 	auto resource = Resource::Get(ctx);
 	if (resource && foundResource && resource->GetPath() == foundResource->GetPath())
 	{
-		resource->Started();
+		auto startError = info[0]->BooleanValue(isolate);
+		resource->Started(startError);
 	}
 }
 
@@ -54,7 +55,6 @@ static void OmpLogBridge(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 static void SetEventHandlerFunction_(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
-	Impl::String resourceName;
 	v8::Isolate* isolate = info.GetIsolate();
 	v8::Local<v8::Context> ctx = isolate->GetEnteredOrMicrotaskContext();
 
@@ -62,12 +62,10 @@ static void SetEventHandlerFunction_(const v8::FunctionCallbackInfo<v8::Value>& 
 	if (maybeVal.IsEmpty())
 		return;
 
-	resourceName = *v8::String::Utf8Value(isolate, maybeVal.ToLocalChecked());
-
-	auto resource = Runtime::Instance().GetResource(resourceName);
+	auto resource = Resource::Get(ctx);
 	if (resource)
 	{
-		v8::Local<v8::Value> function = info[1];
+		v8::Local<v8::Value> function = info[0];
 		if (!function->IsFunction())
 			return;
 		resource->SetEventHandlerFunction(function.As<v8::Function>());
@@ -184,9 +182,10 @@ bool Resource::Stop()
 	return true;
 }
 
-void Resource::Started()
+void Resource::Started(bool error)
 {
 	envStarted = true;
+	startError = error;
 }
 void Resource::Tick()
 {

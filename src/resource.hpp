@@ -18,7 +18,7 @@ public:
 
 	void Tick();
 
-	void Started();
+	void Started(bool error);
 
 	node::Environment* GetEnv()
 	{
@@ -77,7 +77,7 @@ public:
 
 		v8::Local<v8::Function> handler = GetEventHandlerFunction();
 
-		if (handler.IsEmpty() || !handler->IsFunction() || !handler->IsCallable())
+		if ((name != "resourceStart" && startError) || handler.IsEmpty() || !handler->IsFunction() || !handler->IsCallable())
 		{
 			if (badRet == EventBadRet::None || badRet == EventBadRet::False)
 			{
