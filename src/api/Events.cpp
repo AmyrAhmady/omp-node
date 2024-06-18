@@ -15,7 +15,6 @@ public:
         EventManager::Instance().Register("onPlayerRequestClass", EventCallback_Common(&onPlayerRequestClass));
         EventManager::Instance().Register("onConsoleText", EventCallback_Common(&onConsoleText));
         EventManager::Instance().Register("onRconLoginAttempt", EventCallback_Common(&onRconLoginAttempt));
-        EventManager::Instance().Register("onTick", EventCallback_Common(&onTick));
         EventManager::Instance().Register("onPlayerFinishedDownloading", EventCallback_Common(&onPlayerFinishedDownloading));
         EventManager::Instance().Register("onPlayerRequestDownload", EventCallback_Common(&onPlayerRequestDownload));
         EventManager::Instance().Register("onDialogResponse", EventCallback_Common(&onDialogResponse));
@@ -124,11 +123,6 @@ public:
     static bool onRconLoginAttempt(EventArgs_onRconLoginAttempt* args)
     {
         return Runtime::Instance().DispatchEvents("rconLoginAttempt", true, EventBadRet::True, *(args->list->address), *(args->list->password), *(args->list->success));
-    }
-
-    static bool onTick(EventArgs_onTick* args)
-    {
-        return Runtime::Instance().DispatchEvents("tick", true, EventBadRet::None, *(args->list->elapsed));
     }
 
     static bool onPlayerFinishedDownloading(EventArgs_onPlayerFinishedDownloading* args)
