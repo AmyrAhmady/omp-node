@@ -7,7 +7,7 @@ add_definitions(-DBUILDING_NODE_EXTENSION=1 -DEXTERNAL_NAPI=1)
 if (WIN32)
     set(NODE_FILE "libnode.dll")
 else ()
-    set(NODE_FILE "libnode.so.93")
+    set(NODE_FILE "libnode.so.108")
 endif ()
 
 if (WIN32)
