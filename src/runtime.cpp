@@ -127,20 +127,47 @@ void Runtime::Tick()
 
 void Runtime::Dispose()
 {
+	auto resources = *GetResources();
+	for (auto resource : resources)
+	{
+		resource->Stop();
+	}
+
+	bool platform_finished = false;
+	platform->AddIsolateFinishedCallback(
+		isolate,
+		[](void* data)
+		{
+			*static_cast<bool*>(data) = true;
+		},
+		&platform_finished);
+	platform->UnregisterIsolate(isolate);
+
 	{
 		v8::SealHandleScope seal(isolate);
 
-		do
+		auto uv_loop = uv_default_loop();
 		{
-			uv_run(uv_default_loop(), UV_RUN_DEFAULT);
-			platform->DrainTasks(isolate);
-		} while (uv_loop_alive(uv_default_loop()));
+			v8::Locker locker(isolate);
+			v8::Isolate::Scope isolate_scope(isolate);
+			while (!platform_finished)
+			{
+				uv_run(uv_loop, UV_RUN_ONCE);
+				platform->DrainTasks(isolate);
+			}
+				
+			uv_loop_close(uv_loop);
+		}
 	}
-	platform->UnregisterIsolate(isolate);
+
 	isolate->Dispose();
-	node::FreePlatform(platform.release());
+	isolate = nullptr;
+
 	v8::V8::Dispose();
-	v8::V8::ShutdownPlatform();
+	v8::V8::DisposePlatform();
+	node::FreePlatform(platform.release());
+
+	node::TearDownOncePerProcess();
 }
 
 std::vector<Impl::String> Runtime::GetNodeArgs()
