@@ -7,13 +7,41 @@ const path = require("path");
 const dns = require('dns');
 const url = require("url");
 const util = require("util");
+const EventEmitter = require('events');
+
 // const inspector = require("inspector");
 
-function __internal_globalEventHandler(name, badret, ...args)
+__internal_omp.eventEmitter = new EventEmitter();
+
+async function __internal_globalEventHandler(name, badRet, ...args)
 {
-  console.log(name, badret, ...args);
+  const listeners = __internal_omp.eventEmitter.listeners(name);
+  let result = true;
+  for await (const listener of listeners) {
+    result = await listener(...args);
+    if (typeof result === "boolean" || typeof result === "number") {
+      switch (badRet) {
+        case 1:
+          if (!result) {
+            return false;
+          }
+          break;
+        case 2:
+          if (result) {
+            return true;
+          }
+          break;
+        case 0:
+        default:
+          break;
+      }
+    }
+  }
+
+  return result;
 }
 
+// Set native logger function
 __internal_omp.log = (...args) => {
   __internal_ompLogBridge(util.format(...args));
 }
