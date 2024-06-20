@@ -3,7 +3,7 @@
 #include "v8.h"
 #include "json.hpp"
 #include "ompcapi.h"
-
+#pragma warning(disable : 4312)
 // Parts of this file is taken from altv-js-module, thanks to altv team
 // https://github.com/altmp/altv-js-module
 
@@ -238,8 +238,20 @@ inline v8::Local<v8::BigInt> JSValue(v8::Isolate* isolate, uint64_t val)
 	Impl::String val;            \
 	V8_CHECK(helpers::SafeToString((v8Val), isolate, ctx, val), "Failed to convert value to string")
 
-#define V8_TO_UINTPTR(v8Val, val)                                                                                                                                                  \
-	uint64_t val##_64;                                                                                                                                                             \
-	uint32_t val##_32;                                                                                                                                                             \
-	V8_CHECK(sizeof(uintptr_t) == 8 ? helpers::SafeToUInt64((v8Val), ctx, val##_64) : helpers::SafeToUInt32((v8Val), ctx, val##_32), "Failed to convert value to integer pointer") \
-	void* val = (void*)(sizeof(uintptr_t) == 8 ? val##_64 : val##_32);
+#define V8_TO_UINTPTR(v8Val, val)                                            \
+	int64_t val##_64;                                                        \
+	int32_t val##_32;                                                        \
+	bool result_##val = false;                                               \
+	void* val;                                                               \
+	if (sizeof(uintptr_t) == 8)                                              \
+	{                                                                        \
+		result_##val = helpers::SafeToInt64((v8Val), ctx, val##_64);         \
+		V8_CHECK(result_##val, "Failed to convert value to integer pointer") \
+		val = (void*)(val##_64);                                             \
+	}                                                                        \
+	else                                                                     \
+	{                                                                        \
+		result_##val = helpers::SafeToInt32((v8Val), ctx, val##_32);         \
+		V8_CHECK(result_##val, "Failed to convert value to integer pointer") \
+		val = (void*)(val##_32);                                             \
+	}
