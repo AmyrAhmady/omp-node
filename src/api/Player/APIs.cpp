@@ -13,10 +13,82 @@ DECLARE_API(Player, GetSpawnInfo, objectPtr player, UInt8Ref team, IntRef skin, 
 	API_RETURN(bool ret, UInt8Ref team, IntRef skin, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, UInt8Ref weapon1, UInt32Ref ammo1, UInt8Ref weapon2, UInt32Ref ammo2, UInt8Ref weapon3, UInt32Ref ammo3);
 }
 
+DECLARE_API(Player, GetNetworkStats, objectPtr player, OutputStringViewPtr output)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Player.GetNetworkStats(player, output);
+	API_RETURN(int ret, OutputStringViewPtr output);
+}
+
+DECLARE_API(Player, NetStatsBytesReceived, objectPtr player)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsBytesReceived(player);
+	API_RETURN(int ret);
+}
+
+DECLARE_API(Player, NetStatsBytesSent, objectPtr player)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsBytesSent(player);
+	API_RETURN(int ret);
+}
+
+DECLARE_API(Player, NetStatsConnectionStatus, objectPtr player)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsConnectionStatus(player);
+	API_RETURN(int ret);
+}
+
+DECLARE_API(Player, NetStatsGetConnectedTime, objectPtr player)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsGetConnectedTime(player);
+	API_RETURN(int ret);
+}
+
+DECLARE_API(Player, NetStatsGetIpPort, objectPtr player, OutputStringViewPtr output)
+{
+	bool ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsGetIpPort(player, output);
+	API_RETURN(bool ret, OutputStringViewPtr output);
+}
+
+DECLARE_API(Player, NetStatsMessagesReceived, objectPtr player)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsMessagesReceived(player);
+	API_RETURN(int ret);
+}
+
+DECLARE_API(Player, NetStatsMessagesRecvPerSecond, objectPtr player)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsMessagesRecvPerSecond(player);
+	API_RETURN(int ret);
+}
+
+DECLARE_API(Player, NetStatsMessagesSent, objectPtr player)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsMessagesSent(player);
+	API_RETURN(int ret);
+}
+
+DECLARE_API(Player, NetStatsPacketLossPercent, objectPtr player)
+{
+	float ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsPacketLossPercent(player);
+	API_RETURN(float ret);
+}
+
 DECLARE_API(Player, GetCustomSkin, objectPtr player)
 {
 	int ret = Runtime::Instance().GetOMPAPI()->Player.GetCustomSkin(player);
 	API_RETURN(int ret);
+}
+
+DECLARE_API(Player, GetDialog, objectPtr player)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->Player.GetDialog(player);
+	API_RETURN(int ret);
+}
+
+DECLARE_API(Player, GetDialogData, objectPtr player, IntRef dialogid, IntRef style, OutputStringViewPtr title, OutputStringViewPtr body, OutputStringViewPtr button1, OutputStringViewPtr button2)
+{
+	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetDialogData(player, dialogid, style, title, body, button1, button2);
+	API_RETURN(bool ret, IntRef dialogid, IntRef style, OutputStringViewPtr title, OutputStringViewPtr body, OutputStringViewPtr button1, OutputStringViewPtr button2);
 }
 
 DECLARE_API(Player, GetMenu, objectPtr player)
@@ -703,9 +775,9 @@ DECLARE_API(Player, GetKeys, objectPtr player, IntRef keys, IntRef updown, IntRe
 	API_RETURN(bool ret, IntRef keys, IntRef updown, IntRef leftright);
 }
 
-DECLARE_API(Player, GetSurfingVehicleID, objectPtr player)
+DECLARE_API(Player, GetSurfingVehicle, objectPtr player)
 {
-	objectPtr ret = Runtime::Instance().GetOMPAPI()->Player.GetSurfingVehicleID(player);
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->Player.GetSurfingVehicle(player);
 	API_RETURN(objectPtr ret);
 }
 
@@ -1033,18 +1105,6 @@ DECLARE_API(Player, IsCuffed, objectPtr player)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetDialog, objectPtr player)
-{
-	int ret = Runtime::Instance().GetOMPAPI()->Player.GetDialog(player);
-	API_RETURN(int ret);
-}
-
-DECLARE_API(Player, GetDialogData, objectPtr player, IntRef dialogid, IntRef style, OutputStringViewPtr title, OutputStringViewPtr body, OutputStringViewPtr button1, OutputStringViewPtr button2)
-{
-	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetDialogData(player, dialogid, style, title, body, button1, button2);
-	API_RETURN(bool ret, IntRef dialogid, IntRef style, OutputStringViewPtr title, OutputStringViewPtr body, OutputStringViewPtr button1, OutputStringViewPtr button2);
-}
-
 DECLARE_API(Player, IsInModShop, objectPtr player)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.IsInModShop(player);
@@ -1072,65 +1132,5 @@ DECLARE_API(Player, GetHydraReactorAngle, objectPtr player)
 DECLARE_API(Player, GetTrainSpeed, objectPtr player)
 {
 	float ret = Runtime::Instance().GetOMPAPI()->Player.GetTrainSpeed(player);
-	API_RETURN(float ret);
-}
-
-DECLARE_API(Player, GetNetworkStats, objectPtr player, OutputStringViewPtr output)
-{
-	int ret = Runtime::Instance().GetOMPAPI()->Player.GetNetworkStats(player, output);
-	API_RETURN(int ret, OutputStringViewPtr output);
-}
-
-DECLARE_API(Player, NetStatsBytesReceived, objectPtr player)
-{
-	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsBytesReceived(player);
-	API_RETURN(int ret);
-}
-
-DECLARE_API(Player, NetStatsBytesSent, objectPtr player)
-{
-	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsBytesSent(player);
-	API_RETURN(int ret);
-}
-
-DECLARE_API(Player, NetStatsConnectionStatus, objectPtr player)
-{
-	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsConnectionStatus(player);
-	API_RETURN(int ret);
-}
-
-DECLARE_API(Player, NetStatsGetConnectedTime, objectPtr player)
-{
-	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsGetConnectedTime(player);
-	API_RETURN(int ret);
-}
-
-DECLARE_API(Player, NetStatsGetIpPort, objectPtr player, OutputStringViewPtr output)
-{
-	bool ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsGetIpPort(player, output);
-	API_RETURN(bool ret, OutputStringViewPtr output);
-}
-
-DECLARE_API(Player, NetStatsMessagesReceived, objectPtr player)
-{
-	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsMessagesReceived(player);
-	API_RETURN(int ret);
-}
-
-DECLARE_API(Player, NetStatsMessagesRecvPerSecond, objectPtr player)
-{
-	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsMessagesRecvPerSecond(player);
-	API_RETURN(int ret);
-}
-
-DECLARE_API(Player, NetStatsMessagesSent, objectPtr player)
-{
-	int ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsMessagesSent(player);
-	API_RETURN(int ret);
-}
-
-DECLARE_API(Player, NetStatsPacketLossPercent, objectPtr player)
-{
-	float ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsPacketLossPercent(player);
 	API_RETURN(float ret);
 }

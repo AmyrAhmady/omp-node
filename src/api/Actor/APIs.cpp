@@ -7,6 +7,12 @@ DECLARE_API(Actor, Create, int model, float x, float y, float z, float rot, IntR
 	API_RETURN(objectPtr ret, IntRef id);
 }
 
+DECLARE_API(Actor, Destroy, objectPtr actor)
+{
+	bool ret = Runtime::Instance().GetOMPAPI()->Actor.Destroy(actor);
+	API_RETURN(bool ret);
+}
+
 DECLARE_API(Actor, FromID, int actorid)
 {
 	objectPtr ret = Runtime::Instance().GetOMPAPI()->Actor.FromID(actorid);
@@ -121,8 +127,8 @@ DECLARE_API(Actor, GetAnimation, objectPtr actor, OutputStringViewPtr library, O
 	API_RETURN(bool ret, OutputStringViewPtr library, OutputStringViewPtr name, FloatRef delta, BoolRef loop, BoolRef lockX, BoolRef lockY, BoolRef freeze, IntRef time);
 }
 
-DECLARE_API(Actor, GetSpawnInfo, objectPtr actor, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, FloatRef skin)
+DECLARE_API(Actor, GetSpawnInfo, objectPtr actor, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, IntRef skin)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Actor.GetSpawnInfo(actor, x, y, z, angle, skin);
-	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, FloatRef skin);
+	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, IntRef skin);
 }

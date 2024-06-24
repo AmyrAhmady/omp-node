@@ -3,8 +3,8 @@
 
 DECLARE_API(Core, TickCount)
 {
-	int ret = Runtime::Instance().GetOMPAPI()->Core.TickCount();
-	API_RETURN(int ret);
+	uint32_t ret = Runtime::Instance().GetOMPAPI()->Core.TickCount();
+	API_RETURN(uint32_t ret);
 }
 
 DECLARE_API(Core, MaxPlayers)

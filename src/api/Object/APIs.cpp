@@ -177,8 +177,8 @@ DECLARE_API(Object, GetAttachedOffset, objectPtr object, FloatRef offsetX, Float
 
 DECLARE_API(Object, GetSyncRotation, objectPtr object)
 {
-	float ret = Runtime::Instance().GetOMPAPI()->Object.GetSyncRotation(object);
-	API_RETURN(float ret);
+	bool ret = Runtime::Instance().GetOMPAPI()->Object.GetSyncRotation(object);
+	API_RETURN(bool ret);
 }
 
 DECLARE_API(Object, IsMaterialSlotUsed, objectPtr object, int materialIndex)
