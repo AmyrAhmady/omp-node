@@ -107,7 +107,7 @@ bool Resource::Start()
 	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "path").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.path.c_str()).ToLocalChecked());
 	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "entryFile").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.entryFile.c_str()).ToLocalChecked());
 
-	v8::Local<v8::Object> ompObj = v8::Object::New(isolate);
+	v8::Local<v8::Object> internalOmpObj = v8::Object::New(isolate);
 	for (auto group : APIManager::Instance().apiContainer)
 	{
 		v8::Local<v8::Object> groupObj = v8::Object::New(isolate);
@@ -115,14 +115,17 @@ bool Resource::Start()
 		{
 			groupObj->Set(_context, v8::String::NewFromUtf8(isolate, funcs.first.c_str()).ToLocalChecked(), v8::Function::New(_context, funcs.second).ToLocalChecked());
 		}
-		ompObj->Set(_context, v8::String::NewFromUtf8(isolate, group.first.c_str()).ToLocalChecked(), groupObj);
+		internalOmpObj->Set(_context, v8::String::NewFromUtf8(isolate, group.first.c_str()).ToLocalChecked(), groupObj);
 	}
-	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_omp").ToLocalChecked(), ompObj);
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_omp").ToLocalChecked(), internalOmpObj);
 
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resource").ToLocalChecked(), resourceObj);
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resourceLoaded").ToLocalChecked(), v8::Function::New(_context, &ResourceLoaded).ToLocalChecked());
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_ompLogBridge").ToLocalChecked(), v8::Function::New(_context, &OmpLogBridge).ToLocalChecked());
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_setEventHandlerFunction").ToLocalChecked(), v8::Function::New(_context, &SetEventHandlerFunction_).ToLocalChecked());
+
+	v8::Local<v8::Object> ompObj = v8::Object::New(isolate);
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "omp").ToLocalChecked(), ompObj);
 
 	node::ThreadId threadId = node::AllocateEnvironmentThreadId();
 	auto flags = static_cast<node::EnvironmentFlags::Flags>(node::EnvironmentFlags::kNoFlags);
