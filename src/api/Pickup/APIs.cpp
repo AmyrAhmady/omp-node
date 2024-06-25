@@ -1,7 +1,7 @@
 #include "../Impl.hpp"
 #include "../MacroMagic.hpp"
 
-DECLARE_API(Pickup, Create, int model, int type, float x, float y, float z, int virtualWorld, IntRef id)
+DECLARE_API_ARGNUM(Pickup, Create, 6, int model, int type, float x, float y, float z, int virtualWorld, IntRef id)
 {
 	objectPtr ret = Runtime::Instance().GetOMPAPI()->Pickup.Create(model, type, x, y, z, virtualWorld, id);
 	API_RETURN(objectPtr ret, IntRef id);
@@ -43,7 +43,7 @@ DECLARE_API(Pickup, IsStreamedIn, objectPtr player, objectPtr pickup)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Pickup, GetPos, objectPtr pickup, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(Pickup, GetPos, 1, objectPtr pickup, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Pickup.GetPos(pickup, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);

@@ -19,7 +19,7 @@ DECLARE_API(Config, GetAsFloat, StringCharPtr cvar)
 	API_RETURN(float ret);
 }
 
-DECLARE_API(Config, GetAsString, StringCharPtr cvar, OutputStringViewPtr output)
+DECLARE_API_ARGNUM(Config, GetAsString, 1, StringCharPtr cvar, OutputStringViewPtr output)
 {
 	int ret = Runtime::Instance().GetOMPAPI()->Config.GetAsString(cvar, output);
 	API_RETURN(int ret, OutputStringViewPtr output);

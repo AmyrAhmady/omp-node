@@ -7,13 +7,13 @@ DECLARE_API(Player, SetSpawnInfo, objectPtr player, uint8_t team, int skin, floa
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetSpawnInfo, objectPtr player, UInt8Ref team, IntRef skin, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, UInt8Ref weapon1, UInt32Ref ammo1, UInt8Ref weapon2, UInt32Ref ammo2, UInt8Ref weapon3, UInt32Ref ammo3)
+DECLARE_API_ARGNUM(Player, GetSpawnInfo, 1, objectPtr player, UInt8Ref team, IntRef skin, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, UInt8Ref weapon1, UInt32Ref ammo1, UInt8Ref weapon2, UInt32Ref ammo2, UInt8Ref weapon3, UInt32Ref ammo3)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetSpawnInfo(player, team, skin, x, y, z, angle, weapon1, ammo1, weapon2, ammo2, weapon3, ammo3);
 	API_RETURN(bool ret, UInt8Ref team, IntRef skin, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, UInt8Ref weapon1, UInt32Ref ammo1, UInt8Ref weapon2, UInt32Ref ammo2, UInt8Ref weapon3, UInt32Ref ammo3);
 }
 
-DECLARE_API(Player, GetNetworkStats, objectPtr player, OutputStringViewPtr output)
+DECLARE_API_ARGNUM(Player, GetNetworkStats, 1, objectPtr player, OutputStringViewPtr output)
 {
 	int ret = Runtime::Instance().GetOMPAPI()->Player.GetNetworkStats(player, output);
 	API_RETURN(int ret, OutputStringViewPtr output);
@@ -43,7 +43,7 @@ DECLARE_API(Player, NetStatsGetConnectedTime, objectPtr player)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(Player, NetStatsGetIpPort, objectPtr player, OutputStringViewPtr output)
+DECLARE_API_ARGNUM(Player, NetStatsGetIpPort, 1, objectPtr player, OutputStringViewPtr output)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsGetIpPort(player, output);
 	API_RETURN(bool ret, OutputStringViewPtr output);
@@ -85,7 +85,7 @@ DECLARE_API(Player, GetDialog, objectPtr player)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(Player, GetDialogData, objectPtr player, IntRef dialogid, IntRef style, OutputStringViewPtr title, OutputStringViewPtr body, OutputStringViewPtr button1, OutputStringViewPtr button2)
+DECLARE_API_ARGNUM(Player, GetDialogData, 1, objectPtr player, IntRef dialogid, IntRef style, OutputStringViewPtr title, OutputStringViewPtr body, OutputStringViewPtr button1, OutputStringViewPtr button2)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetDialogData(player, dialogid, style, title, body, button1, button2);
 	API_RETURN(bool ret, IntRef dialogid, IntRef style, OutputStringViewPtr title, OutputStringViewPtr body, OutputStringViewPtr button1, OutputStringViewPtr button2);
@@ -331,7 +331,7 @@ DECLARE_API(Player, SetName, objectPtr player, StringCharPtr name)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(Player, GetName, objectPtr player, OutputStringViewPtr name)
+DECLARE_API_ARGNUM(Player, GetName, 1, objectPtr player, OutputStringViewPtr name)
 {
 	int ret = Runtime::Instance().GetOMPAPI()->Player.GetName(player, name);
 	API_RETURN(int ret, OutputStringViewPtr name);
@@ -361,7 +361,7 @@ DECLARE_API(Player, SetTime, objectPtr player, int hour, int minute)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetTime, objectPtr player, IntRef hour, IntRef minute)
+DECLARE_API_ARGNUM(Player, GetTime, 1, objectPtr player, IntRef hour, IntRef minute)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetTime(player, hour, minute);
 	API_RETURN(bool ret, IntRef hour, IntRef minute);
@@ -409,13 +409,13 @@ DECLARE_API(Player, SetVelocity, objectPtr player, float x, float y, float z)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetVelocity, objectPtr player, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(Player, GetVelocity, 1, objectPtr player, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetVelocity(player, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);
 }
 
-DECLARE_API(Player, GetCameraPos, objectPtr player, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(Player, GetCameraPos, 1, objectPtr player, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetCameraPos(player, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);
@@ -439,7 +439,7 @@ DECLARE_API(Player, SetPos, objectPtr player, float x, float y, float z)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetPos, objectPtr player, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(Player, GetPos, 1, objectPtr player, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetPos(player, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);
@@ -499,7 +499,7 @@ DECLARE_API(Player, ClearWorldBounds, objectPtr player)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetWorldBounds, objectPtr player, FloatRef xmax, FloatRef xmin, FloatRef ymax, FloatRef ymin)
+DECLARE_API_ARGNUM(Player, GetWorldBounds, 1, objectPtr player, FloatRef xmax, FloatRef xmin, FloatRef ymax, FloatRef ymin)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetWorldBounds(player, xmax, xmin, ymax, ymin);
 	API_RETURN(bool ret, FloatRef xmax, FloatRef xmin, FloatRef ymax, FloatRef ymin);
@@ -511,7 +511,7 @@ DECLARE_API(Player, ClearAnimations, objectPtr player, int syncType)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetLastShotVectors, objectPtr player, FloatRef origin_x, FloatRef origin_y, FloatRef origin_z, FloatRef hit_x, FloatRef hit_y, FloatRef hit_z)
+DECLARE_API_ARGNUM(Player, GetLastShotVectors, 1, objectPtr player, FloatRef origin_x, FloatRef origin_y, FloatRef origin_z, FloatRef hit_x, FloatRef hit_y, FloatRef hit_z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetLastShotVectors(player, origin_x, origin_y, origin_z, hit_x, hit_y, hit_z);
 	API_RETURN(bool ret, FloatRef origin_x, FloatRef origin_y, FloatRef origin_z, FloatRef hit_x, FloatRef hit_y, FloatRef hit_z);
@@ -643,7 +643,7 @@ DECLARE_API(Player, ApplyAnimation, objectPtr player, StringCharPtr animlib, Str
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetAnimationName, int index, OutputStringViewPtr lib, OutputStringViewPtr name)
+DECLARE_API_ARGNUM(Player, GetAnimationName, 1, int index, OutputStringViewPtr lib, OutputStringViewPtr name)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetAnimationName(index, lib, name);
 	API_RETURN(bool ret, OutputStringViewPtr lib, OutputStringViewPtr name);
@@ -685,7 +685,7 @@ DECLARE_API(Player, GetFacingAngle, objectPtr player)
 	API_RETURN(float ret);
 }
 
-DECLARE_API(Player, GetIp, objectPtr player, OutputStringViewPtr ip)
+DECLARE_API_ARGNUM(Player, GetIp, 1, objectPtr player, OutputStringViewPtr ip)
 {
 	int ret = Runtime::Instance().GetOMPAPI()->Player.GetIp(player, ip);
 	API_RETURN(int ret, OutputStringViewPtr ip);
@@ -709,7 +709,7 @@ DECLARE_API(Player, GetVehicleSeat, objectPtr player)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(Player, GetWeaponData, objectPtr player, int slot, IntRef weaponid, IntRef ammo)
+DECLARE_API_ARGNUM(Player, GetWeaponData, 2, objectPtr player, int slot, IntRef weaponid, IntRef ammo)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetWeaponData(player, slot, weaponid, ammo);
 	API_RETURN(bool ret, IntRef weaponid, IntRef ammo);
@@ -757,7 +757,7 @@ DECLARE_API(Player, GetCameraAspectRatio, objectPtr player)
 	API_RETURN(float ret);
 }
 
-DECLARE_API(Player, GetCameraFrontVector, objectPtr player, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(Player, GetCameraFrontVector, 1, objectPtr player, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetCameraFrontVector(player, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);
@@ -769,7 +769,7 @@ DECLARE_API(Player, GetCameraMode, objectPtr player)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(Player, GetKeys, objectPtr player, IntRef keys, IntRef updown, IntRef leftright)
+DECLARE_API_ARGNUM(Player, GetKeys, 1, objectPtr player, IntRef keys, IntRef updown, IntRef leftright)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetKeys(player, keys, updown, leftright);
 	API_RETURN(bool ret, IntRef keys, IntRef updown, IntRef leftright);
@@ -835,7 +835,7 @@ DECLARE_API(Player, SetAttachedObject, objectPtr player, int index, int modelid,
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetAttachedObject, objectPtr player, int index, IntRef modelid, IntRef bone, FloatRef offsetX, FloatRef offsetY, FloatRef offsetZ, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ, FloatRef scaleX, FloatRef scaleY, FloatRef scaleZ, IntRef materialcolor1, IntRef materialcolor2)
+DECLARE_API_ARGNUM(Player, GetAttachedObject, 2, objectPtr player, int index, IntRef modelid, IntRef bone, FloatRef offsetX, FloatRef offsetY, FloatRef offsetZ, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ, FloatRef scaleX, FloatRef scaleY, FloatRef scaleZ, IntRef materialcolor1, IntRef materialcolor2)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetAttachedObject(player, index, modelid, bone, offsetX, offsetY, offsetZ, rotationX, rotationY, rotationZ, scaleX, scaleY, scaleZ, materialcolor1, materialcolor2);
 	API_RETURN(bool ret, IntRef modelid, IntRef bone, FloatRef offsetX, FloatRef offsetY, FloatRef offsetZ, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ, FloatRef scaleX, FloatRef scaleY, FloatRef scaleZ, IntRef materialcolor1, IntRef materialcolor2);
@@ -907,7 +907,7 @@ DECLARE_API(Player, Spawn, objectPtr player)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GPCI, objectPtr player, OutputStringViewPtr gpci)
+DECLARE_API_ARGNUM(Player, GPCI, 1, objectPtr player, OutputStringViewPtr gpci)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GPCI(player, gpci);
 	API_RETURN(bool ret, OutputStringViewPtr gpci);
@@ -943,7 +943,7 @@ DECLARE_API(Player, HasGameText, objectPtr player, int style)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetGameText, objectPtr player, int style, OutputStringViewPtr message, IntRef time, IntRef remaining)
+DECLARE_API_ARGNUM(Player, GetGameText, 2, objectPtr player, int style, OutputStringViewPtr message, IntRef time, IntRef remaining)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetGameText(player, style, message, time, remaining);
 	API_RETURN(bool ret, OutputStringViewPtr message, IntRef time, IntRef remaining);
@@ -973,7 +973,7 @@ DECLARE_API(Player, SendMessageToPlayer, objectPtr player, objectPtr sender, Str
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Player, GetVersion, objectPtr player, OutputStringViewPtr version)
+DECLARE_API_ARGNUM(Player, GetVersion, 1, objectPtr player, OutputStringViewPtr version)
 {
 	int ret = Runtime::Instance().GetOMPAPI()->Player.GetVersion(player, version);
 	API_RETURN(int ret, OutputStringViewPtr version);
@@ -991,13 +991,13 @@ DECLARE_API(Player, GetZAim, objectPtr player)
 	API_RETURN(float ret);
 }
 
-DECLARE_API(Player, GetSurfingOffsets, objectPtr player, FloatRef offsetX, FloatRef offsetY, FloatRef offsetZ)
+DECLARE_API_ARGNUM(Player, GetSurfingOffsets, 1, objectPtr player, FloatRef offsetX, FloatRef offsetY, FloatRef offsetZ)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetSurfingOffsets(player, offsetX, offsetY, offsetZ);
 	API_RETURN(bool ret, FloatRef offsetX, FloatRef offsetY, FloatRef offsetZ);
 }
 
-DECLARE_API(Player, GetRotationQuat, objectPtr player, FloatRef x, FloatRef y, FloatRef z, FloatRef w)
+DECLARE_API_ARGNUM(Player, GetRotationQuat, 1, objectPtr player, FloatRef x, FloatRef y, FloatRef z, FloatRef w)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetRotationQuat(player, x, y, z, w);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z, FloatRef w);

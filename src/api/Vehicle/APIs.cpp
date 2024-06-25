@@ -1,7 +1,7 @@
 #include "../Impl.hpp"
 #include "../MacroMagic.hpp"
 
-DECLARE_API(Vehicle, Create, int modelid, float x, float y, float z, float rotation, int color1, int color2, int respawnDelay, bool addSiren, IntRef id)
+DECLARE_API_ARGNUM(Vehicle, Create, 9, int modelid, float x, float y, float z, float rotation, int color1, int color2, int respawnDelay, bool addSiren, IntRef id)
 {
 	objectPtr ret = Runtime::Instance().GetOMPAPI()->Vehicle.Create(modelid, x, y, z, rotation, color1, color2, respawnDelay, addSiren, id);
 	API_RETURN(objectPtr ret, IntRef id);
@@ -37,7 +37,7 @@ DECLARE_API(Vehicle, IsStreamedIn, objectPtr vehicle, objectPtr player)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Vehicle, GetPos, objectPtr vehicle, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(Vehicle, GetPos, 1, objectPtr vehicle, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetPos(vehicle, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);
@@ -55,7 +55,7 @@ DECLARE_API(Vehicle, GetZAngle, objectPtr vehicle)
 	API_RETURN(float ret);
 }
 
-DECLARE_API(Vehicle, GetRotationQuat, objectPtr vehicle, FloatRef w, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(Vehicle, GetRotationQuat, 1, objectPtr vehicle, FloatRef w, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetRotationQuat(vehicle, w, x, y, z);
 	API_RETURN(bool ret, FloatRef w, FloatRef x, FloatRef y, FloatRef z);
@@ -91,7 +91,7 @@ DECLARE_API(Vehicle, SetParamsEx, objectPtr vehicle, int engine, int lights, int
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Vehicle, GetParamsEx, objectPtr vehicle, IntRef engine, IntRef lights, IntRef alarm, IntRef doors, IntRef bonnet, IntRef boot, IntRef objective)
+DECLARE_API_ARGNUM(Vehicle, GetParamsEx, 1, objectPtr vehicle, IntRef engine, IntRef lights, IntRef alarm, IntRef doors, IntRef bonnet, IntRef boot, IntRef objective)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetParamsEx(vehicle, engine, lights, alarm, doors, bonnet, boot, objective);
 	API_RETURN(bool ret, IntRef engine, IntRef lights, IntRef alarm, IntRef doors, IntRef bonnet, IntRef boot, IntRef objective);
@@ -109,7 +109,7 @@ DECLARE_API(Vehicle, SetParamsCarDoors, objectPtr vehicle, int frontLeft, int fr
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Vehicle, GetParamsCarDoors, objectPtr vehicle, IntRef frontLeft, IntRef frontRight, IntRef rearLeft, IntRef rearRight)
+DECLARE_API_ARGNUM(Vehicle, GetParamsCarDoors, 1, objectPtr vehicle, IntRef frontLeft, IntRef frontRight, IntRef rearLeft, IntRef rearRight)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetParamsCarDoors(vehicle, frontLeft, frontRight, rearLeft, rearRight);
 	API_RETURN(bool ret, IntRef frontLeft, IntRef frontRight, IntRef rearLeft, IntRef rearRight);
@@ -121,7 +121,7 @@ DECLARE_API(Vehicle, SetParamsCarWindows, objectPtr vehicle, int frontLeft, int 
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Vehicle, GetParamsCarWindows, objectPtr vehicle, IntRef frontLeft, IntRef frontRight, IntRef rearLeft, IntRef rearRight)
+DECLARE_API_ARGNUM(Vehicle, GetParamsCarWindows, 1, objectPtr vehicle, IntRef frontLeft, IntRef frontRight, IntRef rearLeft, IntRef rearRight)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetParamsCarWindows(vehicle, frontLeft, frontRight, rearLeft, rearRight);
 	API_RETURN(bool ret, IntRef frontLeft, IntRef frontRight, IntRef rearLeft, IntRef rearRight);
@@ -229,7 +229,7 @@ DECLARE_API(Vehicle, CanHaveComponent, int modelid, int componentid)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Vehicle, GetRandomColorPair, int modelid, IntRef color1, IntRef color2, IntRef color3, IntRef color4)
+DECLARE_API_ARGNUM(Vehicle, GetRandomColorPair, 1, int modelid, IntRef color1, IntRef color2, IntRef color3, IntRef color4)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetRandomColorPair(modelid, color1, color2, color3, color4);
 	API_RETURN(bool ret, IntRef color1, IntRef color2, IntRef color3, IntRef color4);
@@ -247,7 +247,7 @@ DECLARE_API(Vehicle, Repair, objectPtr vehicle)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Vehicle, GetVelocity, objectPtr vehicle, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(Vehicle, GetVelocity, 1, objectPtr vehicle, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetVelocity(vehicle, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);
@@ -265,7 +265,7 @@ DECLARE_API(Vehicle, SetAngularVelocity, objectPtr vehicle, float x, float y, fl
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Vehicle, GetDamageStatus, objectPtr vehicle, IntRef panels, IntRef doors, IntRef lights, IntRef tires)
+DECLARE_API_ARGNUM(Vehicle, GetDamageStatus, 1, objectPtr vehicle, IntRef panels, IntRef doors, IntRef lights, IntRef tires)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetDamageStatus(vehicle, panels, doors, lights, tires);
 	API_RETURN(bool ret, IntRef panels, IntRef doors, IntRef lights, IntRef tires);
@@ -277,7 +277,7 @@ DECLARE_API(Vehicle, UpdateDamageStatus, objectPtr vehicle, int panels, int door
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Vehicle, GetModelInfo, int vehiclemodel, int infotype, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(Vehicle, GetModelInfo, 1, int vehiclemodel, int infotype, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetModelInfo(vehiclemodel, infotype, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);
@@ -325,7 +325,7 @@ DECLARE_API(Vehicle, EnableFriendlyFire)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Vehicle, GetSpawnInfo, objectPtr vehicle, FloatRef x, FloatRef y, FloatRef z, FloatRef rotation, IntRef color1, IntRef color2)
+DECLARE_API_ARGNUM(Vehicle, GetSpawnInfo, 1, objectPtr vehicle, FloatRef x, FloatRef y, FloatRef z, FloatRef rotation, IntRef color1, IntRef color2)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetSpawnInfo(vehicle, x, y, z, rotation, color1, color2);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z, FloatRef rotation, IntRef color1, IntRef color2);
@@ -355,7 +355,7 @@ DECLARE_API(Vehicle, GetPaintjob, objectPtr vehicle)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(Vehicle, GetColor, objectPtr vehicle, IntRef color1, IntRef color2)
+DECLARE_API_ARGNUM(Vehicle, GetColor, 1, objectPtr vehicle, IntRef color1, IntRef color2)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetColor(vehicle, color1, color2);
 	API_RETURN(bool ret, IntRef color1, IntRef color2);
@@ -367,7 +367,7 @@ DECLARE_API(Vehicle, GetInterior, objectPtr vehicle)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(Vehicle, GetNumberPlate, objectPtr vehicle, OutputStringViewPtr numberPlate)
+DECLARE_API_ARGNUM(Vehicle, GetNumberPlate, 1, objectPtr vehicle, OutputStringViewPtr numberPlate)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetNumberPlate(vehicle, numberPlate);
 	API_RETURN(bool ret, OutputStringViewPtr numberPlate);
@@ -475,7 +475,7 @@ DECLARE_API(Vehicle, GetTrainSpeed, objectPtr vehicle)
 	API_RETURN(float ret);
 }
 
-DECLARE_API(Vehicle, GetMatrix, objectPtr vehicle, FloatRef rightX, FloatRef rightY, FloatRef rightZ, FloatRef upX, FloatRef upY, FloatRef upZ, FloatRef atX, FloatRef atY, FloatRef atZ)
+DECLARE_API_ARGNUM(Vehicle, GetMatrix, 1, objectPtr vehicle, FloatRef rightX, FloatRef rightY, FloatRef rightZ, FloatRef upX, FloatRef upY, FloatRef upZ, FloatRef atX, FloatRef atY, FloatRef atZ)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Vehicle.GetMatrix(vehicle, rightX, rightY, rightZ, upX, upY, upZ, atX, atY, atZ);
 	API_RETURN(bool ret, FloatRef rightX, FloatRef rightY, FloatRef rightZ, FloatRef upX, FloatRef upY, FloatRef upZ, FloatRef atX, FloatRef atY, FloatRef atZ);

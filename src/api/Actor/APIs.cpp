@@ -1,7 +1,7 @@
 #include "../Impl.hpp"
 #include "../MacroMagic.hpp"
 
-DECLARE_API(Actor, Create, int model, float x, float y, float z, float rot, IntRef id)
+DECLARE_API_ARGNUM(Actor, Create, 5, int model, float x, float y, float z, float rot, IntRef id)
 {
 	objectPtr ret = Runtime::Instance().GetOMPAPI()->Actor.Create(model, x, y, z, rot, id);
 	API_RETURN(objectPtr ret, IntRef id);
@@ -61,7 +61,7 @@ DECLARE_API(Actor, SetPos, objectPtr actor, float x, float y, float z)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Actor, GetPos, objectPtr actor, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(Actor, GetPos, 1, objectPtr actor, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Actor.GetPos(actor, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);
@@ -121,13 +121,13 @@ DECLARE_API(Actor, GetSkin, objectPtr actor)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(Actor, GetAnimation, objectPtr actor, OutputStringViewPtr library, OutputStringViewPtr name, FloatRef delta, BoolRef loop, BoolRef lockX, BoolRef lockY, BoolRef freeze, IntRef time)
+DECLARE_API_ARGNUM(Actor, GetAnimation, 1, objectPtr actor, OutputStringViewPtr library, OutputStringViewPtr name, FloatRef delta, BoolRef loop, BoolRef lockX, BoolRef lockY, BoolRef freeze, IntRef time)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Actor.GetAnimation(actor, library, name, delta, loop, lockX, lockY, freeze, time);
 	API_RETURN(bool ret, OutputStringViewPtr library, OutputStringViewPtr name, FloatRef delta, BoolRef loop, BoolRef lockX, BoolRef lockY, BoolRef freeze, IntRef time);
 }
 
-DECLARE_API(Actor, GetSpawnInfo, objectPtr actor, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, IntRef skin)
+DECLARE_API_ARGNUM(Actor, GetSpawnInfo, 1, objectPtr actor, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, IntRef skin)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Actor.GetSpawnInfo(actor, x, y, z, angle, skin);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, IntRef skin);

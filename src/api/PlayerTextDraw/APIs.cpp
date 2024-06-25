@@ -1,7 +1,7 @@
 #include "../Impl.hpp"
 #include "../MacroMagic.hpp"
 
-DECLARE_API(PlayerTextDraw, Create, objectPtr player, float x, float y, StringCharPtr text, IntRef id)
+DECLARE_API_ARGNUM(PlayerTextDraw, Create, 4, objectPtr player, float x, float y, StringCharPtr text, IntRef id)
 {
 	objectPtr ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.Create(player, x, y, text, id);
 	API_RETURN(objectPtr ret, IntRef id);
@@ -151,25 +151,25 @@ DECLARE_API(PlayerTextDraw, SetPos, objectPtr player, objectPtr textdraw, float 
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerTextDraw, GetString, objectPtr player, objectPtr textdraw, OutputStringViewPtr text)
+DECLARE_API_ARGNUM(PlayerTextDraw, GetString, 2, objectPtr player, objectPtr textdraw, OutputStringViewPtr text)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.GetString(player, textdraw, text);
 	API_RETURN(bool ret, OutputStringViewPtr text);
 }
 
-DECLARE_API(PlayerTextDraw, GetLetterSize, objectPtr player, objectPtr textdraw, FloatRef x, FloatRef y)
+DECLARE_API_ARGNUM(PlayerTextDraw, GetLetterSize, 2, objectPtr player, objectPtr textdraw, FloatRef x, FloatRef y)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.GetLetterSize(player, textdraw, x, y);
 	API_RETURN(bool ret, FloatRef x, FloatRef y);
 }
 
-DECLARE_API(PlayerTextDraw, GetTextSize, objectPtr player, objectPtr textdraw, FloatRef x, FloatRef y)
+DECLARE_API_ARGNUM(PlayerTextDraw, GetTextSize, 2, objectPtr player, objectPtr textdraw, FloatRef x, FloatRef y)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.GetTextSize(player, textdraw, x, y);
 	API_RETURN(bool ret, FloatRef x, FloatRef y);
 }
 
-DECLARE_API(PlayerTextDraw, GetPos, objectPtr player, objectPtr textdraw, FloatRef x, FloatRef y)
+DECLARE_API_ARGNUM(PlayerTextDraw, GetPos, 2, objectPtr player, objectPtr textdraw, FloatRef x, FloatRef y)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.GetPos(player, textdraw, x, y);
 	API_RETURN(bool ret, FloatRef x, FloatRef y);
@@ -241,13 +241,13 @@ DECLARE_API(PlayerTextDraw, GetPreviewModel, objectPtr player, objectPtr textdra
 	API_RETURN(int ret);
 }
 
-DECLARE_API(PlayerTextDraw, GetPreviewRot, objectPtr player, objectPtr textdraw, FloatRef rx, FloatRef ry, FloatRef rz, FloatRef zoom)
+DECLARE_API_ARGNUM(PlayerTextDraw, GetPreviewRot, 2, objectPtr player, objectPtr textdraw, FloatRef rx, FloatRef ry, FloatRef rz, FloatRef zoom)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.GetPreviewRot(player, textdraw, rx, ry, rz, zoom);
 	API_RETURN(bool ret, FloatRef rx, FloatRef ry, FloatRef rz, FloatRef zoom);
 }
 
-DECLARE_API(PlayerTextDraw, GetPreviewVehColor, objectPtr player, objectPtr textdraw, IntRef color1, IntRef color2)
+DECLARE_API_ARGNUM(PlayerTextDraw, GetPreviewVehColor, 2, objectPtr player, objectPtr textdraw, IntRef color1, IntRef color2)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.GetPreviewVehColor(player, textdraw, color1, color2);
 	API_RETURN(bool ret, IntRef color1, IntRef color2);

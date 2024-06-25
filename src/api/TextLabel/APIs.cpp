@@ -1,7 +1,7 @@
 #include "../Impl.hpp"
 #include "../MacroMagic.hpp"
 
-DECLARE_API(TextLabel, Create, StringCharPtr text, uint32_t color, float x, float y, float z, float drawDistance, int virtualWorld, bool los, IntRef id)
+DECLARE_API_ARGNUM(TextLabel, Create, 8, StringCharPtr text, uint32_t color, float x, float y, float z, float drawDistance, int virtualWorld, bool los, IntRef id)
 {
 	objectPtr ret = Runtime::Instance().GetOMPAPI()->TextLabel.Create(text, color, x, y, z, drawDistance, virtualWorld, los, id);
 	API_RETURN(objectPtr ret, IntRef id);
@@ -55,7 +55,7 @@ DECLARE_API(TextLabel, IsStreamedIn, objectPtr player, objectPtr textlabel)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(TextLabel, GetText, objectPtr textlabel, OutputStringViewPtr output)
+DECLARE_API_ARGNUM(TextLabel, GetText, 1, objectPtr textlabel, OutputStringViewPtr output)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->TextLabel.GetText(textlabel, output);
 	API_RETURN(bool ret, OutputStringViewPtr output);
@@ -67,7 +67,7 @@ DECLARE_API(TextLabel, GetColor, objectPtr textlabel)
 	API_RETURN(uint32_t ret);
 }
 
-DECLARE_API(TextLabel, GetPos, objectPtr textlabel, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(TextLabel, GetPos, 1, objectPtr textlabel, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->TextLabel.GetPos(textlabel, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);
@@ -109,7 +109,7 @@ DECLARE_API(TextLabel, SetVirtualWorld, objectPtr textlabel, int world)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(TextLabel, GetAttachedData, objectPtr textlabel, IntRef attached_player, IntRef attached_vehicle)
+DECLARE_API_ARGNUM(TextLabel, GetAttachedData, 1, objectPtr textlabel, IntRef attached_player, IntRef attached_vehicle)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->TextLabel.GetAttachedData(textlabel, attached_player, attached_vehicle);
 	API_RETURN(bool ret, IntRef attached_player, IntRef attached_vehicle);

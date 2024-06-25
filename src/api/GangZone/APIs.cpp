@@ -1,7 +1,7 @@
 #include "../Impl.hpp"
 #include "../MacroMagic.hpp"
 
-DECLARE_API(GangZone, Create, float minx, float miny, float maxx, float maxy, IntRef id)
+DECLARE_API_ARGNUM(GangZone, Create, 4, float minx, float miny, float maxx, float maxy, IntRef id)
 {
 	objectPtr ret = Runtime::Instance().GetOMPAPI()->GangZone.Create(minx, miny, maxx, maxy, id);
 	API_RETURN(objectPtr ret, IntRef id);
@@ -109,7 +109,7 @@ DECLARE_API(GangZone, IsFlashingForPlayer, objectPtr player, objectPtr gangzone)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(GangZone, GetPos, objectPtr gangzone, FloatRef minx, FloatRef miny, FloatRef maxx, FloatRef maxy)
+DECLARE_API_ARGNUM(GangZone, GetPos, 1, objectPtr gangzone, FloatRef minx, FloatRef miny, FloatRef maxx, FloatRef maxy)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->GangZone.GetPos(gangzone, minx, miny, maxx, maxy);
 	API_RETURN(bool ret, FloatRef minx, FloatRef miny, FloatRef maxx, FloatRef maxy);

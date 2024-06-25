@@ -1,7 +1,7 @@
 #include "../Impl.hpp"
 #include "../MacroMagic.hpp"
 
-DECLARE_API(Menu, Create, StringCharPtr title, uint32_t columns, float x, float y, float column1Width, float column2Width, IntRef id)
+DECLARE_API_ARGNUM(Menu, Create, 6, StringCharPtr title, uint32_t columns, float x, float y, float column1Width, float column2Width, IntRef id)
 {
 	objectPtr ret = Runtime::Instance().GetOMPAPI()->Menu.Create(title, columns, x, y, column1Width, column2Width, id);
 	API_RETURN(objectPtr ret, IntRef id);
@@ -91,25 +91,25 @@ DECLARE_API(Menu, GetItems, objectPtr menu, int column)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(Menu, GetPos, objectPtr menu, FloatRef x, FloatRef y)
+DECLARE_API_ARGNUM(Menu, GetPos, 1, objectPtr menu, FloatRef x, FloatRef y)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Menu.GetPos(menu, x, y);
 	API_RETURN(bool ret, FloatRef x, FloatRef y);
 }
 
-DECLARE_API(Menu, GetColumnWidth, objectPtr menu, FloatRef column1Width, FloatRef column2Width)
+DECLARE_API_ARGNUM(Menu, GetColumnWidth, 1, objectPtr menu, FloatRef column1Width, FloatRef column2Width)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Menu.GetColumnWidth(menu, column1Width, column2Width);
 	API_RETURN(bool ret, FloatRef column1Width, FloatRef column2Width);
 }
 
-DECLARE_API(Menu, GetColumnHeader, objectPtr menu, int column, OutputStringViewPtr header)
+DECLARE_API_ARGNUM(Menu, GetColumnHeader, 2, objectPtr menu, int column, OutputStringViewPtr header)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Menu.GetColumnHeader(menu, column, header);
 	API_RETURN(bool ret, OutputStringViewPtr header);
 }
 
-DECLARE_API(Menu, GetItem, objectPtr menu, int column, int row, OutputStringViewPtr item)
+DECLARE_API_ARGNUM(Menu, GetItem, 3, objectPtr menu, int column, int row, OutputStringViewPtr item)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Menu.GetItem(menu, column, row, item);
 	API_RETURN(bool ret, OutputStringViewPtr item);

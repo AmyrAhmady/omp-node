@@ -25,7 +25,7 @@ DECLARE_API(CustomModel, RedirectDownload, objectPtr player, StringCharPtr url)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(CustomModel, FindModelFileNameFromCRC, int crc, OutputStringViewPtr output)
+DECLARE_API_ARGNUM(CustomModel, FindModelFileNameFromCRC, 1, int crc, OutputStringViewPtr output)
 {
 	int ret = Runtime::Instance().GetOMPAPI()->CustomModel.FindModelFileNameFromCRC(crc, output);
 	API_RETURN(int ret, OutputStringViewPtr output);
@@ -37,7 +37,7 @@ DECLARE_API(CustomModel, IsValid, int modelId)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(CustomModel, GetPath, int modelId, OutputStringViewPtr dffPath, OutputStringViewPtr txdPath)
+DECLARE_API_ARGNUM(CustomModel, GetPath, 1, int modelId, OutputStringViewPtr dffPath, OutputStringViewPtr txdPath)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->CustomModel.GetPath(modelId, dffPath, txdPath);
 	API_RETURN(bool ret, OutputStringViewPtr dffPath, OutputStringViewPtr txdPath);

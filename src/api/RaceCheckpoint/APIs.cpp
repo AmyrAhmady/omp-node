@@ -25,7 +25,7 @@ DECLARE_API(RaceCheckpoint, IsActive, objectPtr player)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(RaceCheckpoint, Get, objectPtr player, FloatRef x, FloatRef y, FloatRef z, FloatRef nextX, FloatRef nextY, FloatRef nextZ, FloatRef radius)
+DECLARE_API_ARGNUM(RaceCheckpoint, Get, 1, objectPtr player, FloatRef x, FloatRef y, FloatRef z, FloatRef nextX, FloatRef nextY, FloatRef nextZ, FloatRef radius)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->RaceCheckpoint.Get(player, x, y, z, nextX, nextY, nextZ, radius);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z, FloatRef nextX, FloatRef nextY, FloatRef nextZ, FloatRef radius);

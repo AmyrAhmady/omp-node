@@ -1,7 +1,7 @@
 #include "../Impl.hpp"
 #include "../MacroMagic.hpp"
 
-DECLARE_API(TextDraw, Create, float x, float y, StringCharPtr text, IntRef id)
+DECLARE_API_ARGNUM(TextDraw, Create, 3, float x, float y, StringCharPtr text, IntRef id)
 {
 	objectPtr ret = Runtime::Instance().GetOMPAPI()->TextDraw.Create(x, y, text, id);
 	API_RETURN(objectPtr ret, IntRef id);
@@ -163,25 +163,25 @@ DECLARE_API(TextDraw, SetPos, objectPtr textdraw, float x, float y)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(TextDraw, GetString, objectPtr textdraw, OutputStringViewPtr text)
+DECLARE_API_ARGNUM(TextDraw, GetString, 1, objectPtr textdraw, OutputStringViewPtr text)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->TextDraw.GetString(textdraw, text);
 	API_RETURN(bool ret, OutputStringViewPtr text);
 }
 
-DECLARE_API(TextDraw, GetLetterSize, objectPtr textdraw, FloatRef sizeX, FloatRef sizeY)
+DECLARE_API_ARGNUM(TextDraw, GetLetterSize, 1, objectPtr textdraw, FloatRef sizeX, FloatRef sizeY)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->TextDraw.GetLetterSize(textdraw, sizeX, sizeY);
 	API_RETURN(bool ret, FloatRef sizeX, FloatRef sizeY);
 }
 
-DECLARE_API(TextDraw, GetTextSize, objectPtr textdraw, FloatRef sizeX, FloatRef sizeY)
+DECLARE_API_ARGNUM(TextDraw, GetTextSize, 1, objectPtr textdraw, FloatRef sizeX, FloatRef sizeY)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->TextDraw.GetTextSize(textdraw, sizeX, sizeY);
 	API_RETURN(bool ret, FloatRef sizeX, FloatRef sizeY);
 }
 
-DECLARE_API(TextDraw, GetPos, objectPtr textdraw, FloatRef x, FloatRef y)
+DECLARE_API_ARGNUM(TextDraw, GetPos, 1, objectPtr textdraw, FloatRef x, FloatRef y)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->TextDraw.GetPos(textdraw, x, y);
 	API_RETURN(bool ret, FloatRef x, FloatRef y);
@@ -253,13 +253,13 @@ DECLARE_API(TextDraw, GetPreviewModel, objectPtr textdraw)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(TextDraw, GetPreviewRot, objectPtr textdraw, FloatRef x, FloatRef y, FloatRef z, FloatRef zoom)
+DECLARE_API_ARGNUM(TextDraw, GetPreviewRot, 1, objectPtr textdraw, FloatRef x, FloatRef y, FloatRef z, FloatRef zoom)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->TextDraw.GetPreviewRot(textdraw, x, y, z, zoom);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z, FloatRef zoom);
 }
 
-DECLARE_API(TextDraw, GetPreviewVehColor, objectPtr textdraw, IntRef color1, IntRef color2)
+DECLARE_API_ARGNUM(TextDraw, GetPreviewVehColor, 1, objectPtr textdraw, IntRef color1, IntRef color2)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->TextDraw.GetPreviewVehColor(textdraw, color1, color2);
 	API_RETURN(bool ret, IntRef color1, IntRef color2);

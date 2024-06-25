@@ -103,7 +103,7 @@ DECLARE_API(Core, HideGameTextForAll, int style)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Core, NetworkStats, OutputStringViewPtr output)
+DECLARE_API_ARGNUM(Core, NetworkStats, 0, OutputStringViewPtr output)
 {
 	int ret = Runtime::Instance().GetOMPAPI()->Core.NetworkStats(output);
 	API_RETURN(int ret, OutputStringViewPtr output);
@@ -115,7 +115,7 @@ DECLARE_API(Core, ServerTickRate)
 	API_RETURN(int ret);
 }
 
-DECLARE_API(Core, GetWeaponName, int weaponid, OutputStringViewPtr output)
+DECLARE_API_ARGNUM(Core, GetWeaponName, 1, int weaponid, OutputStringViewPtr output)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Core.GetWeaponName(weaponid, output);
 	API_RETURN(bool ret, OutputStringViewPtr output);

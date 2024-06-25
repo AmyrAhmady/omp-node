@@ -1,7 +1,7 @@
 #include "../Impl.hpp"
 #include "../MacroMagic.hpp"
 
-DECLARE_API(PlayerObject, Create, objectPtr player, int modelid, float x, float y, float z, float rotationX, float rotationY, float rotationZ, float drawDistance, IntRef id)
+DECLARE_API_ARGNUM(PlayerObject, Create, 9, objectPtr player, int modelid, float x, float y, float z, float rotationX, float rotationY, float rotationZ, float drawDistance, IntRef id)
 {
 	objectPtr ret = Runtime::Instance().GetOMPAPI()->PlayerObject.Create(player, modelid, x, y, z, rotationX, rotationY, rotationZ, drawDistance, id);
 	API_RETURN(objectPtr ret, IntRef id);
@@ -37,7 +37,7 @@ DECLARE_API(PlayerObject, SetPos, objectPtr player, objectPtr object, float x, f
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerObject, GetPos, objectPtr player, objectPtr object, FloatRef x, FloatRef y, FloatRef z)
+DECLARE_API_ARGNUM(PlayerObject, GetPos, 2, objectPtr player, objectPtr object, FloatRef x, FloatRef y, FloatRef z)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerObject.GetPos(player, object, x, y, z);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z);
@@ -49,7 +49,7 @@ DECLARE_API(PlayerObject, SetRot, objectPtr player, objectPtr object, float rota
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerObject, GetRot, objectPtr player, objectPtr object, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ)
+DECLARE_API_ARGNUM(PlayerObject, GetRot, 2, objectPtr player, objectPtr object, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerObject.GetRot(player, object, rotationX, rotationY, rotationZ);
 	API_RETURN(bool ret, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ);
@@ -121,25 +121,25 @@ DECLARE_API(PlayerObject, GetMoveSpeed, objectPtr player, objectPtr object)
 	API_RETURN(float ret);
 }
 
-DECLARE_API(PlayerObject, GetMovingTargetPos, objectPtr player, objectPtr object, FloatRef targetX, FloatRef targetY, FloatRef targetZ)
+DECLARE_API_ARGNUM(PlayerObject, GetMovingTargetPos, 2, objectPtr player, objectPtr object, FloatRef targetX, FloatRef targetY, FloatRef targetZ)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerObject.GetMovingTargetPos(player, object, targetX, targetY, targetZ);
 	API_RETURN(bool ret, FloatRef targetX, FloatRef targetY, FloatRef targetZ);
 }
 
-DECLARE_API(PlayerObject, GetMovingTargetRot, objectPtr player, objectPtr object, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ)
+DECLARE_API_ARGNUM(PlayerObject, GetMovingTargetRot, 2, objectPtr player, objectPtr object, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerObject.GetMovingTargetRot(player, object, rotationX, rotationY, rotationZ);
 	API_RETURN(bool ret, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ);
 }
 
-DECLARE_API(PlayerObject, GetAttachedData, objectPtr player, objectPtr object, IntRef parentVehicle, IntRef parentObject, IntRef parentPlayer)
+DECLARE_API_ARGNUM(PlayerObject, GetAttachedData, 2, objectPtr player, objectPtr object, IntRef parentVehicle, IntRef parentObject, IntRef parentPlayer)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerObject.GetAttachedData(player, object, parentVehicle, parentObject, parentPlayer);
 	API_RETURN(bool ret, IntRef parentVehicle, IntRef parentObject, IntRef parentPlayer);
 }
 
-DECLARE_API(PlayerObject, GetAttachedOffset, objectPtr player, objectPtr object, FloatRef offsetX, FloatRef offsetY, FloatRef offsetZ, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ)
+DECLARE_API_ARGNUM(PlayerObject, GetAttachedOffset, 2, objectPtr player, objectPtr object, FloatRef offsetX, FloatRef offsetY, FloatRef offsetZ, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerObject.GetAttachedOffset(player, object, offsetX, offsetY, offsetZ, rotationX, rotationY, rotationZ);
 	API_RETURN(bool ret, FloatRef offsetX, FloatRef offsetY, FloatRef offsetZ, FloatRef rotationX, FloatRef rotationY, FloatRef rotationZ);
@@ -157,13 +157,13 @@ DECLARE_API(PlayerObject, IsMaterialSlotUsed, objectPtr player, objectPtr object
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerObject, GetMaterial, objectPtr player, objectPtr object, int materialIndex, IntRef modelid, OutputStringViewPtr textureLibrary, OutputStringViewPtr textureName, IntRef materialColor)
+DECLARE_API_ARGNUM(PlayerObject, GetMaterial, 3, objectPtr player, objectPtr object, int materialIndex, IntRef modelid, OutputStringViewPtr textureLibrary, OutputStringViewPtr textureName, IntRef materialColor)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerObject.GetMaterial(player, object, materialIndex, modelid, textureLibrary, textureName, materialColor);
 	API_RETURN(bool ret, IntRef modelid, OutputStringViewPtr textureLibrary, OutputStringViewPtr textureName, IntRef materialColor);
 }
 
-DECLARE_API(PlayerObject, GetMaterialText, objectPtr player, objectPtr object, int materialIndex, OutputStringViewPtr text, IntRef materialSize, OutputStringViewPtr fontFace, IntRef fontSize, BoolRef bold, IntRef fontColor, IntRef backgroundColor, IntRef textAlignment)
+DECLARE_API_ARGNUM(PlayerObject, GetMaterialText, 3, objectPtr player, objectPtr object, int materialIndex, OutputStringViewPtr text, IntRef materialSize, OutputStringViewPtr fontFace, IntRef fontSize, BoolRef bold, IntRef fontColor, IntRef backgroundColor, IntRef textAlignment)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerObject.GetMaterialText(player, object, materialIndex, text, materialSize, fontFace, fontSize, bold, fontColor, backgroundColor, textAlignment);
 	API_RETURN(bool ret, OutputStringViewPtr text, IntRef materialSize, OutputStringViewPtr fontFace, IntRef fontSize, BoolRef bold, IntRef fontColor, IntRef backgroundColor, IntRef textAlignment);

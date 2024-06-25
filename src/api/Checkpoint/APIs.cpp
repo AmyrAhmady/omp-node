@@ -25,7 +25,7 @@ DECLARE_API(Checkpoint, IsActive, objectPtr player)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Checkpoint, Get, objectPtr player, FloatRef x, FloatRef y, FloatRef z, FloatRef radius)
+DECLARE_API_ARGNUM(Checkpoint, Get, 1, objectPtr player, FloatRef x, FloatRef y, FloatRef z, FloatRef radius)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Checkpoint.Get(player, x, y, z, radius);
 	API_RETURN(bool ret, FloatRef x, FloatRef y, FloatRef z, FloatRef radius);
