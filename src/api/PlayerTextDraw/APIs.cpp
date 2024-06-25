@@ -37,27 +37,27 @@ DECLARE_API(PlayerTextDraw, IsVisible, objectPtr player, objectPtr textdraw)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerTextDraw, LetterSize, objectPtr player, objectPtr textdraw, float x, float y)
+DECLARE_API(PlayerTextDraw, SetLetterSize, objectPtr player, objectPtr textdraw, float x, float y)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.LetterSize(player, textdraw, x, y);
+	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.SetLetterSize(player, textdraw, x, y);
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerTextDraw, TextSize, objectPtr player, objectPtr textdraw, float x, float y)
+DECLARE_API(PlayerTextDraw, SetTextSize, objectPtr player, objectPtr textdraw, float x, float y)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.TextSize(player, textdraw, x, y);
+	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.SetTextSize(player, textdraw, x, y);
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerTextDraw, Alignment, objectPtr player, objectPtr textdraw, int alignment)
+DECLARE_API(PlayerTextDraw, SetAlignment, objectPtr player, objectPtr textdraw, int alignment)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.Alignment(player, textdraw, alignment);
+	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.SetAlignment(player, textdraw, alignment);
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerTextDraw, Color, objectPtr player, objectPtr textdraw, uint32_t color)
+DECLARE_API(PlayerTextDraw, SetColor, objectPtr player, objectPtr textdraw, uint32_t color)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.Color(player, textdraw, color);
+	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.SetColor(player, textdraw, color);
 	API_RETURN(bool ret);
 }
 
@@ -67,9 +67,9 @@ DECLARE_API(PlayerTextDraw, UseBox, objectPtr player, objectPtr textdraw, bool u
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerTextDraw, BoxColor, objectPtr player, objectPtr textdraw, uint32_t color)
+DECLARE_API(PlayerTextDraw, SetBoxColor, objectPtr player, objectPtr textdraw, uint32_t color)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.BoxColor(player, textdraw, color);
+	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.SetBoxColor(player, textdraw, color);
 	API_RETURN(bool ret);
 }
 
@@ -85,15 +85,15 @@ DECLARE_API(PlayerTextDraw, SetOutline, objectPtr player, objectPtr textdraw, in
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerTextDraw, BackgroundColor, objectPtr player, objectPtr textdraw, uint32_t color)
+DECLARE_API(PlayerTextDraw, SetBackgroundColor, objectPtr player, objectPtr textdraw, uint32_t color)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.BackgroundColor(player, textdraw, color);
+	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.SetBackgroundColor(player, textdraw, color);
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(PlayerTextDraw, Font, objectPtr player, objectPtr textdraw, int font)
+DECLARE_API(PlayerTextDraw, SetFont, objectPtr player, objectPtr textdraw, int font)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.Font(player, textdraw, font);
+	bool ret = Runtime::Instance().GetOMPAPI()->PlayerTextDraw.SetFont(player, textdraw, font);
 	API_RETURN(bool ret);
 }
 

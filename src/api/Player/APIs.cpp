@@ -93,8 +93,8 @@ DECLARE_API_ARGNUM(Player, GetDialogData, 1, objectPtr player, IntRef dialogid, 
 
 DECLARE_API(Player, GetMenu, objectPtr player)
 {
-	int ret = Runtime::Instance().GetOMPAPI()->Player.GetMenu(player);
-	API_RETURN(int ret);
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->Player.GetMenu(player);
+	API_RETURN(objectPtr ret);
 }
 
 DECLARE_API(Player, GetSurfingPlayerObject, objectPtr player)
@@ -555,13 +555,13 @@ DECLARE_API(Player, RemoveBuilding, objectPtr player, int model, float x, float 
 
 DECLARE_API(Player, GetBuildingsRemoved, objectPtr player)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetBuildingsRemoved(player);
-	API_RETURN(bool ret);
+	int ret = Runtime::Instance().GetOMPAPI()->Player.GetBuildingsRemoved(player);
+	API_RETURN(int ret);
 }
 
-DECLARE_API(Player, RemoveFromVehicle, objectPtr player)
+DECLARE_API(Player, RemoveFromVehicle, objectPtr player, bool force)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->Player.RemoveFromVehicle(player);
+	bool ret = Runtime::Instance().GetOMPAPI()->Player.RemoveFromVehicle(player, force);
 	API_RETURN(bool ret);
 }
 
@@ -735,8 +735,8 @@ DECLARE_API(Player, InterpolateCameraLookAt, objectPtr player, float from_x, flo
 
 DECLARE_API(Player, IsPlayerAttachedObjectSlotUsed, objectPtr player, int index)
 {
-	int ret = Runtime::Instance().GetOMPAPI()->Player.IsPlayerAttachedObjectSlotUsed(player, index);
-	API_RETURN(int ret);
+	bool ret = Runtime::Instance().GetOMPAPI()->Player.IsPlayerAttachedObjectSlotUsed(player, index);
+	API_RETURN(bool ret);
 }
 
 DECLARE_API(Player, AttachCameraToObject, objectPtr player, objectPtr object)
