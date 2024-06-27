@@ -70,6 +70,18 @@ public:
 		eventHandlerFunction.Reset(isolate, function);
 	}
 
+	v8::Local<v8::Function> GetOmpNodeLibraryFunction()
+	{
+		return ompNodeLibraryInitializerFunction.Get(isolate);
+	}
+
+	void SetOmpNodeLibraryFunction(v8::Local<v8::Function> function)
+	{
+		ompNodeLibraryInitializerFunction.Reset(isolate, function);
+	}
+
+	void CallOmpNodeLibraryInitializer();
+
 	template <typename... Args>
 	bool DispatchEvent(const Impl::String& name, bool waitForPromise, EventBadRet badRet, Args... args)
 	{
@@ -141,6 +153,7 @@ public:
 	void DispatchStartEvent(bool error)
 	{
 		DispatchEvent("resourceStart", true, EventBadRet::None, error);
+		CallOmpNodeLibraryInitializer();
 	}
 
 	void DispatchStopEvent()
@@ -173,4 +186,5 @@ private:
 	helpers::CopyablePersistent<v8::Object> asyncResource;
 	node::async_context asyncContext {};
 	helpers::CopyablePersistent<v8::Function> eventHandlerFunction;
+	helpers::CopyablePersistent<v8::Function> ompNodeLibraryInitializerFunction;
 };

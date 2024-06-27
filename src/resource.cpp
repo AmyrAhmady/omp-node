@@ -72,6 +72,25 @@ static void SetEventHandlerFunction_(const v8::FunctionCallbackInfo<v8::Value>& 
 	}
 }
 
+static void SetOmpNodeLibraryFunction_(const v8::FunctionCallbackInfo<v8::Value>& info)
+{
+	v8::Isolate* isolate = info.GetIsolate();
+	v8::Local<v8::Context> ctx = isolate->GetEnteredOrMicrotaskContext();
+
+	v8::MaybeLocal maybeVal = info[0]->ToString(ctx);
+	if (maybeVal.IsEmpty())
+		return;
+
+	auto resource = Resource::Get(ctx);
+	if (resource)
+	{
+		v8::Local<v8::Value> function = info[0];
+		if (!function->IsFunction())
+			return;
+		resource->SetOmpNodeLibraryFunction(function.As<v8::Function>());
+	}
+}
+
 Resource::Resource(Runtime* _runtime, const ResourceInfo& _resource)
 	: resource(_resource)
 	, runtime(_runtime)
@@ -117,15 +136,19 @@ bool Resource::Start()
 		}
 		internalOmpObj->Set(_context, v8::String::NewFromUtf8(isolate, group.first.c_str()).ToLocalChecked(), groupObj);
 	}
+
+	internalOmpObj->Set(_context, v8::String::NewFromUtf8(isolate, "voidSize").ToLocalChecked(), v8::Integer::New(isolate, sizeof(uintptr_t)));
+
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_omp").ToLocalChecked(), internalOmpObj);
 
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resource").ToLocalChecked(), resourceObj);
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resourceLoaded").ToLocalChecked(), v8::Function::New(_context, &ResourceLoaded).ToLocalChecked());
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_ompLogBridge").ToLocalChecked(), v8::Function::New(_context, &OmpLogBridge).ToLocalChecked());
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_setEventHandlerFunction").ToLocalChecked(), v8::Function::New(_context, &SetEventHandlerFunction_).ToLocalChecked());
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_setOmpNodeLibraryFunction").ToLocalChecked(), v8::Function::New(_context, &SetOmpNodeLibraryFunction_).ToLocalChecked());
 
 	v8::Local<v8::Object> ompObj = v8::Object::New(isolate);
-	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "omp").ToLocalChecked(), ompObj);
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__omp").ToLocalChecked(), ompObj);
 
 	node::ThreadId threadId = node::AllocateEnvironmentThreadId();
 	auto flags = static_cast<node::EnvironmentFlags::Flags>(node::EnvironmentFlags::kNoFlags);
@@ -201,4 +224,53 @@ void Resource::Tick()
 
 	runtime->GetPlatform()->DrainTasks(isolate);
 	uv_run(uvLoop, UV_RUN_NOWAIT);
+}
+
+void Resource::CallOmpNodeLibraryInitializer()
+{
+	V8_ISOLATE_SCOPE(isolate);
+
+	v8::Local<v8::Function> handler = GetOmpNodeLibraryFunction();
+
+	if (handler.IsEmpty() || !handler->IsFunction() || !handler->IsCallable())
+	{
+		return;
+	}
+
+	std::vector<v8::Local<v8::Value>> args_;
+	args_.push_back(helpers::JSValue(isolate, startError));
+
+	auto retn = handler->Call(context.Get(isolate), v8::Undefined(isolate), args_.size(), args_.data());
+	if (retn.IsEmpty())
+	{
+		return;
+	}
+	else
+	{
+		auto returnValue = retn.ToLocalChecked();
+		if (returnValue->IsPromise())
+		{
+			v8::Local<v8::Promise> promise = returnValue.As<v8::Promise>();
+			while (true)
+			{
+				v8::Promise::PromiseState state = promise->State();
+				if (state == v8::Promise::PromiseState::kPending)
+				{
+					Runtime::Instance().Tick();
+					// Run event loop
+					Tick();
+				}
+				else if (state == v8::Promise::PromiseState::kFulfilled)
+				{
+					return;
+				}
+				else if (state == v8::Promise::PromiseState::kRejected)
+				{
+					return;
+				}
+			}
+		}
+
+		return;
+	}
 }

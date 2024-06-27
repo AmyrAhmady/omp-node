@@ -155,7 +155,7 @@ void Runtime::Dispose()
 				uv_run(uv_loop, UV_RUN_ONCE);
 				platform->DrainTasks(isolate);
 			}
-				
+
 			uv_loop_close(uv_loop);
 		}
 	}
