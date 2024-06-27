@@ -11,14 +11,15 @@ const EventEmitter = require('events');
 
 // const inspector = require("inspector");
 
+__internal_omp.eventEmitter_raw = new EventEmitter();
 __internal_omp.eventEmitter = new EventEmitter();
 
 async function __internal_globalEventHandler(name, badRet, ...args)
 {
-  const listeners = __internal_omp.eventEmitter.listeners(name);
+  const listeners = __internal_omp.eventEmitter_raw.listeners(name);
   let result = true;
   for await (const listener of listeners) {
-    result = await listener(...args);
+    result = await listener(badRet, ...args);
     if (typeof result === "boolean" || typeof result === "number") {
       switch (badRet) {
         case 1:
@@ -45,6 +46,34 @@ async function __internal_globalEventHandler(name, badRet, ...args)
 __internal_omp.log = (...args) => {
   __internal_ompLogBridge(util.format(...args));
 }
+
+function addListener(name, callback) {
+  if (callback && name.length) {
+    __internal_omp.eventEmitter.addListener(name, callback);
+  }
+}
+
+function removeListener(name, callback) {
+  if (callback && name.length) {
+    __internal_omp.eventEmitter.removeListener(name, callback);
+  }
+}
+
+function removeAllListeners(name, callback) {
+  if (callback && name.length) {
+    __internal_omp.eventEmitter.removeAllListeners(name);
+  }
+}
+
+__omp = {
+  ...__omp,
+  resource: __internal_resource,
+  log: __internal_omp.log,
+  on: addListener,
+  addListener: addListener,
+  removeListener: removeListener,
+  removeAllListeners: removeAllListeners
+};
 
 (async () => {
   const resource = __internal_resource;
