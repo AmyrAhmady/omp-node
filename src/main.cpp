@@ -1,6 +1,7 @@
 #include <sdk.hpp>
 
 #include "runtime.hpp"
+#include "./api/Pools.hpp"
 
 struct OmpNodeComponent final : IComponent, CoreEventHandler
 {
@@ -18,7 +19,6 @@ struct OmpNodeComponent final : IComponent, CoreEventHandler
 
 	void onLoad(ICore* c) override
 	{
-		// Cache core, player pool here
 		core = c;
 
 		omp_initialize_capi(&ompapi);
@@ -31,14 +31,16 @@ struct OmpNodeComponent final : IComponent, CoreEventHandler
 
 	void onInit(IComponentList* components) override
 	{
-		// Cache components, add event handlers here
+		NodeOmpPool::Instance().Init(core, components);
+		NodeOmpPool::Instance().AddPoolEvents();
 	}
 
 	void provideConfiguration(ILogger& logger, IEarlyConfig& config, bool defaults) override
 	{
 		if (defaults)
 		{
-			config.setString("node_js.entry_file", "index.js");
+			config.setStrings("node.resources", Span<const StringView>());
+			config.setStrings("node.cli_args", Span<const StringView>());
 		}
 	}
 
@@ -48,8 +50,6 @@ struct OmpNodeComponent final : IComponent, CoreEventHandler
 
 	void onReady() override
 	{
-		// Fire events here at earliest
-
 		runtime->RunResources();
 	}
 
@@ -75,7 +75,7 @@ struct OmpNodeComponent final : IComponent, CoreEventHandler
 
 	~OmpNodeComponent()
 	{
-		// Clean up what you did above
+		NodeOmpPool::Instance().RemovePoolEvents();
 		if (core != nullptr)
 		{
 			runtime->Dispose();
