@@ -13,6 +13,18 @@ DECLARE_API(PlayerObject, Destroy, objectPtr player, objectPtr object)
 	API_RETURN(bool ret);
 }
 
+DECLARE_API(PlayerObject, FromID, objectPtr player, int objectid)
+{
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->PlayerObject.FromID(player, objectid);
+	API_RETURN(objectPtr ret);
+}
+
+DECLARE_API(PlayerObject, GetID, objectPtr player, objectPtr object)
+{
+	int ret = Runtime::Instance().GetOMPAPI()->PlayerObject.GetID(player, object);
+	API_RETURN(int ret);
+}
+
 DECLARE_API(PlayerObject, AttachToVehicle, objectPtr player, objectPtr object, objectPtr vehicle, float offsetX, float offsetY, float offsetZ, float rotationX, float rotationY, float rotationZ)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->PlayerObject.AttachToVehicle(player, object, vehicle, offsetX, offsetY, offsetZ, rotationX, rotationY, rotationZ);
