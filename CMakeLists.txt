@@ -8,7 +8,7 @@ if (WIN32)
             -D_CRT_SECURE_NO_WARNINGS
             -DWIN32_LEAN_AND_MEAN
     )
-    add_definitions(/MP)
+    add_compile_options(/MP)
 endif ()
 
 function(GroupSourcesByFolder target)
