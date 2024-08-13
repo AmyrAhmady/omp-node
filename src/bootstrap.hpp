@@ -88,14 +88,14 @@ __omp = {
 
   startError = false;
   try {
-    // const config = __internal_resource_config;
-    // if (config.inspector) {
-    //   const host = config.inspector.host ?? '127.0.0.1';
-    //   const port = config.inspector.port ?? 9229;
-    //   const wait = config.inspector.wait ?? false;
+    const config = __internal_inspectorConfig;
+    if (config.enabled) {
+      const host = config.host ?? "127.0.0.1";
+      const port = config.port ?? 9229;
+      const wait = config.wait ?? false;
 
-    //   inspector.open(port, host, wait);
-    // }
+      inspector.open(port, host, wait);
+    }
 
     // Get the path to the main file for this resource, and load it
     const _path = path.resolve(resource.path, resource.entryFile);

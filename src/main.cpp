@@ -41,6 +41,44 @@ struct OmpNodeComponent final : IComponent, CoreEventHandler
 		{
 			config.setStrings("node.resources", Span<const StringView>());
 			config.setStrings("node.cli_args", Span<const StringView>());
+
+			// inspector
+			config.setBool("node.inspector.enable", false);
+			config.setInt("node.inspector.port", 9229);
+			config.setString("node.inspector.host", "127.0.0.1");
+			config.setBool("node.inspector.wait", false);
+		}
+		else
+		{
+			if (config.getType("node.resources") == ConfigOptionType_None)
+			{
+				config.setStrings("node.resources", Span<const StringView>());
+			}
+
+			if (config.getType("node.cli_args") == ConfigOptionType_None)
+			{
+				config.setStrings("node.cli_args", Span<const StringView>());
+			}
+
+			if (config.getType("node.inspector.enable") == ConfigOptionType_None)
+			{
+				config.setBool("node.inspector.enable", false);
+			}
+
+			if (config.getType("node.inspector.port") == ConfigOptionType_None)
+			{
+				config.setInt("node.inspector.port", 9229);
+			}
+
+			if (config.getType("node.inspector.host") == ConfigOptionType_None)
+			{
+				config.setString("node.inspector.host", "127.0.0.1");
+			}
+
+			if (config.getType("node.inspector.wait") == ConfigOptionType_None)
+			{
+				config.setBool("node.inspector.wait", false);
+			}
 		}
 	}
 

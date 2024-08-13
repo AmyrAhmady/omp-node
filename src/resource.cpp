@@ -126,6 +126,13 @@ bool Resource::Start()
 	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "path").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.path.c_str()).ToLocalChecked());
 	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "entryFile").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.entryFile.c_str()).ToLocalChecked());
 
+	auto inspectorConfig = Runtime::Instance().GetInspectorConfig();
+	v8::Local<v8::Object> inspectorConfigObj = v8::Object::New(isolate);
+	inspectorConfigObj->Set(_context, v8::String::NewFromUtf8(isolate, "enabled").ToLocalChecked(), v8::Boolean::New(isolate, inspectorConfig.enabled));
+	inspectorConfigObj->Set(_context, v8::String::NewFromUtf8(isolate, "host").ToLocalChecked(), v8::String::NewFromUtf8(isolate, inspectorConfig.host.c_str()).ToLocalChecked());
+	inspectorConfigObj->Set(_context, v8::String::NewFromUtf8(isolate, "port").ToLocalChecked(), v8::Int32::New(isolate, inspectorConfig.port));
+	inspectorConfigObj->Set(_context, v8::String::NewFromUtf8(isolate, "wait").ToLocalChecked(), v8::Boolean::New(isolate, inspectorConfig.wait));
+
 	v8::Local<v8::Object> internalOmpObj = v8::Object::New(isolate);
 	for (auto group : APIManager::Instance().apiContainer)
 	{
@@ -142,6 +149,7 @@ bool Resource::Start()
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_omp").ToLocalChecked(), internalOmpObj);
 
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resource").ToLocalChecked(), resourceObj);
+	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_inspectorConfig").ToLocalChecked(), inspectorConfigObj);
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_resourceLoaded").ToLocalChecked(), v8::Function::New(_context, &ResourceLoaded).ToLocalChecked());
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_ompLogBridge").ToLocalChecked(), v8::Function::New(_context, &OmpLogBridge).ToLocalChecked());
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_setEventHandlerFunction").ToLocalChecked(), v8::Function::New(_context, &SetEventHandlerFunction_).ToLocalChecked());

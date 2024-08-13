@@ -3,6 +3,14 @@
 
 class Runtime
 {
+	struct InspectorConfig
+	{
+		bool enabled;
+		std::string host;
+		int port;
+		bool wait;
+	};
+
 public:
 	Runtime() = default;
 
@@ -95,6 +103,11 @@ public:
 		return ompapi;
 	}
 
+	InspectorConfig GetInspectorConfig() const
+	{
+		return inspectorConfig;
+	}
+
 	static Runtime& Instance()
 	{
 		static Runtime _Instance;
@@ -111,8 +124,11 @@ private:
 	std::unique_ptr<node::MultiIsolatePlatform> platform;
 	FlatHashSet<Resource*> resources;
 	std::vector<ResourceInfo> resourcesInfo;
+	InspectorConfig inspectorConfig;
 
 	std::vector<Impl::String> GetNodeArgs();
+
+	void StoreExtraNodeConfig();
 
 	std::vector<StringView> GetResourcePathsFromconfig();
 };

@@ -52,6 +52,7 @@ bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 		// node::LoadEnvironment(parentEnv, "console.log('PARENT INIT'); setInterval(() => {}, 1000);");
 	}
 
+	StoreExtraNodeConfig();
 	EventManager::Instance().Initialize(ompapi);
 
 	return true;
@@ -177,16 +178,24 @@ std::vector<Impl::String> Runtime::GetNodeArgs()
 
 	if (core)
 	{
-		std::vector<StringView> args(core->getConfig().getStringsCount("node.cli_args"));
-		core->getConfig().getStrings("node.cli_args", Span<StringView>(args.data(), args.size()));
+		std::vector<StringView> argsFromConfig(core->getConfig().getStringsCount("node.cli_args"));
+		core->getConfig().getStrings("node.cli_args", Span<StringView>(argsFromConfig.data(), argsFromConfig.size()));
 
-		for (auto arg : args)
+		for (auto arg : argsFromConfig)
 		{
-			args.push_back(arg);
+			args.push_back(arg.to_string());
 		}
 	}
 
 	return args;
+}
+
+void Runtime::StoreExtraNodeConfig()
+{
+	inspectorConfig.enabled = *core->getConfig().getBool("node.inspector.enable");
+	inspectorConfig.host = core->getConfig().getString("node.inspector.host").to_string();
+	inspectorConfig.port = *core->getConfig().getInt("node.inspector.port");
+	inspectorConfig.wait = *core->getConfig().getBool("node.inspector.wait");
 }
 
 std::vector<StringView> Runtime::GetResourcePathsFromconfig()
