@@ -9,7 +9,7 @@ const url = require("url");
 const util = require("util");
 const EventEmitter = require('events');
 
-// const inspector = require("inspector");
+const inspector = require("inspector");
 
 __internal_omp.eventEmitter_raw = new EventEmitter();
 __internal_omp.eventEmitter = new EventEmitter();
