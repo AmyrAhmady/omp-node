@@ -7,3 +7,6 @@
 [submodule "deps/omp-capi"]
 	path = deps/omp-capi
 	url = https://github.com/openmultiplayer/omp-capi
+[submodule "deps/ghcfs"]
+	path = deps/ghcfs
+	url = https://github.com/gulrak/filesystem
