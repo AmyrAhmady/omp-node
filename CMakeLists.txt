@@ -66,6 +66,7 @@ endif()
 
 add_subdirectory(deps/node)
 add_subdirectory(deps/sdk)
+add_subdirectory(deps/sampgdk)
 
 conan_omp_add_lib(ghc-filesystem 1.5.12)
 
