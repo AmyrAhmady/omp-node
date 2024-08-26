@@ -49,6 +49,6 @@ target_link_libraries(${PROJECT_NAME}
     ${LIBRARIES}
     OMP-SDK
     node-lib
-    ghcfilesystem
+    ghc_filesystem
     sampgdk
 )

@@ -66,7 +66,6 @@ endif()
 
 add_subdirectory(deps/node)
 add_subdirectory(deps/sdk)
-add_subdirectory(deps/sampgdk)
 add_subdirectory(deps/ghcfs)
 
 add_subdirectory(src)
