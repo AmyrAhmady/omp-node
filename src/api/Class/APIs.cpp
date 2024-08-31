@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API_ARGNUM(Class, Add, 12, uint8_t team, int skin, float x, float y, float z, float angle, uint8_t weapon1, uint32_t ammo1, uint8_t weapon2, uint32_t ammo2, uint8_t weapon3, uint32_t ammo3, IntRef id)
 {

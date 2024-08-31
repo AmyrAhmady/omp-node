@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API_ARGNUM(GangZone, Create, 4, float minx, float miny, float maxx, float maxy, IntRef id)
 {

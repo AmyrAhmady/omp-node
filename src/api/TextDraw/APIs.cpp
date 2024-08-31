@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API_ARGNUM(TextDraw, Create, 3, float x, float y, StringCharPtr text, IntRef id)
 {

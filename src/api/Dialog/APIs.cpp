@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API(Dialog, Show, objectPtr player, int dialog, int style, StringCharPtr title, StringCharPtr body, StringCharPtr button1, StringCharPtr button2)
 {

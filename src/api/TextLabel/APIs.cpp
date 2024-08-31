@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API_ARGNUM(TextLabel, Create, 8, StringCharPtr text, uint32_t color, float x, float y, float z, float drawDistance, int virtualWorld, bool los, IntRef id)
 {

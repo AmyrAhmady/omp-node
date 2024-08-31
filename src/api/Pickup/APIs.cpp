@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API_ARGNUM(Pickup, Create, 6, int model, int type, float x, float y, float z, int virtualWorld, IntRef id)
 {

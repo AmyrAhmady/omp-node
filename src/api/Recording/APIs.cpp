@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API(Recording, Start, objectPtr player, int type, StringCharPtr file)
 {

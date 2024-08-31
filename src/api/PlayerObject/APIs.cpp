@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API_ARGNUM(PlayerObject, Create, 9, objectPtr player, int modelid, float x, float y, float z, float rotationX, float rotationY, float rotationZ, float drawDistance, IntRef id)
 {

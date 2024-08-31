@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API(CustomModel, AddCharModel, int baseid, int newid, StringCharPtr dff, StringCharPtr textureLibrary)
 {

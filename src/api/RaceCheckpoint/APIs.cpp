@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API(RaceCheckpoint, Set, objectPtr player, int type, float x, float y, float z, float nextX, float nextY, float nextZ, float radius)
 {

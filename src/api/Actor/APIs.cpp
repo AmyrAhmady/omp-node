@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API_ARGNUM(Actor, Create, 5, int model, float x, float y, float z, float rot, IntRef id)
 {

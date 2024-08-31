@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API_ARGNUM(Menu, Create, 6, StringCharPtr title, uint32_t columns, float x, float y, float column1Width, float column2Width, IntRef id)
 {

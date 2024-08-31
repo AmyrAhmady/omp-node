@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API(Event, AddHandler, StringCharPtr name, int priority, objectPtr callback)
 {

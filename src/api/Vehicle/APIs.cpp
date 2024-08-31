@@ -1,5 +1,5 @@
 #include "../Impl.hpp"
-#include "../MacroMagic.hpp"
+#include "../API.hpp"
 
 DECLARE_API_ARGNUM(Vehicle, Create, 9, int modelid, float x, float y, float z, float rotation, int color1, int color2, int respawnDelay, bool addSiren, IntRef id)
 {
