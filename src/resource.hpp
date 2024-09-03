@@ -161,7 +161,7 @@ public:
 		DispatchEvent("resourceStop", true, EventBadRet::None);
 	}
 
-	void DispatchErrorEvent(const std::string& errorMsg, const std::string& file, int32_t line, const std::string& stackTrace)
+	void DispatchErrorEvent(const Impl::String& errorMsg, const Impl::String& file, int32_t line, const Impl::String& stackTrace)
 	{
 		DispatchEvent("resourceError", true, EventBadRet::None, errorMsg, file, line, stackTrace);
 	}

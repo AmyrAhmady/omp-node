@@ -6,7 +6,7 @@ class Runtime
 	struct InspectorConfig
 	{
 		bool enabled;
-		std::string host;
+		Impl::String host;
 		int port;
 		bool wait;
 	};
