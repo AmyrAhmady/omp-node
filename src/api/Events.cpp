@@ -73,7 +73,7 @@ public:
 		EventManager::Instance().Register("onUnoccupiedVehicleUpdate", EventCallback_Common(&onUnoccupiedVehicleUpdate));
 		EventManager::Instance().Register("onTrailerUpdate", EventCallback_Common(&onTrailerUpdate));
 		EventManager::Instance().Register("onVehicleSirenStateChange", EventCallback_Common(&onVehicleSirenStateChange));
-    }
+	}
 
 	static bool onPlayerGiveDamageActor(EventArgs_onPlayerGiveDamageActor* args)
 	{
