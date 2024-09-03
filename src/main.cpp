@@ -1,12 +1,12 @@
 #include <sdk.hpp>
 
+#include "omp-node.hpp"
 #include "runtime.hpp"
+#include "./api/Impl.hpp"
 #include "./api/Pools.hpp"
 
-struct OmpNodeComponent final : IComponent, CoreEventHandler
+class OmpNodeComponent final : public IOmpNodeComponent, public CoreEventHandler
 {
-	PROVIDE_UID(0x8b256881a3704e81);
-
 	StringView componentName() const override
 	{
 		return "OmpNode";
@@ -109,6 +109,80 @@ struct OmpNodeComponent final : IComponent, CoreEventHandler
 	void free() override
 	{
 		delete this;
+	}
+
+	void createJSApi_UNSAFEINTERNAL(IOmpNodeAPI* api) override
+	{
+		APIManager::Instance().Register(api->GetGroup().to_string(), api->GetName().to_string(), reinterpret_cast<APIHandlerFunc_t>(api->GetJSAPIHandlerFunction()));
+	}
+
+	void processV8ArgumentsIntoOmpNodeArgs_UNSAFEINTERNAL(void* V8Info, const OmpNodeAPIArgList& retArgList, OmpNodeAPIProcessor handler) override
+	{
+		const v8::FunctionCallbackInfo<v8::Value>& info = *reinterpret_cast<v8::FunctionCallbackInfo<v8::Value>*>(V8Info);
+
+		v8::Isolate* isolate = info.GetIsolate();
+		v8::Local<v8::Context> ctx = isolate->GetEnteredOrMicrotaskContext();
+
+		if (!(info.Length() == retArgList.size))
+		{
+			helpers::Throw(isolate, (std::to_string(2) + " arguments expected"));
+			return;
+		};
+
+		for (int i = 0; i < retArgList.size; i++)
+		{
+			auto arg = retArgList.data[i];
+			if (arg.type == OmpNodeAPIArgType::Int32)
+			{
+				auto value = std::get<int32_t*>(arg.value);
+				V8_TO_INT32(info[i + 1], temp);
+				*value = temp;
+			}
+			else if (arg.type == OmpNodeAPIArgType::UInt32)
+			{
+				auto value = std::get<uint32_t*>(arg.value);
+				V8_TO_UINT32(info[i + 1], temp);
+				*value = temp;
+			}
+			else if (arg.type == OmpNodeAPIArgType::UInt8)
+			{
+				auto value = std::get<uint8_t*>(arg.value);
+				V8_TO_UINT8(info[i + 1], temp);
+				*value = temp;
+			}
+			else if (arg.type == OmpNodeAPIArgType::Ptr)
+			{
+				auto value = std::get<VoidPtr>(arg.value);
+				V8_TO_UINTPTR(info[i + 1], temp);
+				value = VoidPtr(temp);
+			}
+			else if (arg.type == OmpNodeAPIArgType::Ptr)
+			{
+				auto value = std::get<JSString*>(arg.value);
+				V8_TO_STRING(info[i + 1], temp);
+				*value = temp;
+			}
+			else if (arg.type == OmpNodeAPIArgType::Bool)
+			{
+				auto value = std::get<bool*>(arg.value);
+				V8_TO_BOOLEAN(info[i + 1], temp);
+				*value = temp;
+			}
+			else if (arg.type == OmpNodeAPIArgType::Float)
+			{
+				auto value = std::get<float*>(arg.value);
+				V8_TO_FLOAT(info[i + 1], temp);
+				*value = temp;
+			}
+			else
+			{
+				helpers::Throw(isolate, ("Failed to convert value, this type conversion is not handled"));
+				return;
+			}
+		}
+
+		auto result = handler();
+		info.GetReturnValue().Set(helpers::JsonToV8(isolate, result));
 	}
 
 	~OmpNodeComponent()
