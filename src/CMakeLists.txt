@@ -21,7 +21,6 @@ set(NODE_PATH "${PROJECT_SOURCE_DIR}/deps/node/lib/${SYS_PATH}")
 include_directories(
     ${PROJECT_SOURCE_DIR}/deps/node/include/node
     ${PROJECT_SOURCE_DIR}/deps/omp-capi/include
-    ${PROJECT_SOURCE_DIR}/deps/json
 )
 
 # Linking
@@ -50,5 +49,5 @@ target_link_libraries(${PROJECT_NAME}
     OMP-SDK
     node-lib
     ghc_filesystem
-    sampgdk
+    omp-node-sdk
 )
