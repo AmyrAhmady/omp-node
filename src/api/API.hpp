@@ -1,8 +1,8 @@
 #pragma once
-#include <string>
+
 #include <v8.h>
-#include "../helpers/v8.hpp"
-#include "macromagic.hpp"
+#include "omp-node.hpp"
+#include "ompcapi.h"
 
 using IntRef = int*;
 using FloatRef = float*;
@@ -32,6 +32,13 @@ using OutputStringViewPtr = CAPIStringView*;
 #define VAR_TO_PASS_UInt32Ref(a) &a
 #define VAR_TO_PASS_UInt8Ref(a) &a
 #define VAR_TO_PASS_OutputStringViewPtr(a) &a
+
+#define CREATE_FUNCTION_SIG_ARG_IMPL_IntRef(a) IntRef a
+#define CREATE_FUNCTION_SIG_ARG_IMPL_FloatRef(a) FloatRef a
+#define CREATE_FUNCTION_SIG_ARG_IMPL_BoolRef(a) BoolRef a
+#define CREATE_FUNCTION_SIG_ARG_IMPL_UInt32Ref(a) UInt32Ref a
+#define CREATE_FUNCTION_SIG_ARG_IMPL_UInt8Ref(a) UInt8Ref a
+#define CREATE_FUNCTION_SIG_ARG_IMPL_OutputStringViewPtr(a) OutputStringViewPtr a
 
 #define CAST_TYPE_FOR_RETURN_IntRef *
 #define CAST_TYPE_FOR_RETURN_FloatRef *
@@ -75,7 +82,7 @@ using OutputStringViewPtr = CAPIStringView*;
 
 // group: name for javascript api group
 // name: name for javascript api
-// argnum: name for javascript api
+// argnum: argument count
 #define DECLARE_API_ARGNUM(group, name, argnum, ...)                                                                                                    \
 	class OMP_NODE_API_##group##_##name                                                                                                                 \
 	{                                                                                                                                                   \
