@@ -43,6 +43,28 @@ enum class OmpNodeEventBadRet
 	True
 };
 
+enum class OmpNodeEventArgType
+{
+	Int32,
+	UInt32,
+	UInt8,
+	Ptr,
+	Bool,
+	Float,
+	String
+};
+
+struct OmpNodeEventArg
+{
+	std::variant<int, uint32_t, uint8_t, bool, float, JSString, VoidPtr> value;
+	OmpNodeEventArgType type;
+};
+
+struct OmpNodeEventArgList
+{
+	std::size_t size;
+	OmpNodeEventArg* data;
+};
 
 class IOmpNodeAPI
 {
