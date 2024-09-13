@@ -43,92 +43,92 @@ class InternalPoolEntityEvents : public PoolEventHandler<IPlayer>, public PoolEv
 public:
 	void onPoolEntryDestroyed(IPlayer& player) override
 	{
-		Runtime::Instance().DispatchEvents("playerPoolEntryDestroy", false, EventBadRet::None, player.getID());
+		Runtime::Instance().DispatchEvents("playerPoolEntryDestroy", false, OmpNodeEventBadRet::None, player.getID());
 	}
 
 	void onPoolEntryCreated(IPlayer& player) override
 	{
-		Runtime::Instance().DispatchEvents("playerPoolEntryCreate", false, EventBadRet::None, player.getID());
+		Runtime::Instance().DispatchEvents("playerPoolEntryCreate", false, OmpNodeEventBadRet::None, player.getID());
 	}
 
 	void onPoolEntryDestroyed(IVehicle& vehicle) override
 	{
-		Runtime::Instance().DispatchEvents("vehiclePoolEntryDestroy", false, EventBadRet::None, vehicle.getID());
+		Runtime::Instance().DispatchEvents("vehiclePoolEntryDestroy", false, OmpNodeEventBadRet::None, vehicle.getID());
 	}
 
 	void onPoolEntryCreated(IVehicle& vehicle) override
 	{
-		Runtime::Instance().DispatchEvents("vehiclePoolEntryCreate", false, EventBadRet::None, vehicle.getID());
+		Runtime::Instance().DispatchEvents("vehiclePoolEntryCreate", false, OmpNodeEventBadRet::None, vehicle.getID());
 	}
 
 	void onPoolEntryDestroyed(IObject& object) override
 	{
-		Runtime::Instance().DispatchEvents("objectPoolEntryDestroy", false, EventBadRet::None, object.getID());
+		Runtime::Instance().DispatchEvents("objectPoolEntryDestroy", false, OmpNodeEventBadRet::None, object.getID());
 	}
 
 	void onPoolEntryCreated(IObject& object) override
 	{
-		Runtime::Instance().DispatchEvents("objectPoolEntryCreate", false, EventBadRet::None, object.getID());
+		Runtime::Instance().DispatchEvents("objectPoolEntryCreate", false, OmpNodeEventBadRet::None, object.getID());
 	}
 
 	void onPoolEntryDestroyed(ITextDraw& textdraw) override
 	{
-		Runtime::Instance().DispatchEvents("textdrawPoolEntryDestroy", false, EventBadRet::None, textdraw.getID());
+		Runtime::Instance().DispatchEvents("textdrawPoolEntryDestroy", false, OmpNodeEventBadRet::None, textdraw.getID());
 	}
 
 	void onPoolEntryCreated(ITextDraw& textdraw) override
 	{
-		Runtime::Instance().DispatchEvents("textdrawPoolEntryCreate", false, EventBadRet::None, textdraw.getID());
+		Runtime::Instance().DispatchEvents("textdrawPoolEntryCreate", false, OmpNodeEventBadRet::None, textdraw.getID());
 	}
 
 	void onPoolEntryDestroyed(IPickup& pickup) override
 	{
-		Runtime::Instance().DispatchEvents("pickupPoolEntryDestroy", false, EventBadRet::None, pickup.getID());
+		Runtime::Instance().DispatchEvents("pickupPoolEntryDestroy", false, OmpNodeEventBadRet::None, pickup.getID());
 	}
 
 	void onPoolEntryCreated(IPickup& pickup) override
 	{
-		Runtime::Instance().DispatchEvents("pickupPoolEntryCreate", false, EventBadRet::None, pickup.getID());
+		Runtime::Instance().DispatchEvents("pickupPoolEntryCreate", false, OmpNodeEventBadRet::None, pickup.getID());
 	}
 
 	void onPoolEntryDestroyed(IGangZone& gangzone) override
 	{
-		Runtime::Instance().DispatchEvents("gangzonePoolEntryDestroy", false, EventBadRet::None, gangzone.getID());
+		Runtime::Instance().DispatchEvents("gangzonePoolEntryDestroy", false, OmpNodeEventBadRet::None, gangzone.getID());
 	}
 
 	void onPoolEntryCreated(IGangZone& gangzone) override
 	{
-		Runtime::Instance().DispatchEvents("gangzonePoolEntryCreate", false, EventBadRet::None, gangzone.getID());
+		Runtime::Instance().DispatchEvents("gangzonePoolEntryCreate", false, OmpNodeEventBadRet::None, gangzone.getID());
 	}
 
 	void onPoolEntryDestroyed(ITextLabel& textlabel) override
 	{
-		Runtime::Instance().DispatchEvents("textlabelPoolEntryDestroy", false, EventBadRet::None, textlabel.getID());
+		Runtime::Instance().DispatchEvents("textlabelPoolEntryDestroy", false, OmpNodeEventBadRet::None, textlabel.getID());
 	}
 
 	void onPoolEntryCreated(ITextLabel& textlabel) override
 	{
-		Runtime::Instance().DispatchEvents("textlabelPoolEntryCreate", false, EventBadRet::None, textlabel.getID());
+		Runtime::Instance().DispatchEvents("textlabelPoolEntryCreate", false, OmpNodeEventBadRet::None, textlabel.getID());
 	}
 
 	void onPoolEntryDestroyed(IActor& actor) override
 	{
-		Runtime::Instance().DispatchEvents("actorPoolEntryDestroy", false, EventBadRet::None, actor.getID());
+		Runtime::Instance().DispatchEvents("actorPoolEntryDestroy", false, OmpNodeEventBadRet::None, actor.getID());
 	}
 
 	void onPoolEntryCreated(IActor& actor) override
 	{
-		Runtime::Instance().DispatchEvents("actorPoolEntryCreate", false, EventBadRet::None, actor.getID());
+		Runtime::Instance().DispatchEvents("actorPoolEntryCreate", false, OmpNodeEventBadRet::None, actor.getID());
 	}
 
 	void onPoolEntryDestroyed(IMenu& menu) override
 	{
-		Runtime::Instance().DispatchEvents("menuPoolEntryDestroy", false, EventBadRet::None, menu.getID());
+		Runtime::Instance().DispatchEvents("menuPoolEntryDestroy", false, OmpNodeEventBadRet::None, menu.getID());
 	}
 
 	void onPoolEntryCreated(IMenu& menu) override
 	{
-		Runtime::Instance().DispatchEvents("menuPoolEntryCreate", false, EventBadRet::None, menu.getID());
+		Runtime::Instance().DispatchEvents("menuPoolEntryCreate", false, OmpNodeEventBadRet::None, menu.getID());
 	}
 
 	static InternalPoolEntityEvents& Instance()
@@ -170,12 +170,12 @@ public:
 
 	void onPoolEntryDestroyed(IPlayerObject& playerObject) override
 	{
-		Runtime::Instance().DispatchEvents("playerObjectPoolEntryDestroy", false, EventBadRet::None, player_->getID(), playerObject.getID());
+		Runtime::Instance().DispatchEvents("playerObjectPoolEntryDestroy", false, OmpNodeEventBadRet::None, player_->getID(), playerObject.getID());
 	}
 
 	void onPoolEntryCreated(IPlayerObject& playerObject) override
 	{
-		Runtime::Instance().DispatchEvents("playerObjectPoolEntryCreate", false, EventBadRet::None, player_->getID(), playerObject.getID());
+		Runtime::Instance().DispatchEvents("playerObjectPoolEntryCreate", false, OmpNodeEventBadRet::None, player_->getID(), playerObject.getID());
 	}
 
 	void RemovePlayerEvents()
@@ -239,12 +239,12 @@ public:
 
 	void onPoolEntryDestroyed(IPlayerTextLabel& playerTextLabel) override
 	{
-		Runtime::Instance().DispatchEvents("playerTextLabelPoolEntryDestroy", false, EventBadRet::None, player_->getID(), playerTextLabel.getID());
+		Runtime::Instance().DispatchEvents("playerTextLabelPoolEntryDestroy", false, OmpNodeEventBadRet::None, player_->getID(), playerTextLabel.getID());
 	}
 
 	void onPoolEntryCreated(IPlayerTextLabel& playerTextLabel) override
 	{
-		Runtime::Instance().DispatchEvents("playerTextLabelPoolEntryCreate", false, EventBadRet::None, player_->getID(), playerTextLabel.getID());
+		Runtime::Instance().DispatchEvents("playerTextLabelPoolEntryCreate", false, OmpNodeEventBadRet::None, player_->getID(), playerTextLabel.getID());
 	}
 
 	void RemovePlayerEvents()
@@ -308,12 +308,12 @@ public:
 
 	void onPoolEntryDestroyed(IPlayerTextDraw& playerTextDraw) override
 	{
-		Runtime::Instance().DispatchEvents("playerTextDrawPoolEntryDestroy", false, EventBadRet::None, player_->getID(), playerTextDraw.getID());
+		Runtime::Instance().DispatchEvents("playerTextDrawPoolEntryDestroy", false, OmpNodeEventBadRet::None, player_->getID(), playerTextDraw.getID());
 	}
 
 	void onPoolEntryCreated(IPlayerTextDraw& playerTextDraw) override
 	{
-		Runtime::Instance().DispatchEvents("playerTextDrawPoolEntryCreate", false, EventBadRet::None, player_->getID(), playerTextDraw.getID());
+		Runtime::Instance().DispatchEvents("playerTextDrawPoolEntryCreate", false, OmpNodeEventBadRet::None, player_->getID(), playerTextDraw.getID());
 	}
 
 	void RemovePlayerEvents()

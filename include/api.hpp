@@ -36,6 +36,14 @@ struct OmpNodeAPIArgList
 	OmpNodeAPIArg* data;
 };
 
+enum class OmpNodeEventBadRet
+{
+	None,
+	False,
+	True
+};
+
+
 class IOmpNodeAPI
 {
 public:

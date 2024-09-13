@@ -6,6 +6,7 @@
 #include <sdk.hpp>
 
 #include "helpers/v8.hpp"
+#include "omp-node.hpp"
 
 enum class ConfigVersion
 {
@@ -19,11 +20,4 @@ struct ResourceInfo
 	Impl::String path;
 	Impl::String entryFile;
 	ConfigVersion configVersion;
-};
-
-enum class EventBadRet
-{
-	None,
-	False,
-	True
 };
