@@ -83,7 +83,7 @@ public:
 	void CallOmpNodeLibraryInitializer();
 
 	template <typename... Args>
-	bool DispatchEvent(const Impl::String& name, bool waitForPromise, EventBadRet badRet, Args... args)
+	bool DispatchEvent(const Impl::String& name, bool waitForPromise, OmpNodeEventBadRet badRet, Args... args)
 	{
 		V8_ISOLATE_SCOPE(isolate);
 
@@ -91,7 +91,7 @@ public:
 
 		if ((name != "resourceStart" && startError) || handler.IsEmpty() || !handler->IsFunction() || !handler->IsCallable())
 		{
-			if (badRet == EventBadRet::None || badRet == EventBadRet::False)
+			if (badRet == OmpNodeEventBadRet::None || badRet == OmpNodeEventBadRet::False)
 			{
 				return true;
 			}
@@ -150,20 +150,22 @@ public:
 		}
 	}
 
+	bool DispatchEvent(const Impl::String& name, bool waitForPromise, OmpNodeEventBadRet badRet, const OmpNodeEventArgList& argList);
+
 	void DispatchStartEvent(bool error)
 	{
-		DispatchEvent("resourceStart", true, EventBadRet::None, error);
+		DispatchEvent("resourceStart", true, OmpNodeEventBadRet::None, error);
 		CallOmpNodeLibraryInitializer();
 	}
 
 	void DispatchStopEvent()
 	{
-		DispatchEvent("resourceStop", true, EventBadRet::None);
+		DispatchEvent("resourceStop", true, OmpNodeEventBadRet::None);
 	}
 
 	void DispatchErrorEvent(const Impl::String& errorMsg, const Impl::String& file, int32_t line, const Impl::String& stackTrace)
 	{
-		DispatchEvent("resourceError", true, EventBadRet::None, errorMsg, file, line, stackTrace);
+		DispatchEvent("resourceError", true, OmpNodeEventBadRet::None, errorMsg, file, line, stackTrace);
 	}
 
 	static Resource* Get(v8::Local<v8::Context> ctx)

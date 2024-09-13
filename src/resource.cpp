@@ -282,3 +282,109 @@ void Resource::CallOmpNodeLibraryInitializer()
 		return;
 	}
 }
+
+bool Resource::DispatchEvent(const Impl::String& name, bool waitForPromise, OmpNodeEventBadRet badRet, const OmpNodeEventArgList& argList)
+{
+	V8_ISOLATE_SCOPE(isolate);
+
+	v8::Local<v8::Function> handler = GetEventHandlerFunction();
+
+	if ((name != "resourceStart" && startError) || handler.IsEmpty() || !handler->IsFunction() || !handler->IsCallable())
+	{
+		if (badRet == OmpNodeEventBadRet::None || badRet == OmpNodeEventBadRet::False)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	std::vector<v8::Local<v8::Value>> args_;
+	args_.push_back(helpers::JSValue(isolate, name));
+	args_.push_back(helpers::JSValue(isolate, int(badRet)));
+
+	for (int i = 0; i < argList.size; i++)
+	{
+		auto arg = argList.data[i];
+		if (arg.type == OmpNodeEventArgType::Int32)
+		{
+			auto value = std::get<int32_t>(arg.value);
+			args_.push_back(helpers::JSValue(isolate, value));
+		}
+		else if (arg.type == OmpNodeEventArgType::UInt32)
+		{
+			auto value = std::get<uint32_t>(arg.value);
+			args_.push_back(helpers::JSValue(isolate, value));
+		}
+		else if (arg.type == OmpNodeEventArgType::UInt8)
+		{
+			auto value = std::get<uint8_t>(arg.value);
+			args_.push_back(helpers::JSValue(isolate, value));
+		}
+		else if (arg.type == OmpNodeEventArgType::Ptr)
+		{
+			auto value = std::get<VoidPtr>(arg.value);
+			args_.push_back(helpers::JSValue(isolate, uintptr_t(value)));
+		}
+		else if (arg.type == OmpNodeEventArgType::String)
+		{
+			auto value = std::get<JSString>(arg.value);
+			args_.push_back(helpers::JSValue(isolate, value));
+		}
+		else if (arg.type == OmpNodeEventArgType::Bool)
+		{
+			auto value = std::get<bool>(arg.value);
+			args_.push_back(helpers::JSValue(isolate, value));
+		}
+		else if (arg.type == OmpNodeEventArgType::Float)
+		{
+			auto value = std::get<float>(arg.value);
+			args_.push_back(helpers::JSValue(isolate, value));
+		}
+		else
+		{
+			helpers::Throw(isolate, ("Failed to convert value, this type conversion is not handled"));
+			return false;
+		}
+	}
+
+	auto retn = handler->Call(context.Get(isolate), v8::Undefined(isolate), args_.size(), args_.data());
+	if (retn.IsEmpty())
+	{
+		return true;
+	}
+	else
+	{
+		auto returnValue = retn.ToLocalChecked();
+		if (waitForPromise && returnValue->IsPromise())
+		{
+			v8::Local<v8::Promise> promise = returnValue.As<v8::Promise>();
+			while (true)
+			{
+				v8::Promise::PromiseState state = promise->State();
+				if (state == v8::Promise::PromiseState::kPending)
+				{
+					Runtime::Instance().Tick();
+					// Run event loop
+					Tick();
+				}
+				else if (state == v8::Promise::PromiseState::kFulfilled)
+				{
+					v8::Local<v8::Value> value = promise->Result();
+					if (value->IsFalse())
+					{
+						return false;
+					}
+
+					return true;
+				}
+				else if (state == v8::Promise::PromiseState::kRejected)
+				{
+					// TODO: Do something about rejection in here
+					return true;
+				}
+			}
+		}
+
+		return returnValue->BooleanValue(isolate);
+	}
+}

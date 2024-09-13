@@ -156,7 +156,7 @@ class OmpNodeComponent final : public IOmpNodeComponent, public CoreEventHandler
 				V8_TO_UINTPTR(info[i + 1], temp);
 				value = VoidPtr(temp);
 			}
-			else if (arg.type == OmpNodeAPIArgType::Ptr)
+			else if (arg.type == OmpNodeAPIArgType::String)
 			{
 				auto value = std::get<JSString*>(arg.value);
 				V8_TO_STRING(info[i + 1], temp);
@@ -183,6 +183,11 @@ class OmpNodeComponent final : public IOmpNodeComponent, public CoreEventHandler
 
 		auto result = handler();
 		info.GetReturnValue().Set(helpers::JsonToV8(isolate, result));
+	}
+
+	bool callEvent_UNSAFEINTERNAL(StringView eventName, bool waitForPromise, OmpNodeEventBadRet badRet, const OmpNodeEventArgList& argList) override
+	{
+		return Runtime::Instance().DispatchEvents(eventName.to_string(), waitForPromise, badRet, argList);
 	}
 
 	~OmpNodeComponent()

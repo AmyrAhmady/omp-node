@@ -25,7 +25,7 @@ public:
 	Resource* CreateImpl(const ResourceInfo& resource);
 
 	template <typename... Args>
-	bool DispatchEvents(const Impl::String& name, bool waitForPromise, EventBadRet badRet, Args... args)
+	bool DispatchEvents(const Impl::String& name, bool waitForPromise, OmpNodeEventBadRet badRet, Args... args)
 	{
 		auto resources = *GetResources();
 		bool result = true;
@@ -34,19 +34,49 @@ public:
 			result = resource->DispatchEvent(name, waitForPromise, badRet, args...);
 			switch (badRet)
 			{
-			case EventBadRet::False:
+			case OmpNodeEventBadRet::False:
 				if (!result)
 				{
 					return false;
 				}
 				break;
-			case EventBadRet::True:
+			case OmpNodeEventBadRet::True:
 				if (result)
 				{
 					return true;
 				}
 				break;
-			case EventBadRet::None:
+			case OmpNodeEventBadRet::None:
+			default:
+				break;
+			}
+		}
+
+		return result;
+	}
+
+	bool DispatchEvents(const Impl::String& name, bool waitForPromise, OmpNodeEventBadRet badRet, const OmpNodeEventArgList& argList)
+	{
+		auto resources = *GetResources();
+		bool result = true;
+		for (auto resource : resources)
+		{
+			result = resource->DispatchEvent(name, waitForPromise, badRet, argList);
+			switch (badRet)
+			{
+			case OmpNodeEventBadRet::False:
+				if (!result)
+				{
+					return false;
+				}
+				break;
+			case OmpNodeEventBadRet::True:
+				if (result)
+				{
+					return true;
+				}
+				break;
+			case OmpNodeEventBadRet::None:
 			default:
 				break;
 			}
