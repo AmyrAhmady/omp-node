@@ -16,10 +16,17 @@ __internal_omp.eventEmitter = new EventEmitter();
 
 async function __internal_globalEventHandler(name, badRet, ...args)
 {
-  const listeners = __internal_omp.eventEmitter_raw.listeners(name);
+  let listeners = __internal_omp.eventEmitter_raw.listeners(name);
+  let noBadRet = false;
+
+  if (listeners.length < 1 && name != "resourceStart") {
+    listeners = __internal_omp.eventEmitter.listeners(name);
+    noBadRet = true;
+  }
+
   let result = true;
   for await (const listener of listeners) {
-    result = await listener(badRet, ...args);
+    result = noBadRet ? await listener(...args) : await listener(badRet, ...args);
     if (typeof result === "boolean" || typeof result === "number") {
       switch (badRet) {
         case 1:
