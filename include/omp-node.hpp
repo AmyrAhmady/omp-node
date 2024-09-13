@@ -14,6 +14,9 @@ public:
 
 	// Do not use this function, it's only for internal usage.
 	virtual void processV8ArgumentsIntoOmpNodeArgs_UNSAFEINTERNAL(void* V8Info, const OmpNodeAPIArgList& retArgList, OmpNodeAPIProcessor handler) = 0;
+
+	// Do not use this function, it's only for internal usage. Use OMPNODE_CallEvent instead.
+	virtual bool callEvent_UNSAFEINTERNAL(StringView eventName, bool waitForPromise, OmpNodeEventBadRet badRet, const OmpNodeEventArgList& retArgList) = 0;
 };
 
 class OmpNodeAPIManager
