@@ -147,7 +147,7 @@ public:
 // badRet - the return value that causes your event chain to stop
 // pass your arguments after this
 #define OMPNODE_CallEvent(eventName, badRet, ...)                                                                                             \
-	[]()                                                                                                                                      \
+	[&]()                                                                                                                                     \
 	{                                                                                                                                         \
 		Impl::DynamicArray<OmpNodeEventArg> list;                                                                                             \
 		int argIndex = 0;                                                                                                                     \
