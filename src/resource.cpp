@@ -325,11 +325,6 @@ bool Resource::DispatchEvent(const Impl::String& name, bool waitForPromise, OmpN
 			auto value = std::get<uint32_t>(arg.value);
 			args_.push_back(helpers::JSValue(isolate, value));
 		}
-		else if (arg.type == OmpNodeEventArgType::UInt8)
-		{
-			auto value = std::get<uint8_t>(arg.value);
-			args_.push_back(helpers::JSValue(isolate, value));
-		}
 		else if (arg.type == OmpNodeEventArgType::Ptr)
 		{
 			auto value = std::get<VoidPtr>(arg.value);

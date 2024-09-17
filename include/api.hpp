@@ -47,7 +47,6 @@ enum class OmpNodeEventArgType
 {
 	Int32,
 	UInt32,
-	UInt8,
 	Ptr,
 	Bool,
 	Float,
@@ -146,69 +145,60 @@ public:
 // eventName - for event name, as a string
 // badRet - the return value that causes your event chain to stop
 // pass your arguments after this
-#define OMPNODE_CallEvent(eventName, badRet, ...)                                                                                             \
-	[&]()                                                                                                                                     \
-	{                                                                                                                                         \
-		Impl::DynamicArray<OmpNodeEventArg> list;                                                                                             \
-		int argIndex = 0;                                                                                                                     \
-                                                                                                                                              \
-		auto callEvent = [&](auto&&... args)                                                                                                  \
-		{                                                                                                                                     \
-			auto initializer = [&](auto& arg)                                                                                                 \
-			{                                                                                                                                 \
-				argIndex++;                                                                                                                   \
-				using T = std::decay_t<decltype(arg)>;                                                                                        \
-				if constexpr (std::is_same_v<T, int>)                                                                                         \
-				{                                                                                                                             \
-					list.push_back({ arg, OmpNodeEventArgType::Int32 });                                                                      \
-				}                                                                                                                             \
-				else if constexpr (std::is_same_v<T, uint32_t>)                                                                               \
-				{                                                                                                                             \
-					list.push_back({ arg, OmpNodeEventArgType::UInt32 });                                                                     \
-				}                                                                                                                             \
-				else if constexpr (std::is_same_v<T, uint8_t>)                                                                                \
-				{                                                                                                                             \
-					list.push_back({ arg, OmpNodeEventArgType::UInt8 });                                                                      \
-				}                                                                                                                             \
-				else if constexpr (std::is_same_v<T, VoidPtr>)                                                                                \
-				{                                                                                                                             \
-					list.push_back({ arg, OmpNodeEventArgType::Ptr });                                                                        \
-				}                                                                                                                             \
-				else if constexpr (std::is_same_v<T, bool>)                                                                                   \
-				{                                                                                                                             \
-					list.push_back({ arg, OmpNodeEventArgType::Bool });                                                                       \
-				}                                                                                                                             \
-				else if constexpr (std::is_same_v<T, float>)                                                                                  \
-				{                                                                                                                             \
-					list.push_back({ arg, OmpNodeEventArgType::Float });                                                                      \
-				}                                                                                                                             \
-				else if constexpr (std::is_same_v<T, Impl::String>)                                                                           \
-				{                                                                                                                             \
-					list.push_back({ arg, OmpNodeEventArgType::String });                                                                     \
-				}                                                                                                                             \
-				else if constexpr (std::is_same_v<T, StringView>)                                                                             \
-				{                                                                                                                             \
-					list.push_back({ arg.to_string(), OmpNodeEventArgType::String });                                                         \
-				}                                                                                                                             \
-				else if constexpr (std::is_same_v<T, const char*> || std::is_same_v<T, char*>)                                                \
-				{                                                                                                                             \
-					list.push_back({ Impl::String(arg), OmpNodeEventArgType::String });                                                       \
-				}                                                                                                                             \
-				else                                                                                                                          \
-				{                                                                                                                             \
-					throw std::runtime_error(Impl::String("Unable to cast argument ") + std::to_string(argIndex) + "for event " + eventName); \
-				}                                                                                                                             \
-			};                                                                                                                                \
-                                                                                                                                              \
-			(initializer(args), ...);                                                                                                         \
-		};                                                                                                                                    \
-                                                                                                                                              \
-		callEvent(__VA_ARGS__);                                                                                                               \
-                                                                                                                                              \
-		OmpNodeEventArgList args = {                                                                                                          \
-			list.size(),                                                                                                                      \
-			list.data()                                                                                                                       \
-		};                                                                                                                                    \
-                                                                                                                                              \
-		return OmpNodeAPIManager::Instance().GetOmpNode()->callEvent_UNSAFEINTERNAL(eventName, true, badRet, args);                           \
-	}()
+template <typename... Args>
+inline bool OMPNODE_CallEvent(StringView eventName, OmpNodeEventBadRet badRet, Args...)
+{
+	Impl::DynamicArray<OmpNodeEventArg> list;
+	int argIndex = 0;
+
+	auto initializer = [&](auto& arg)
+	{
+		argIndex++;
+		using T = std::decay_t<decltype(arg)>;
+		if constexpr (std::is_same_v<T, int32_t> || std::is_same_v<T, int16_t> || std::is_same_v<T, int8_t>)
+		{
+			list.push_back({ arg, OmpNodeEventArgType::Int32 });
+		}
+		else if constexpr (std::is_same_v<T, uint32_t> || std::is_same_v<T, uint16_t> || std::is_same_v<T, uint8_t>)
+		{
+			list.push_back({ arg, OmpNodeEventArgType::UInt32 });
+		}
+		else if constexpr (std::is_same_v<T, VoidPtr>)
+		{
+			list.push_back({ arg, OmpNodeEventArgType::Ptr });
+		}
+		else if constexpr (std::is_same_v<T, bool>)
+		{
+			list.push_back({ arg, OmpNodeEventArgType::Bool });
+		}
+		else if constexpr (std::is_same_v<T, float>)
+		{
+			list.push_back({ arg, OmpNodeEventArgType::Float });
+		}
+		else if constexpr (std::is_same_v<T, Impl::String>)
+		{
+			list.push_back({ arg, OmpNodeEventArgType::String });
+		}
+		else if constexpr (std::is_same_v<T, StringView>)
+		{
+			list.push_back({ arg.to_string(), OmpNodeEventArgType::String });
+		}
+		else if constexpr (std::is_same_v<T, const char*> || std::is_same_v<T, char*>)
+		{
+			list.push_back({ Impl::String(arg), OmpNodeEventArgType::String });
+		}
+		else
+		{
+			throw std::runtime_error(Impl::String("Unable to cast argument ") + std::to_string(argIndex) + "for event " + eventName);
+		}
+	};
+
+	(initializer(args), ...);
+
+	OmpNodeEventArgList args = {
+		list.size(),
+		list.data()
+	};
+
+	return OmpNodeAPIManager::Instance().GetOmpNode()->callEvent_UNSAFEINTERNAL(eventName, true, badRet, args);
+}
