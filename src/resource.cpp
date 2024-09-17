@@ -144,6 +144,16 @@ bool Resource::Start()
 		internalOmpObj->Set(_context, v8::String::NewFromUtf8(isolate, group.first.c_str()).ToLocalChecked(), groupObj);
 	}
 
+	for (auto group : APIManager::Instance().thirdtPartyAPIContainer)
+	{
+		v8::Local<v8::Object> groupObj = v8::Object::New(isolate);
+		for (auto funcs : group.second)
+		{
+			groupObj->Set(_context, v8::String::NewFromUtf8(isolate, funcs.first.c_str()).ToLocalChecked(), v8::Function::New(_context, funcs.second).ToLocalChecked());
+		}
+		_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, group.first.c_str()).ToLocalChecked(), groupObj);
+	}
+
 	internalOmpObj->Set(_context, v8::String::NewFromUtf8(isolate, "voidSize").ToLocalChecked(), v8::Integer::New(isolate, sizeof(uintptr_t)));
 
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__internal_omp").ToLocalChecked(), internalOmpObj);

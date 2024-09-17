@@ -6,9 +6,16 @@ typedef void (*APIHandlerFunc_t)(const v8::FunctionCallbackInfo<v8::Value>& info
 class APIManager
 {
 public:
-	void Register(const Impl::String& space, const Impl::String name, APIHandlerFunc_t func)
+	void Register(const Impl::String& space, const Impl::String name, APIHandlerFunc_t func, bool thirdPartyAPI = false)
 	{
-		apiContainer[space][name] = func;
+		if (thirdPartyAPI)
+		{
+			thirdtPartyAPIContainer[space][name] = func;
+		}
+		else
+		{
+			apiContainer[space][name] = func;
+		}
 	}
 
 	static APIManager& Instance()
@@ -18,6 +25,7 @@ public:
 	}
 
 	FlatHashMap<Impl::String, FlatHashMap<Impl::String, APIHandlerFunc_t>> apiContainer;
+	FlatHashMap<Impl::String, FlatHashMap<Impl::String, APIHandlerFunc_t>> thirdtPartyAPIContainer;
 };
 
 class EventManager

@@ -113,7 +113,7 @@ class OmpNodeComponent final : public IOmpNodeComponent, public CoreEventHandler
 
 	void createJSApi_UNSAFEINTERNAL(IOmpNodeAPI* api) override
 	{
-		APIManager::Instance().Register(api->GetGroup().to_string(), api->GetName().to_string(), reinterpret_cast<APIHandlerFunc_t>(api->GetJSAPIHandlerFunction()));
+		APIManager::Instance().Register(api->GetGroup().to_string(), api->GetName().to_string(), reinterpret_cast<APIHandlerFunc_t>(api->GetJSAPIHandlerFunction()), true);
 	}
 
 	void processV8ArgumentsIntoOmpNodeArgs_UNSAFEINTERNAL(void* V8Info, const OmpNodeAPIArgList& retArgList, OmpNodeAPIProcessor handler) override
