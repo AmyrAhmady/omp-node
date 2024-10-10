@@ -146,7 +146,7 @@ public:
 // badRet - the return value that causes your event chain to stop
 // pass your arguments after this
 template <typename... Args>
-inline bool OMPNODE_CallEvent(StringView eventName, OmpNodeEventBadRet badRet, Args...)
+inline bool OMPNODE_CallEvent(StringView eventName, OmpNodeEventBadRet badRet, Args... args)
 {
 	Impl::DynamicArray<OmpNodeEventArg> list;
 	int argIndex = 0;
@@ -195,10 +195,10 @@ inline bool OMPNODE_CallEvent(StringView eventName, OmpNodeEventBadRet badRet, A
 
 	(initializer(args), ...);
 
-	OmpNodeEventArgList args = {
+	OmpNodeEventArgList argList = {
 		list.size(),
 		list.data()
 	};
 
-	return OmpNodeAPIManager::Instance().GetOmpNode()->callEvent_UNSAFEINTERNAL(eventName, true, badRet, args);
+	return OmpNodeAPIManager::Instance().GetOmpNode()->callEvent_UNSAFEINTERNAL(eventName, true, badRet, argList);
 }
