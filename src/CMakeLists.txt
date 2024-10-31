@@ -5,15 +5,15 @@ add_definitions(-DBUILDING_NODE_EXTENSION=1 -DEXTERNAL_NAPI=1)
 # Node
 
 if (WIN32)
-    set(NODE_FILE "libnode.dll")
+    set(NODE_FILE "libnode.lib")
 else ()
     set(NODE_FILE "libnode.so.108")
 endif ()
 
 if (WIN32)
-    set(SYS_PATH "win_${TARGET_BUILD_ARCH}")
+    set(SYS_PATH "win/${TARGET_BUILD_ARCH}")
 else ()
-    set(SYS_PATH "linux_${TARGET_BUILD_ARCH}")
+    set(SYS_PATH "linux/${TARGET_BUILD_ARCH}")
 endif ()
 
 set(NODE_PATH "${PROJECT_SOURCE_DIR}/deps/node/lib/${SYS_PATH}")
@@ -24,6 +24,8 @@ include_directories(
 )
 
 # Linking
+
+message(INFO ${CMAKE_BUILD_TYPE})
 
 link_directories(${NODE_PATH})
 
@@ -37,9 +39,9 @@ add_library(${PROJECT_NAME} SHARED ${OMPNODE_FILES})
 GroupSourcesByFolder(${PROJECT_NAME})
 
 if (WIN32)
-    set(LIBRARIES libnode shlwapi dbghelp winmm)
+    set(LIBRARIES ${NODE_FILE} shlwapi dbghelp winmm)
 else ()
-    target_link_libraries(${PROJECT_NAME} ${NODE_PATH}/libnode.so.93)
+    target_link_libraries(${PROJECT_NAME} ${NODE_PATH}/${NODE_FILE})
 
     set(LIBRARIES ${node} pthread dl m)
 endif ()
