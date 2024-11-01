@@ -1,6 +1,8 @@
 #!/bin/sh
 [ -z $CONFIG ] && config=Release || config="$CONFIG"
 
+cmake --version
+
 cmake \
     -S . \
     -B build \
