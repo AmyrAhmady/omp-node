@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: omp-node
-          path: omp-node.zip
+          path: dist/*
 
   # build-linux-release:
   #   runs-on: ubuntu-latest
