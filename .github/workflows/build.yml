@@ -15,16 +15,11 @@ jobs:
   build-windows-release:
     runs-on: windows-2019
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           clean: true
           submodules: recursive
           fetch-depth: 0
-
-      - name: Install CMake
-        uses: lukka/get-cmake@latest
-        with:
-          cmakeVersion: "3.23.2"
 
       - name: Generate build files
         run: |
@@ -49,8 +44,8 @@ jobs:
           files: dist/
           dest: omp-node.zip
 
-      - name: Upload artifacts (part 1)
-        uses: actions/upload-artifact@v3
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: omp-node
           path: dist/*
