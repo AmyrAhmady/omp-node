@@ -82,6 +82,8 @@ public:
 
 	void CallOmpNodeLibraryInitializer();
 
+	void TickRuntimeAndCurrentResource();
+
 	template <typename... Args>
 	bool DispatchEvent(const Impl::String& name, bool waitForPromise, OmpNodeEventBadRet badRet, Args... args)
 	{
@@ -102,11 +104,7 @@ public:
 		args_.push_back(helpers::JSValue(isolate, name));
 		args_.push_back(helpers::JSValue(isolate, int(badRet)));
 
-		([&]
-			{
-				args_.push_back(helpers::JSValue(isolate, args));
-			}(),
-			...);
+		(args_.push_back(helpers::JSValue(isolate, args)), ...);
 
 		auto retn = handler->Call(context.Get(isolate), v8::Undefined(isolate), args_.size(), args_.data());
 		if (retn.IsEmpty())
@@ -124,9 +122,8 @@ public:
 					v8::Promise::PromiseState state = promise->State();
 					if (state == v8::Promise::PromiseState::kPending)
 					{
-						Runtime::Instance().Tick();
 						// Run event loop
-						Tick();
+						TickRuntimeAndCurrentResource();
 					}
 					else if (state == v8::Promise::PromiseState::kFulfilled)
 					{

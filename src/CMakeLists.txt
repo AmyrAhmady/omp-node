@@ -25,8 +25,6 @@ include_directories(
 
 # Linking
 
-message(INFO ${CMAKE_BUILD_TYPE})
-
 link_directories(${NODE_PATH})
 
 file(GLOB_RECURSE OMPNODE_FILES
@@ -44,6 +42,11 @@ else ()
     target_link_libraries(${PROJECT_NAME} ${NODE_PATH}/${NODE_FILE})
 
     set(LIBRARIES ${node} pthread dl m)
+
+    set(CMAKE_CXX_FLAGS "-Wno-int-to-pointer-cast -Wno-attributes ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_C_FLAGS "-Wno-int-to-pointer-cast -Wno-attributes ${CMAKE_C_FLAGS}")
+
+    set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif ()
 
 target_link_libraries(${PROJECT_NAME}

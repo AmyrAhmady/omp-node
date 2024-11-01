@@ -293,6 +293,12 @@ void Resource::CallOmpNodeLibraryInitializer()
 	}
 }
 
+void Resource::TickRuntimeAndCurrentResource()
+{
+	Runtime::Instance().Tick();
+	Tick();
+}
+
 bool Resource::DispatchEvent(const Impl::String& name, bool waitForPromise, OmpNodeEventBadRet badRet, const OmpNodeEventArgList& argList)
 {
 	V8_ISOLATE_SCOPE(isolate);
