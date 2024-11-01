@@ -1,0 +1,81 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "*"
+      - "*/*"
+      - "**"
+  pull_request:
+    branches:
+      - "master"
+
+jobs:
+  build-windows-release:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          clean: true
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "3.23.2"
+
+      - name: Generate build files
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Release .. -G "Visual Studio 16 2019"
+          cmake --build . --config Release
+
+      - name: Create a folder for release
+        shell: bash
+        run: |
+          mkdir dist
+          cd dist
+          mkdir components
+          cd ..
+          mv ./build/src/Release/omp-node.dll ./dist/components/omp-node.dll
+          mv ./deps/node/lib/win/x64/Release/libnode.dll ./dist/libnode.dll
+
+      - name: Create a build archive
+        uses: vimtor/action-zip@v1.2
+        with:
+          files: dist/
+          dest: omp-node.zip
+
+      - name: Upload artifacts (part 1)
+        uses: actions/upload-artifact@v3
+        with:
+          name: omp-node
+          path: omp-node.zip
+
+  # build-linux-release:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         clean: true
+  #         submodules: recursive
+  #         fetch-depth: 0
+
+  #     - name: Build using docker
+  #       run: |
+  #         cd docker
+  #         chmod +x ./build.sh
+  #         chmod +x ./docker-entrypoint.sh
+  #         ./build.sh
+
+  #     - name: Create artifact
+  #       run: tar -czf pawnraknet-$PLUGIN_VERSION-linux-x64.tar.gz -C docker/build pawnraknet.so -C ../../src Pawn.RakNet.inc
+
+  #     - name: Upload artifacts
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: pawnraknet-${{ env.PLUGIN_VERSION }}-linux-x64
+  #         path: pawnraknet-${{ env.PLUGIN_VERSION }}-linux-x64.tar.gz
