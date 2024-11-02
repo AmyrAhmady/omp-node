@@ -53,6 +53,11 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "3.25.2"
+
       # - name: Build using docker
       #   run: |
       #     cd docker
