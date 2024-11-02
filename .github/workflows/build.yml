@@ -53,17 +53,14 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Install CMake
-        uses: lukka/get-cmake@latest
-        with:
-          cmakeVersion: "3.25.2"
-
+      # The docker method doesn't work on github actions, but works totally fine locally.
       # - name: Build using docker
       #   run: |
       #     cd docker
       #     chmod +x ./build.sh
       #     chmod +x ./docker-entrypoint.sh
       #     ./build.sh
+
       - name: Build
         run: |
           cmake --version
@@ -79,7 +76,7 @@ jobs:
           cd dist
           mkdir components
           cd ..
-          mv ./docker/build/src/omp-node.dll ./dist/components/omp-node.so
+          mv ./build/src/omp-node.so ./dist/components/omp-node.so
           mv ./deps/node/lib/linux/x64/libnode.so.108 ./dist/libnode.so.108
 
       - name: Upload artifacts
