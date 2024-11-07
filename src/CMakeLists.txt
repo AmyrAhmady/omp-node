@@ -43,6 +43,8 @@ else ()
 
     set(LIBRARIES ${node} pthread dl m)
 
+    set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN/..:$ORIGIN/")
+
     set(CMAKE_CXX_FLAGS "-Wno-int-to-pointer-cast -Wno-attributes ${CMAKE_CXX_FLAGS}")
     set(CMAKE_C_FLAGS "-Wno-int-to-pointer-cast -Wno-attributes ${CMAKE_C_FLAGS}")
 
