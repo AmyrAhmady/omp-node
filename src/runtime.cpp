@@ -11,7 +11,11 @@ bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 	core = c;
 	ompapi = oapi;
 
+#ifdef _WIN32
 	auto result = node::InitializeOncePerProcess(GetNodeArgs());
+#else
+	auto result = node::InitializeOncePerProcess(GetNodeArgs(), node::ProcessInitializationFlags::kNoInitOpenSSL);
+#endif
 
 	if (result->early_return())
 	{
