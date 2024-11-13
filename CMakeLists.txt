@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.19)
 project(omp-node LANGUAGES C CXX VERSION 0.0.1)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH true)
 
 if (WIN32)
     add_definitions(
