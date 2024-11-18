@@ -124,7 +124,7 @@ public:
 			}                                                                                                              \
                                                                                                                            \
 			GENERATE_VARIABLES_SAME_AS_ARGS(__VA_ARGS__)                                                                   \
-			OmpNodeAPIArg args[] = {                                                                                       \
+			OmpNodeAPIArg args[OMP_NODE__NUM_ARGS(__VA_ARGS__) + 1] = {                                                    \
 				GENERATE_OMPNODE_API_ARG_LIST(__VA_ARGS__)                                                                 \
 			};                                                                                                             \
                                                                                                                            \
