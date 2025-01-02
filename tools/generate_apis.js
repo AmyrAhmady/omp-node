@@ -53,7 +53,7 @@ Object.entries(apis).forEach(([key, funcs]) => {
   writeFileSync(
     filePath,
     `#include "../Impl.hpp"
-#include "../MacroMagic.hpp"\n`
+#include "../API.hpp"\n`
   );
 
   funcs.forEach((func) => {
