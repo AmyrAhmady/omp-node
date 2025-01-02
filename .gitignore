@@ -293,6 +293,7 @@ __pycache__/
 *.i
 .vscode/
 test/*
+testlinux/*
 */CMakeFiles/*
 conanfile.txt
 CMakeCache.txt
