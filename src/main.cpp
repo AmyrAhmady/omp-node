@@ -26,6 +26,8 @@ class OmpNodeComponent final : public IOmpNodeComponent, public CoreEventHandler
 		runtime = &Runtime::Instance();
 		runtime->Init(c, &ompapi);
 
+		core->getEventDispatcher().addEventHandler(this);
+
 		c->printLn("OmpNode component loaded");
 	}
 
