@@ -10,7 +10,9 @@ if (WIN32)
             -DWIN32_LEAN_AND_MEAN
     )
     add_compile_options(/MP)
-endif ()
+else()
+    add_compile_definitions(_GLIBCXX_USE_CXX11_ABI=1)
+endif()
 
 function(GroupSourcesByFolder target)
     set(SOURCE_GROUP_DELIMITER "/")
