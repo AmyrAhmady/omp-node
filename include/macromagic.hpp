@@ -518,3 +518,13 @@
 	nlohmann::json retJson;               \
 	GENERATE_RETURN_VAR_IMPL(__VA_ARGS__) \
 	return retJson
+
+#define CREATE_CAPI_STRING_VIEW(name, size) \
+	OutputStringViewPtr name;               \
+	name->data = new char[size];            \
+	memset(name->data, 0, size);
+
+#define COPY_AND_FREE_CAPI_STRING_VIEW(name)                       \
+	Impl::String copyString = Impl::String(name->data, name->len); \
+	delete[] name->data;                                           \
+	name->data = copyString.data();

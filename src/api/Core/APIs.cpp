@@ -103,9 +103,11 @@ DECLARE_API(Core, HideGameTextForAll, int style)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API_ARGNUM(Core, NetworkStats, 0, OutputStringViewPtr output)
+DECLARE_API(Core, NetworkStats)
 {
+	CREATE_CAPI_STRING_VIEW(output, 2048);
 	int ret = Runtime::Instance().GetOMPAPI()->Core.NetworkStats(output);
+	COPY_AND_FREE_CAPI_STRING_VIEW(output);
 	API_RETURN(int ret, OutputStringViewPtr output);
 }
 

@@ -13,9 +13,11 @@ DECLARE_API_ARGNUM(Player, GetSpawnInfo, 1, objectPtr player, UInt8Ref team, Int
 	API_RETURN(bool ret, UInt8Ref team, IntRef skin, FloatRef x, FloatRef y, FloatRef z, FloatRef angle, UInt8Ref weapon1, UInt32Ref ammo1, UInt8Ref weapon2, UInt32Ref ammo2, UInt8Ref weapon3, UInt32Ref ammo3);
 }
 
-DECLARE_API_ARGNUM(Player, GetNetworkStats, 1, objectPtr player, OutputStringViewPtr output)
+DECLARE_API(Player, GetNetworkStats, objectPtr player)
 {
+	CREATE_CAPI_STRING_VIEW(output, 2048);
 	int ret = Runtime::Instance().GetOMPAPI()->Player.GetNetworkStats(player, output);
+	COPY_AND_FREE_CAPI_STRING_VIEW(output);
 	API_RETURN(int ret, OutputStringViewPtr output);
 }
 
@@ -43,9 +45,11 @@ DECLARE_API(Player, NetStatsGetConnectedTime, objectPtr player)
 	API_RETURN(int ret);
 }
 
-DECLARE_API_ARGNUM(Player, NetStatsGetIpPort, 1, objectPtr player, OutputStringViewPtr output)
+DECLARE_API(Player, NetStatsGetIpPort, objectPtr player)
 {
+	CREATE_CAPI_STRING_VIEW(output, 30);
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsGetIpPort(player, output);
+	COPY_AND_FREE_CAPI_STRING_VIEW(output);
 	API_RETURN(bool ret, OutputStringViewPtr output);
 }
 
@@ -685,10 +689,12 @@ DECLARE_API(Player, GetFacingAngle, objectPtr player)
 	API_RETURN(float ret);
 }
 
-DECLARE_API_ARGNUM(Player, GetIp, 1, objectPtr player, OutputStringViewPtr ip)
+DECLARE_API(Player, GetIp, objectPtr player)
 {
-	int ret = Runtime::Instance().GetOMPAPI()->Player.GetIp(player, ip);
-	API_RETURN(int ret, OutputStringViewPtr ip);
+	CREATE_CAPI_STRING_VIEW(output, 30);
+	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetIp(player, output);
+	COPY_AND_FREE_CAPI_STRING_VIEW(output);
+	API_RETURN(int ret, OutputStringViewPtr output);
 }
 
 DECLARE_API(Player, GetSpecialAction, objectPtr player)
