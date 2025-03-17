@@ -71,11 +71,11 @@ inline bool OMPNODE_CallEvent(StringView eventName, OmpNodeEventBadRet badRet, A
 		using T = std::decay_t<decltype(arg)>;
 		if constexpr (std::is_same_v<T, int32_t> || std::is_same_v<T, int16_t> || std::is_same_v<T, int8_t>)
 		{
-			list.push_back({ arg, OmpNodeEventArgType::Int32 });
+			list.push_back({ int32_t(arg), OmpNodeEventArgType::Int32 });
 		}
 		else if constexpr (std::is_same_v<T, uint32_t> || std::is_same_v<T, uint16_t> || std::is_same_v<T, uint8_t>)
 		{
-			list.push_back({ arg, OmpNodeEventArgType::UInt32 });
+			list.push_back({ uint32_t(arg), OmpNodeEventArgType::UInt32 });
 		}
 		else if constexpr (std::is_same_v<T, VoidPtr>)
 		{
