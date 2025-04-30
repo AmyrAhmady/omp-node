@@ -91,13 +91,11 @@ jobs:
 
       - name: Build using docker
         shell: bash
-        env:
-          TARGET_ARCH_BUILD: x64
         run: |
           cd docker
           chmod +x ./build.sh
           chmod +x ./docker-entrypoint.sh
-          ./build.sh
+          TARGET_BUILD_ARCH="x64" ./build.sh
 
       - name: Create a folder for release
         shell: bash
@@ -130,13 +128,11 @@ jobs:
 
       - name: Build using docker
         shell: bash
-        env:
-          TARGET_ARCH_BUILD: x86
         run: |
           cd docker
           chmod +x ./build.sh
           chmod +x ./docker-entrypoint.sh
-          ./build.sh
+          TARGET_BUILD_ARCH="x86" ./build.sh
 
       - name: Create a folder for release
         shell: bash

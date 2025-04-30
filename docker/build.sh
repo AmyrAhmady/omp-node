@@ -9,9 +9,6 @@
 && target_build_arch=x64 \
 || target_build_arch="$TARGET_BUILD_ARCH"
 
-echo "TARGET_BUILD_ARCH=${TARGET_BUILD_ARCH}"
-echo "target_build_arch=${target_build_arch}"
-
 docker build \
     -t omp-node/build:ubuntu-18.04 ./ \
 || exit 1
