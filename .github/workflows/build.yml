@@ -103,7 +103,7 @@ jobs:
           cd dist
           mkdir components
           cd ..
-          mv ./docker/build/src/omp-node.so ./dist/components/omp-node.so
+          sudo mv ./docker/build/src/omp-node.so ./dist/components/omp-node.so
           mv ./deps/node/lib/linux/x64/libnode.so.108 ./dist/libnode.so.108
 
       - name: Upload artifacts
@@ -139,7 +139,7 @@ jobs:
           cd dist
           mkdir components
           cd ..
-          mv ./docker/build/src/omp-node.so ./dist/components/omp-node.so
+          sudo mv ./docker/build/src/omp-node.so ./dist/components/omp-node.so
           mv ./deps/node/lib/linux/x64/libnode.so.108 ./dist/libnode.so.108
 
       - name: Upload artifacts
