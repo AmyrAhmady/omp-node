@@ -47,15 +47,15 @@ jobs:
   build-linux-release:
     runs-on: ubuntu-latest
     steps:
-      - name: test download
-        run: |
-          curl https://assets.open.mp/node/lib/linux/x64/libnode.so.108 --output ./testfile.so
-
       - uses: actions/checkout@v3
         with:
           clean: true
           submodules: recursive
           fetch-depth: 0
+
+      - name: Download the nodejs binary file manually
+        run: |
+          curl https://assets.open.mp/node/lib/linux/x64/libnode.so.108 --output ./deps/node/lib/linux/x64/libnode.so.108
 
       # The docker method doesn't work on github actions, but works totally fine locally.
       - name: Build using docker
