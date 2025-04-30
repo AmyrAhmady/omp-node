@@ -90,6 +90,7 @@ jobs:
           curl https://assets.open.mp/node/lib/linux/x64/libnode.so.108 --output ./deps/node/lib/linux/x64/libnode.so.108
 
       - name: Build using docker
+        shell: bash
         run: |
           cd docker
           chmod +x ./build.sh
@@ -126,6 +127,7 @@ jobs:
           curl https://assets.open.mp/node/lib/linux/x86/libnode.so.108 --output ./deps/node/lib/linux/x86/libnode.so.108
 
       - name: Build using docker
+        shell: bash
         run: |
           cd docker
           chmod +x ./build.sh
