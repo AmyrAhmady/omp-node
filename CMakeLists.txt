@@ -79,6 +79,8 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
         endif()
     endif()
 
+    message(TARGET_BUILD_ARCH=${TARGET_BUILD_ARCH}, CMAKE_SIZEOF_VOID_P==${CMAKE_SIZEOF_VOID_P})
+
     add_subdirectory(deps/node)
     add_subdirectory(deps/sdk)
     add_subdirectory(deps/ghcfs)
