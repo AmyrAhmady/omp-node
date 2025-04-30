@@ -5,6 +5,10 @@
 && config=RelWithDebInfo \
 || config="$CONFIG"
 
+[[ -z "$TARGET_BUILD_ARCH" ]] \
+&& target_build_arch=x64 \
+|| target_build_arch="$TARGET_BUILD_ARCH"
+
 docker build \
     -t omp-node/build:ubuntu-18.04 ./ \
 || exit 1
@@ -24,4 +28,5 @@ docker run \
     -v $PWD/..:/code \
     -v $PWD/build:/code/build \
     -e CONFIG=${config} \
+    -e TARGET_BUILD_ARCH=${target_build_arch} \
     omp-node/build:ubuntu-18.04
