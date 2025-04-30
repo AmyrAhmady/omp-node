@@ -68,7 +68,7 @@ jobs:
           mkdir components
           cd ..
           mv ./build/src/Release/omp-node.dll ./dist/components/omp-node.dll
-          mv ./deps/node/lib/win/x64/Release/libnode.dll ./dist/libnode.dll
+          mv ./deps/node/lib/win/x86/Release/libnode.dll ./dist/libnode.dll
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -140,7 +140,7 @@ jobs:
           mkdir components
           cd ..
           sudo mv ./docker/build/src/omp-node.so ./dist/components/omp-node.so
-          mv ./deps/node/lib/linux/x64/libnode.so.108 ./dist/libnode.so.108
+          mv ./deps/node/lib/linux/x86/libnode.so.108 ./dist/libnode.so.108
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
