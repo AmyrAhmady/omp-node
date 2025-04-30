@@ -12,7 +12,7 @@ on:
       - "master"
 
 jobs:
-  build-windows-release:
+  build-windows-x64-release:
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v4
@@ -41,10 +41,42 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: omp-node-win
+          name: omp-node-win-x64
           path: dist/*
 
-  build-linux-release:
+  build-windows-x86-release:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: true
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Generate build files
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Release .. -A Win32 -G "Visual Studio 16 2019"
+          cmake --build . --config Release
+
+      - name: Create a folder for release
+        shell: bash
+        run: |
+          mkdir dist
+          cd dist
+          mkdir components
+          cd ..
+          mv ./build/src/Release/omp-node.dll ./dist/components/omp-node.dll
+          mv ./deps/node/lib/win/x64/Release/libnode.dll ./dist/libnode.dll
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: omp-node-win32
+          path: dist/*
+
+  build-linux-x64-release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -57,21 +89,12 @@ jobs:
         run: |
           curl https://assets.open.mp/node/lib/linux/x64/libnode.so.108 --output ./deps/node/lib/linux/x64/libnode.so.108
 
-      # The docker method doesn't work on github actions, but works totally fine locally.
       - name: Build using docker
         run: |
           cd docker
           chmod +x ./build.sh
           chmod +x ./docker-entrypoint.sh
-          ./build.sh
-
-      # - name: Build
-      #   run: |
-      #     cmake --version
-      #     mkdir build
-      #     cd build
-      #     cmake -DCMAKE_BUILD_TYPE=Release ..
-      #     make -j4
+          TARGET_ARCH_BUILD=x64 ./build.sh
 
       - name: Create a folder for release
         shell: bash
@@ -86,5 +109,41 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: omp-node-linux
+          name: omp-node-linux-x64
+          path: dist/*
+
+  build-linux-x86-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          clean: true
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Download the nodejs binary file manually
+        run: |
+          curl https://assets.open.mp/node/lib/linux/x86/libnode.so.108 --output ./deps/node/lib/linux/x86/libnode.so.108
+
+      - name: Build using docker
+        run: |
+          cd docker
+          chmod +x ./build.sh
+          chmod +x ./docker-entrypoint.sh
+          TARGET_ARCH_BUILD=x86 ./build.sh
+
+      - name: Create a folder for release
+        shell: bash
+        run: |
+          mkdir dist
+          cd dist
+          mkdir components
+          cd ..
+          mv ./docker/build/src/omp-node.so ./dist/components/omp-node.so
+          mv ./deps/node/lib/linux/x64/libnode.so.108 ./dist/libnode.so.108
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: omp-node-linux-x86
           path: dist/*
