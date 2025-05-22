@@ -25,7 +25,7 @@ async function __internal_globalEventHandler(name, badRet, ...args)
   }
 
   let result = true;
-  for await (const listener of listeners) {
+  for (const listener of listeners) {
     result = noBadRet ? await listener(...args) : await listener(badRet, ...args);
     if (typeof result === "boolean" || typeof result === "number") {
       switch (badRet) {

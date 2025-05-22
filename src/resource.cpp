@@ -33,6 +33,31 @@ static void OmpLogBridge(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
 	v8::Isolate* isolate = info.GetIsolate();
 	v8::Local<v8::Context> ctx = isolate->GetEnteredOrMicrotaskContext();
+	if (ctx.IsEmpty())
+	{
+		ctx = isolate->GetCurrentContext();
+	}
+
+	if (ctx.IsEmpty())
+	{
+		auto core = Runtime::Instance().GetCore();
+		if (core)
+		{
+			std::stringstream stream;
+			stream << "[Unknown Resource] ";
+
+			for (size_t i = 0; i < info.Length(); i++)
+			{
+				Impl::String arg = *v8::String::Utf8Value(isolate, info[i]);
+				stream << arg;
+				if (i != info.Length() - 1)
+					stream << " ";
+			}
+
+			core->logLn(LogLevel::Message, "%s", stream.str().c_str());
+		}
+		return;
+	}
 
 	auto resource = Resource::Get(ctx);
 	auto core = Runtime::Instance().GetCore();
