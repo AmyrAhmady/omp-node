@@ -106,6 +106,11 @@ public:
 		return platform.get();
 	}
 
+	v8::Isolate* GetIsolate() const
+	{
+		return isolate;
+	}
+
 	FlatHashSet<Resource*>* GetResources()
 	{
 		return &resources;

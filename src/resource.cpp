@@ -119,22 +119,8 @@ static void SetOmpNodeLibraryFunction_(const v8::FunctionCallbackInfo<v8::Value>
 Resource::Resource(Runtime* _runtime, const ResourceInfo& _resource)
 	: resource(_resource)
 	, runtime(_runtime)
+	, isolate(_runtime->GetIsolate())
 {
-	uvLoop = new uv_loop_t;
-	uv_loop_init(uvLoop);
-
-	auto allocator = node::CreateArrayBufferAllocator();
-	auto platform = runtime->GetPlatform();
-	isolate = node::NewIsolate(allocator, uvLoop, platform);
-	nodeData = node::CreateIsolateData(isolate, uvLoop, runtime->GetPlatform(), allocator);
-
-	v8::Locker locker(isolate);
-	v8::Isolate::Scope isolateScope(isolate);
-	v8::HandleScope handleScope(isolate);
-
-	v8::Local<v8::Context> _context = node::NewContext(isolate);
-	_context->SetAlignedPointerInEmbedderData(1, this);
-	context.Reset(isolate, _context);
 }
 
 bool Resource::Start()
@@ -143,8 +129,27 @@ bool Resource::Start()
 	v8::Isolate::Scope isolateScope(isolate);
 	v8::HandleScope handleScope(isolate);
 
-	auto _context = GetContext();
+	v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
+	v8::Local<v8::Context> _context = node::NewContext(isolate, global);
 	v8::Context::Scope scope(_context);
+
+	_context->SetAlignedPointerInEmbedderData(1, this);
+	context.Reset(isolate, _context);
+
+	uvLoop = new uv_loop_t;
+	uv_loop_init(uvLoop);
+
+	nodeData = node::CreateIsolateData(isolate, uvLoop, runtime->GetPlatform());
+	if (!nodeData)
+	{
+		return false;
+	}
+
+	std::vector<Impl::String> args { resource.entryFile };
+	std::vector<Impl::String> execArgs {};
+	node::EnvironmentFlags::Flags flags = (node::EnvironmentFlags::Flags)(node::EnvironmentFlags::kOwnsProcessState & node::EnvironmentFlags::kNoCreateInspector);
+
+	env = node::CreateEnvironment(nodeData, _context, args, args, flags);
 
 	v8::Local<v8::Object> resourceObj = v8::Object::New(isolate);
 	resourceObj->Set(_context, v8::String::NewFromUtf8(isolate, "name").ToLocalChecked(), v8::String::NewFromUtf8(isolate, resource.name.c_str()).ToLocalChecked());
@@ -193,20 +198,10 @@ bool Resource::Start()
 	v8::Local<v8::Object> ompObj = v8::Object::New(isolate);
 	_context->Global()->Set(_context, v8::String::NewFromUtf8(isolate, "__omp").ToLocalChecked(), ompObj);
 
-	node::ThreadId threadId = node::AllocateEnvironmentThreadId();
-	auto flags = static_cast<node::EnvironmentFlags::Flags>(node::EnvironmentFlags::kNoFlags);
-	auto inspector = node::GetInspectorParentHandle(runtime->GetParentEnv(), threadId, resource.entryFile.c_str());
-
-	std::vector<Impl::String> args { resource.entryFile };
-	std::vector<Impl::String> execArgs {};
-
-	env = node::CreateEnvironment(nodeData, _context, args, execArgs, flags, threadId, std::move(inspector));
-
 	node::LoadEnvironment(env, bootstrap.c_str());
 
-	// Not sure it's needed anymore
 	asyncResource.Reset(isolate, v8::Object::New(isolate));
-	asyncContext = node::EmitAsyncInit(isolate, asyncResource.Get(isolate), "Resource");
+	asyncContext = node::EmitAsyncInit(isolate, asyncResource.Get(isolate), "OMPNodeResource");
 
 	while (!envStarted && !startError)
 	{
@@ -265,7 +260,7 @@ void Resource::Tick()
 	v8::Context::Scope scope(GetContext());
 	node::CallbackScope callbackScope(isolate, asyncResource.Get(isolate), asyncContext);
 
-	runtime->GetPlatform()->DrainTasks(isolate);
+	// runtime->GetPlatform()->DrainTasks(isolate);
 	uv_run(uvLoop, UV_RUN_NOWAIT);
 }
 

@@ -11,11 +11,7 @@ bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 	core = c;
 	ompapi = oapi;
 
-#ifdef _WIN32
-	auto result = node::InitializeOncePerProcess(GetNodeArgs());
-#else
-	auto result = node::InitializeOncePerProcess(GetNodeArgs(), node::ProcessInitializationFlags::kNoInitOpenSSL);
-#endif
+	auto result = node::InitializeOncePerProcess(GetNodeArgs(), { node::ProcessInitializationFlags::kNoInitializeV8, node::ProcessInitializationFlags::kNoInitializeNodeV8Platform });
 
 	if (result->early_return())
 	{
@@ -27,11 +23,20 @@ bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 		return false;
 	}
 
-	platform.reset(result->platform());
+	platform = node::MultiIsolatePlatform::Create(4);
+	if (!platform)
+	{
+		return false;
+	}
 
-	auto allocator = node::CreateArrayBufferAllocator();
-	isolate = node::NewIsolate(allocator, uv_default_loop(), platform.get());
-	node::IsolateData* nodeData = node::CreateIsolateData(isolate, uv_default_loop(), platform.get(), allocator);
+	v8::V8::InitializePlatform(platform.get());
+	v8::V8::Initialize();
+
+	isolate = node::NewIsolate(node::CreateArrayBufferAllocator(), uv_default_loop(), platform.get());
+	if (!isolate)
+	{
+		return false;
+	}
 
 	// node::IsolateSettings is;
 	// node::SetIsolateUpForNode(isolate, is);
@@ -41,13 +46,8 @@ bool Runtime::Init(ICore* c, OMPAPI_t* oapi)
 
 	{
 		v8::Locker locker(isolate);
-		v8::Isolate::Scope isolate_scope(isolate);
-		v8::HandleScope handle_scope(isolate);
-
-		context.Reset(isolate, node::NewContext(isolate));
-		v8::Context::Scope scope(context.Get(isolate));
-
-		parentEnv = node::CreateEnvironment(nodeData, context.Get(isolate), result->args(), result->exec_args());
+		v8::Isolate::Scope isolateScope(isolate);
+		v8::HandleScope handleScope(isolate);
 
 		/*
 			Load here only needs for debugging as this environment only used as a parent for real environments
@@ -123,10 +123,9 @@ void Runtime::Tick()
 {
 	v8::Locker locker(isolate);
 	v8::Isolate::Scope isolateScope(isolate);
-	v8::HandleScope seal(isolate);
-	v8::Context::Scope scope(context.Get(isolate));
+	v8::SealHandleScope seal(isolate);
 
-	uv_run(uv_default_loop(), UV_RUN_NOWAIT);
+	// uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 	platform->DrainTasks(isolate);
 }
 
