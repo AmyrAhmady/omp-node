@@ -260,8 +260,11 @@ void Resource::Tick()
 	v8::Context::Scope scope(GetContext());
 	node::CallbackScope callbackScope(isolate, asyncResource.Get(isolate), asyncContext);
 
-	// runtime->GetPlatform()->DrainTasks(isolate);
+	// Force microtask processing before and after UV loop
+	isolate->PerformMicrotaskCheckpoint();
+	runtime->GetPlatform()->DrainTasks(isolate);
 	uv_run(uvLoop, UV_RUN_NOWAIT);
+	isolate->PerformMicrotaskCheckpoint();
 }
 
 void Resource::CallOmpNodeLibraryInitializer()
