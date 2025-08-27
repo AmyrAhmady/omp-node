@@ -25,25 +25,47 @@ async function __internal_globalEventHandler(name, badRet, ...args)
   }
 
   let result = true;
-  for (const listener of listeners) {
-    result = noBadRet ? await listener(...args) : await listener(badRet, ...args);
-    if (typeof result === "boolean" || typeof result === "number") {
-      switch (badRet) {
-        case 1:
-          if (!result) {
-            return false;
+  try {
+    for (let i = 0; i < listeners.length; i++) {
+      const listener = listeners[i];
+      try {
+        const listenerResult = noBadRet ? listener(...args) : listener(badRet, ...args);
+        
+        if (listenerResult instanceof Promise) {
+          try {
+            result = await listenerResult;
+          } catch (promiseError) {
+            // console.error("DEBUG: Promise rejected with:", promiseError);
+            result = true;
           }
-          break;
-        case 2:
-          if (result) {
-            return true;
-          }
-          break;
-        case 0:
-        default:
-          break;
+        } else {
+          result = listenerResult;
+        }
+      } catch (listenerError) {
+        throw listenerError;
+      }
+      
+      if (typeof result === "boolean" || typeof result === "number") {
+        switch (badRet) {
+          case 1:
+            if (!result) {
+              return false;
+            }
+            break;
+          case 2:
+            if (result) {
+              return true;
+            }
+            break;
+          case 0:
+          default:
+            break;
+        }
       }
     }
+  } catch (e) {
+    console.error("Global error in event handler:", e);
+    console.error("Global error stack:", e.stack);
   }
 
   return result;
