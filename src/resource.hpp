@@ -89,6 +89,14 @@ public:
 	{
 		V8_ISOLATE_SCOPE(isolate);
 
+		if (!isolate)
+		{
+			runtime->GetCore()->logLn(LogLevel::Warning, "ERROR: Isolate is null for event %s\n", name.c_str());
+			return false;
+		}
+
+		v8::Context::Scope context_scope(context.Get(isolate));
+
 		v8::Local<v8::Function> handler = GetEventHandlerFunction();
 
 		if ((name != "resourceStart" && startError) || handler.IsEmpty() || !handler->IsFunction() || !handler->IsCallable())
@@ -117,11 +125,28 @@ public:
 			if (waitForPromise && returnValue->IsPromise())
 			{
 				v8::Local<v8::Promise> promise = returnValue.As<v8::Promise>();
+				v8::Promise::PromiseState initialState = promise->State();
+
+				int loopCount = 0;
+				const int maxLoops = 50000;
 				while (true)
 				{
 					v8::Promise::PromiseState state = promise->State();
 					if (state == v8::Promise::PromiseState::kPending)
 					{
+						loopCount++;
+						if (loopCount % 1000 == 0)
+						{
+							runtime->GetCore()->logLn(LogLevel::Warning, "DispatchEvent( name = %s ) - Still waiting for promise (loop %d)...\n", name.c_str(), loopCount);
+						}
+
+						// Timeout mechanism
+						if (loopCount > maxLoops)
+						{
+							runtime->GetCore()->logLn(LogLevel::Warning, "DispatchEvent( name = %s ) - TIMEOUT: Promise did not resolve after %d loops. Returning true.\n", name.c_str(), maxLoops);
+							return true;
+						}
+
 						// Run event loop
 						TickRuntimeAndCurrentResource();
 					}
