@@ -91,7 +91,7 @@ public:
 
 		if (!isolate)
 		{
-			runtime->GetCore()->logLn(LogLevel::Warning, "ERROR: Isolate is null for event %s\n", name.c_str());
+			// runtime->GetCore()->logLn(LogLevel::Warning, "ERROR: Isolate is null for event %s\n", name.c_str());
 			return false;
 		}
 
@@ -137,13 +137,13 @@ public:
 						loopCount++;
 						if (loopCount % 1000 == 0)
 						{
-							runtime->GetCore()->logLn(LogLevel::Warning, "DispatchEvent( name = %s ) - Still waiting for promise (loop %d)...\n", name.c_str(), loopCount);
+							// runtime->GetCore()->logLn(LogLevel::Warning, "DispatchEvent( name = %s ) - Still waiting for promise (loop %d)...\n", name.c_str(), loopCount);
 						}
 
 						// Timeout mechanism
 						if (loopCount > maxLoops)
 						{
-							runtime->GetCore()->logLn(LogLevel::Warning, "DispatchEvent( name = %s ) - TIMEOUT: Promise did not resolve after %d loops. Returning true.\n", name.c_str(), maxLoops);
+							// runtime->GetCore()->logLn(LogLevel::Warning, "DispatchEvent( name = %s ) - TIMEOUT: Promise did not resolve after %d loops. Returning true.\n", name.c_str(), maxLoops);
 							return true;
 						}
 
