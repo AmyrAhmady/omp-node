@@ -105,10 +105,10 @@ DECLARE_API(Core, HideGameTextForAll, int style)
 
 DECLARE_API(Core, NetworkStats)
 {
-	CREATE_CAPI_STRING_VIEW(output, 2048);
-	int ret = Runtime::Instance().GetOMPAPI()->Core.NetworkStats(output);
-	COPY_AND_FREE_CAPI_STRING_VIEW(output);
-	API_RETURN(int ret, OutputStringViewPtr output);
+	CREATE_CAPI_STRING_BUFFER(stats, 2048);
+	int ret = Runtime::Instance().GetOMPAPI()->Core.NetworkStats(&stats);
+	COPY_AND_FREE_CAPI_STRING_BUFFER(stats);
+	API_RETURN(int ret, OutputStringBufferPtr stats);
 }
 
 DECLARE_API(Core, ServerTickRate)
@@ -147,9 +147,9 @@ DECLARE_API(Core, SetDeathDropAmount, int amount)
 	API_RETURN(bool ret);
 }
 
-DECLARE_API(Core, GameMode, StringCharPtr string)
+DECLARE_API(Core, GameMode_SetText, StringCharPtr string)
 {
-	bool ret = Runtime::Instance().GetOMPAPI()->Core.GameMode(string);
+	bool ret = Runtime::Instance().GetOMPAPI()->Core.GameMode_SetText(string);
 	API_RETURN(bool ret);
 }
 

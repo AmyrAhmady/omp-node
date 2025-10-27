@@ -21,8 +21,8 @@ DECLARE_API(Config, GetAsFloat, StringCharPtr cvar)
 
 DECLARE_API(Config, GetAsString, StringCharPtr cvar)
 {
-	CREATE_CAPI_STRING_VIEW(output, 256);
-	int ret = Runtime::Instance().GetOMPAPI()->Config.GetAsString(cvar, output);
-	COPY_AND_FREE_CAPI_STRING_VIEW(output);
-	API_RETURN(int ret, OutputStringViewPtr output);
+	CREATE_CAPI_STRING_BUFFER(var, 256);
+	int ret = Runtime::Instance().GetOMPAPI()->Config.GetAsString(cvar, &var);
+	COPY_AND_FREE_CAPI_STRING_BUFFER(var);
+	API_RETURN(int ret, OutputStringBufferPtr var);
 }

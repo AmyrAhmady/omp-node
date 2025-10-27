@@ -4,6 +4,7 @@
 #include "json.hpp"
 #include "ompcapi.h"
 #pragma warning(disable : 4312)
+
 // Parts of this file is taken from altv-js-module, thanks to altv team
 // https://github.com/altmp/altv-js-module
 
@@ -65,6 +66,18 @@ inline bool SafeToUInt8(v8::Local<v8::Value> val, v8::Local<v8::Context> ctx, ui
 	if (maybeVal.IsEmpty())
 		return false;
 	out = static_cast<uint8_t>(maybeVal.ToLocalChecked()->Value());
+	return true;
+}
+
+inline bool SafeToUInt16(v8::Local<v8::Value> val, v8::Local<v8::Context> ctx, uint16_t& out)
+{
+	auto check = val->ToInteger(ctx);
+	if (check.IsEmpty() || check.ToLocalChecked()->Value() < 0)
+		return false; // Check for negative values
+	v8::MaybeLocal maybeVal = val->ToUint32(ctx);
+	if (maybeVal.IsEmpty())
+		return false;
+	out = static_cast<uint16_t>(maybeVal.ToLocalChecked()->Value());
 	return true;
 }
 
@@ -233,6 +246,10 @@ inline v8::Local<v8::BigInt> JSValue(v8::Isolate* isolate, uint64_t val)
 #define V8_TO_UINT8(v8Val, val) \
 	uint8_t val;                \
 	V8_CHECK(helpers::SafeToUInt8((v8Val), ctx, val), "Failed to convert value to unsigned 8bit integer")
+
+#define V8_TO_UINT16(v8Val, val) \
+	uint16_t val;                \
+	V8_CHECK(helpers::SafeToUInt16((v8Val), ctx, val), "Failed to convert value to unsigned 16bit integer")
 
 #define V8_TO_STRING(v8Val, val) \
 	Impl::String val;            \

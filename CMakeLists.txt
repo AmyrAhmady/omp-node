@@ -84,6 +84,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     add_subdirectory(deps/node)
     add_subdirectory(deps/sdk)
     add_subdirectory(deps/ghcfs)
+    add_subdirectory(deps/capi)
 
     add_subdirectory(src)
 endif()

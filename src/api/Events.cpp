@@ -23,6 +23,28 @@ public:
 		EventManager::Instance().Register("onPlayerClickGangZone", EventCallback_Common(&onPlayerClickGangZone));
 		EventManager::Instance().Register("onPlayerSelectedMenuRow", EventCallback_Common(&onPlayerSelectedMenuRow));
 		EventManager::Instance().Register("onPlayerExitedMenu", EventCallback_Common(&onPlayerExitedMenu));
+		EventManager::Instance().Register("onNPCFinishMove", EventCallback_Common(&onNPCFinishMove));
+		EventManager::Instance().Register("onNPCCreate", EventCallback_Common(&onNPCCreate));
+		EventManager::Instance().Register("onNPCDestroy", EventCallback_Common(&onNPCDestroy));
+		EventManager::Instance().Register("onNPCWeaponStateChange", EventCallback_Common(&onNPCWeaponStateChange));
+		EventManager::Instance().Register("onNPCTakeDamage", EventCallback_Common(&onNPCTakeDamage));
+		EventManager::Instance().Register("onNPCGiveDamage", EventCallback_Common(&onNPCGiveDamage));
+		EventManager::Instance().Register("onNPCDeath", EventCallback_Common(&onNPCDeath));
+		EventManager::Instance().Register("onNPCSpawn", EventCallback_Common(&onNPCSpawn));
+		EventManager::Instance().Register("onNPCRespawn", EventCallback_Common(&onNPCRespawn));
+		EventManager::Instance().Register("onNPCPlaybackStart", EventCallback_Common(&onNPCPlaybackStart));
+		EventManager::Instance().Register("onNPCPlaybackEnd", EventCallback_Common(&onNPCPlaybackEnd));
+		EventManager::Instance().Register("onNPCShotMissed", EventCallback_Common(&onNPCShotMissed));
+		EventManager::Instance().Register("onNPCShotPlayer", EventCallback_Common(&onNPCShotPlayer));
+		EventManager::Instance().Register("onNPCShotNPC", EventCallback_Common(&onNPCShotNPC));
+		EventManager::Instance().Register("onNPCShotVehicle", EventCallback_Common(&onNPCShotVehicle));
+		EventManager::Instance().Register("onNPCShotObject", EventCallback_Common(&onNPCShotObject));
+		EventManager::Instance().Register("onNPCShotPlayerObject", EventCallback_Common(&onNPCShotPlayerObject));
+		EventManager::Instance().Register("onNPCFinishNodePoint", EventCallback_Common(&onNPCFinishNodePoint));
+		EventManager::Instance().Register("onNPCFinishNode", EventCallback_Common(&onNPCFinishNode));
+		EventManager::Instance().Register("onNPCChangeNode", EventCallback_Common(&onNPCChangeNode));
+		EventManager::Instance().Register("onNPCFinishMovePath", EventCallback_Common(&onNPCFinishMovePath));
+		EventManager::Instance().Register("onNPCFinishMovePathPoint", EventCallback_Common(&onNPCFinishMovePathPoint));
 		EventManager::Instance().Register("onObjectMove", EventCallback_Common(&onObjectMove));
 		EventManager::Instance().Register("onPlayerObjectMove", EventCallback_Common(&onPlayerObjectMove));
 		EventManager::Instance().Register("onPlayerEditObject", EventCallback_Common(&onPlayerEditObject));
@@ -163,6 +185,116 @@ public:
 	static bool onPlayerExitedMenu(EventArgs_onPlayerExitedMenu* args)
 	{
 		return Runtime::Instance().DispatchEvents("playerExitedMenu", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->player)));
+	}
+
+	static bool onNPCFinishMove(EventArgs_onNPCFinishMove* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcFinishMove", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)));
+	}
+
+	static bool onNPCCreate(EventArgs_onNPCCreate* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcCreate", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)));
+	}
+
+	static bool onNPCDestroy(EventArgs_onNPCDestroy* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcDestroy", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)));
+	}
+
+	static bool onNPCWeaponStateChange(EventArgs_onNPCWeaponStateChange* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcWeaponStateChange", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)), *(args->list->newState), *(args->list->oldState));
+	}
+
+	static bool onNPCTakeDamage(EventArgs_onNPCTakeDamage* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcTakeDamage", true, OmpNodeEventBadRet::False, uintptr_t(*(args->list->npc)), uintptr_t(*(args->list->damager)), *(args->list->damage), *(args->list->weapon), *(args->list->bodyPart));
+	}
+
+	static bool onNPCGiveDamage(EventArgs_onNPCGiveDamage* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcGiveDamage", true, OmpNodeEventBadRet::True, uintptr_t(*(args->list->npc)), uintptr_t(*(args->list->damaged)), *(args->list->damage), *(args->list->weapon), *(args->list->bodyPart));
+	}
+
+	static bool onNPCDeath(EventArgs_onNPCDeath* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcDeath", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)), uintptr_t(*(args->list->killer)), *(args->list->reason));
+	}
+
+	static bool onNPCSpawn(EventArgs_onNPCSpawn* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcSpawn", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)));
+	}
+
+	static bool onNPCRespawn(EventArgs_onNPCRespawn* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcRespawn", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)));
+	}
+
+	static bool onNPCPlaybackStart(EventArgs_onNPCPlaybackStart* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcPlaybackStart", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)), *(args->list->recordId));
+	}
+
+	static bool onNPCPlaybackEnd(EventArgs_onNPCPlaybackEnd* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcPlaybackEnd", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)), *(args->list->recordId));
+	}
+
+	static bool onNPCShotMissed(EventArgs_onNPCShotMissed* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcShotMissed", true, OmpNodeEventBadRet::False, uintptr_t(*(args->list->npc)), *(args->list->weapon), *(args->list->offsetX), *(args->list->offsetY), *(args->list->offsetZ));
+	}
+
+	static bool onNPCShotPlayer(EventArgs_onNPCShotPlayer* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcShotPlayer", true, OmpNodeEventBadRet::False, uintptr_t(*(args->list->npc)), uintptr_t(*(args->list->player)), *(args->list->weapon), *(args->list->offsetX), *(args->list->offsetY), *(args->list->offsetZ));
+	}
+
+	static bool onNPCShotNPC(EventArgs_onNPCShotNPC* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcShotNPC", true, OmpNodeEventBadRet::False, uintptr_t(*(args->list->npc)), uintptr_t(*(args->list->npcTarget)), *(args->list->weapon), *(args->list->offsetX), *(args->list->offsetY), *(args->list->offsetZ));
+	}
+
+	static bool onNPCShotVehicle(EventArgs_onNPCShotVehicle* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcShotVehicle", true, OmpNodeEventBadRet::False, uintptr_t(*(args->list->npc)), uintptr_t(*(args->list->vehicle)), *(args->list->weapon), *(args->list->offsetX), *(args->list->offsetY), *(args->list->offsetZ));
+	}
+
+	static bool onNPCShotObject(EventArgs_onNPCShotObject* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcShotObject", true, OmpNodeEventBadRet::False, uintptr_t(*(args->list->npc)), uintptr_t(*(args->list->object)), *(args->list->weapon), *(args->list->offsetX), *(args->list->offsetY), *(args->list->offsetZ));
+	}
+
+	static bool onNPCShotPlayerObject(EventArgs_onNPCShotPlayerObject* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcShotPlayerObject", true, OmpNodeEventBadRet::False, uintptr_t(*(args->list->npc)), uintptr_t(*(args->list->playerObject)), *(args->list->weapon), *(args->list->offsetX), *(args->list->offsetY), *(args->list->offsetZ));
+	}
+
+	static bool onNPCFinishNodePoint(EventArgs_onNPCFinishNodePoint* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcFinishNodePoint", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)), *(args->list->nodeId), *(args->list->pointId));
+	}
+
+	static bool onNPCFinishNode(EventArgs_onNPCFinishNode* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcFinishNode", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)), *(args->list->nodeId));
+	}
+
+	static bool onNPCChangeNode(EventArgs_onNPCChangeNode* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcChangeNode", true, OmpNodeEventBadRet::False, uintptr_t(*(args->list->npc)), *(args->list->newNodeId), *(args->list->oldNodeId));
+	}
+
+	static bool onNPCFinishMovePath(EventArgs_onNPCFinishMovePath* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcFinishMovePath", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)), *(args->list->pathId));
+	}
+
+	static bool onNPCFinishMovePathPoint(EventArgs_onNPCFinishMovePathPoint* args)
+	{
+		return Runtime::Instance().DispatchEvents("npcFinishMovePathPoint", true, OmpNodeEventBadRet::None, uintptr_t(*(args->list->npc)), *(args->list->pathId), *(args->list->pointId));
 	}
 
 	static bool onObjectMove(EventArgs_onObjectMove* args)

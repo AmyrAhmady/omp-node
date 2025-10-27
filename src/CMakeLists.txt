@@ -20,7 +20,6 @@ set(NODE_PATH "${PROJECT_SOURCE_DIR}/deps/node/lib/${SYS_PATH}")
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/deps/node/include/node
-    ${PROJECT_SOURCE_DIR}/deps/omp-capi/include
 )
 
 # Linking
@@ -53,6 +52,7 @@ endif ()
 
 target_link_libraries(${PROJECT_NAME}
     ${LIBRARIES}
+    OMP-CAPI
     OMP-SDK
     node-lib
     ghc_filesystem

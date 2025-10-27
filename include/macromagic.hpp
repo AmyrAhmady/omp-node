@@ -29,6 +29,7 @@
 
 #define SPLIT_int LPAREN int COMMA
 #define SPLIT_uint32_t LPAREN uint32_t COMMA
+#define SPLIT_uint16_t LPAREN uint16_t COMMA
 #define SPLIT_uint8_t LPAREN uint8_t COMMA
 #define SPLIT_bool LPAREN bool COMMA
 #define SPLIT_char LPAREN char COMMA
@@ -41,7 +42,8 @@
 #define V8_TO_int(info, var) V8_TO_INT32(info, var)
 #define V8_TO_bool(info, var) V8_TO_BOOLEAN(info, var)
 #define V8_TO_uint32_t(info, var) V8_TO_UINT32(info, var)
-#define V8_TO_uint8_t(info, var) V8_TO_UINT32(info, var)
+#define V8_TO_uint16_t(info, var) V8_TO_UINT16(info, var)
+#define V8_TO_uint8_t(info, var) V8_TO_UINT8(info, var)
 #define V8_TO_float(info, var) V8_TO_FLOAT(info, var)
 #define V8_TO_objectPtr(info, var) V8_TO_UINTPTR(info, var)
 #define V8_TO_StringCharPtr(info, var) V8_TO_STRING(info, var)
@@ -51,6 +53,7 @@
 #define VAR_TO_PASS_bool(a) a
 #define VAR_TO_PASS_float(a) a
 #define VAR_TO_PASS_uint32_t(a) a
+#define VAR_TO_PASS_uint16_t(a) a
 #define VAR_TO_PASS_uint8_t(a) a
 #define VAR_TO_PASS_objectPtr(a) a
 #define VAR_TO_PASS_StringCharPtr(a) a.c_str()
@@ -70,6 +73,7 @@
 #define CREATE_FUNCTION_SIG_ARG_IMPL_bool(a) bool a
 #define CREATE_FUNCTION_SIG_ARG_IMPL_float(a) float a
 #define CREATE_FUNCTION_SIG_ARG_IMPL_uint32_t(a) uint32_t a
+#define CREATE_FUNCTION_SIG_ARG_IMPL_uint16_t(a) uint16_t a
 #define CREATE_FUNCTION_SIG_ARG_IMPL_uint8_t(a) uint8_t a
 #define CREATE_FUNCTION_SIG_ARG_IMPL_objectPtr(a) objectPtr a
 #define CREATE_FUNCTION_SIG_ARG_IMPL_StringCharPtr(a) StringCharPtr a
@@ -88,6 +92,7 @@
 #define INITIALIZE_VAR_IMPL_bool(a) bool a = false;
 #define INITIALIZE_VAR_IMPL_float(a) float a = 0.0f;
 #define INITIALIZE_VAR_IMPL_uint32_t(a) uint32_t a = 0;
+#define INITIALIZE_VAR_IMPL_uint16_t(a) uint16_t a = 0;
 #define INITIALIZE_VAR_IMPL_uint8_t(a) uint8_t a = 0;
 #define INITIALIZE_VAR_IMPL_objectPtr(a) objectPtr a = nullptr;
 #define INITIALIZE_VAR_IMPL_VoidPtr(a) VoidPtr a = nullptr;
@@ -106,6 +111,7 @@
 #define CREATE_OMPNODE_API_ARG_LIST_ITEM_IMPL_float(a) { &a, OmpNodeAPIArgType::Float },
 #define CREATE_OMPNODE_API_ARG_LIST_ITEM_IMPL_uint32_t(a) { &a, OmpNodeAPIArgType::UInt32 },
 #define CREATE_OMPNODE_API_ARG_LIST_ITEM_IMPL_uint8_t(a) { &a, OmpNodeAPIArgType::UInt8 },
+#define CREATE_OMPNODE_API_ARG_LIST_ITEM_IMPL_uint16_t(a) { &a, OmpNodeAPIArgType::UInt16 },
 #define CREATE_OMPNODE_API_ARG_LIST_ITEM_IMPL_objectPtr(a) { a, OmpNodeAPIArgType::Ptr },
 #define CREATE_OMPNODE_API_ARG_LIST_ITEM_IMPL_VoidPtr(a) { a, OmpNodeAPIArgType::Ptr },
 #define CREATE_OMPNODE_API_ARG_LIST_ITEM_IMPL_JSString(a) { &a, OmpNodeAPIArgType::String },
@@ -122,6 +128,7 @@
 #define CAST_TYPE_FOR_RETURN_bool bool
 #define CAST_TYPE_FOR_RETURN_float float
 #define CAST_TYPE_FOR_RETURN_uint32_t uint32_t
+#define CAST_TYPE_FOR_RETURN_uint16_t uint32_t
 #define CAST_TYPE_FOR_RETURN_uint8_t uint32_t
 #define CAST_TYPE_FOR_RETURN_JSString JSString
 
@@ -520,12 +527,13 @@
 	GENERATE_RETURN_VAR_IMPL(__VA_ARGS__) \
 	return retJson
 
-#define CREATE_CAPI_STRING_VIEW(name, size) \
-	OutputStringViewPtr name;               \
-	name->data = new char[size];            \
-	memset(name->data, 0, size);
+#define CREATE_CAPI_STRING_BUFFER(name, size) \
+	CAPIStringBuffer name;                    \
+	name.data = new char[size];               \
+	name.capacity = size;                     \
+	memset(name.data, 0, size);
 
-#define COPY_AND_FREE_CAPI_STRING_VIEW(name)                       \
-	Impl::String copyString = Impl::String(name->data, name->len); \
-	delete[] name->data;                                           \
-	name->data = copyString.data();
+#define COPY_AND_FREE_CAPI_STRING_BUFFER(name)                   \
+	Impl::String copyString = Impl::String(name.data, name.len); \
+	delete[] name.data;                                          \
+	name.data = copyString.data();

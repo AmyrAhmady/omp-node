@@ -15,10 +15,10 @@ DECLARE_API_ARGNUM(Player, GetSpawnInfo, 1, objectPtr player, UInt8Ref team, Int
 
 DECLARE_API(Player, GetNetworkStats, objectPtr player)
 {
-	CREATE_CAPI_STRING_VIEW(output, 2048);
-	int ret = Runtime::Instance().GetOMPAPI()->Player.GetNetworkStats(player, output);
-	COPY_AND_FREE_CAPI_STRING_VIEW(output);
-	API_RETURN(int ret, OutputStringViewPtr output);
+	CREATE_CAPI_STRING_BUFFER(stats, 2048);
+	int ret = Runtime::Instance().GetOMPAPI()->Player.GetNetworkStats(player, &stats);
+	COPY_AND_FREE_CAPI_STRING_BUFFER(stats);
+	API_RETURN(int ret, OutputStringBufferPtr stats);
 }
 
 DECLARE_API(Player, NetStatsBytesReceived, objectPtr player)
@@ -47,10 +47,10 @@ DECLARE_API(Player, NetStatsGetConnectedTime, objectPtr player)
 
 DECLARE_API(Player, NetStatsGetIpPort, objectPtr player)
 {
-	CREATE_CAPI_STRING_VIEW(output, 30);
-	bool ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsGetIpPort(player, output);
-	COPY_AND_FREE_CAPI_STRING_VIEW(output);
-	API_RETURN(bool ret, OutputStringViewPtr output);
+	CREATE_CAPI_STRING_BUFFER(ip, 30);
+	bool ret = Runtime::Instance().GetOMPAPI()->Player.NetStatsGetIpPort(player, &ip);
+	COPY_AND_FREE_CAPI_STRING_BUFFER(ip);
+	API_RETURN(bool ret, OutputStringBufferPtr ip);
 }
 
 DECLARE_API(Player, NetStatsMessagesReceived, objectPtr player)
@@ -691,10 +691,10 @@ DECLARE_API(Player, GetFacingAngle, objectPtr player)
 
 DECLARE_API(Player, GetIp, objectPtr player)
 {
-	CREATE_CAPI_STRING_VIEW(output, 30);
-	bool ret = Runtime::Instance().GetOMPAPI()->Player.GetIp(player, output);
-	COPY_AND_FREE_CAPI_STRING_VIEW(output);
-	API_RETURN(int ret, OutputStringViewPtr output);
+	CREATE_CAPI_STRING_BUFFER(ip, 30);
+	int ret = Runtime::Instance().GetOMPAPI()->Player.GetIp(player, &ip);
+	COPY_AND_FREE_CAPI_STRING_BUFFER(ip);
+	API_RETURN(int ret, OutputStringBufferPtr ip);
 }
 
 DECLARE_API(Player, GetSpecialAction, objectPtr player)
@@ -1108,6 +1108,12 @@ DECLARE_API(Player, IsInDriveByMode, objectPtr player)
 DECLARE_API(Player, IsCuffed, objectPtr player)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->Player.IsCuffed(player);
+	API_RETURN(bool ret);
+}
+
+DECLARE_API(Player, IsUsingOmp, objectPtr player)
+{
+	bool ret = Runtime::Instance().GetOMPAPI()->Player.IsUsingOmp(player);
 	API_RETURN(bool ret);
 }
 
