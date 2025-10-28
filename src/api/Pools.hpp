@@ -9,6 +9,7 @@
 #include "Server/Components/TextDraws/textdraws.hpp"
 #include "Server/Components/TextLabels/textlabels.hpp"
 #include "Server/Components/GangZones/gangzones.hpp"
+#include "Server/Components/NPCs/npcs.hpp"
 #include "../runtime.hpp"
 
 #define ADD_POOL_EVENT(pool)                                                                   \
@@ -33,12 +34,13 @@ enum class POOL_TYPE
 	TEXTLABEL,
 	ACTOR,
 	MENU,
+	NPC,
 	PLAYEROBJECT,
 	PLAYERTEXTLABEL,
 	PLAYERTEXTDRAW
 };
 
-class InternalPoolEntityEvents : public PoolEventHandler<IPlayer>, public PoolEventHandler<IVehicle>, public PoolEventHandler<IObject>, public PoolEventHandler<ITextDraw>, public PoolEventHandler<IPickup>, public PoolEventHandler<IGangZone>, public PoolEventHandler<ITextLabel>, public PoolEventHandler<IActor>, public PoolEventHandler<IMenu>
+class InternalPoolEntityEvents : public PoolEventHandler<IPlayer>, public PoolEventHandler<IVehicle>, public PoolEventHandler<IObject>, public PoolEventHandler<ITextDraw>, public PoolEventHandler<IPickup>, public PoolEventHandler<IGangZone>, public PoolEventHandler<ITextLabel>, public PoolEventHandler<IActor>, public PoolEventHandler<IMenu>, public PoolEventHandler<INPC>
 {
 public:
 	void onPoolEntryDestroyed(IPlayer& player) override
@@ -129,6 +131,16 @@ public:
 	void onPoolEntryCreated(IMenu& menu) override
 	{
 		Runtime::Instance().DispatchEvents("menuPoolEntryCreate", false, OmpNodeEventBadRet::None, menu.getID());
+	}
+
+	void onPoolEntryDestroyed(INPC& npc) override
+	{
+		Runtime::Instance().DispatchEvents("npcPoolEntryDestroy", false, OmpNodeEventBadRet::None, npc.getID());
+	}
+
+	void onPoolEntryCreated(INPC& npc) override
+	{
+		Runtime::Instance().DispatchEvents("npcPoolEntryCreate", false, OmpNodeEventBadRet::None, npc.getID());
 	}
 
 	static InternalPoolEntityEvents& Instance()
@@ -360,6 +372,7 @@ public:
 		menus = componentList->queryComponent<IMenusComponent>();
 		textdraws = componentList->queryComponent<ITextDrawsComponent>();
 		gangzones = componentList->queryComponent<IGangZonesComponent>();
+		npcs = componentList->queryComponent<INPCComponent>();
 	}
 
 	void AddPoolEvents()
@@ -380,6 +393,7 @@ public:
 		ADD_POOL_EVENT(menus);
 		ADD_POOL_EVENT(textdraws);
 		ADD_POOL_EVENT(gangzones);
+		ADD_POOL_EVENT(npcs);
 	}
 
 	void RemovePoolEvents()
@@ -451,6 +465,9 @@ public:
 		case POOL_TYPE::MENU:
 			ret = reinterpret_cast<void*>(pools.menus->get(id));
 			break;
+		case POOL_TYPE::NPC:
+			ret = reinterpret_cast<void*>(pools.npcs->get(id));
+			break;
 		case POOL_TYPE::PLAYERTEXTDRAW:
 		case POOL_TYPE::PLAYEROBJECT:
 		case POOL_TYPE::PLAYERTEXTLABEL:
@@ -511,4 +528,5 @@ private:
 	IMenusComponent* menus = nullptr;
 	ITextDrawsComponent* textdraws = nullptr;
 	IGangZonesComponent* gangzones = nullptr;
+	INPCComponent* npcs = nullptr;
 };

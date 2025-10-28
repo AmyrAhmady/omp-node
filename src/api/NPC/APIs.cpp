@@ -37,6 +37,12 @@ DECLARE_API(NPC, IsValid, objectPtr npc)
 	API_RETURN(bool ret);
 }
 
+DECLARE_API(NPC, GetPlayer, objectPtr npc)
+{
+	objectPtr ret = Runtime::Instance().GetOMPAPI()->NPC.GetPlayer(npc);
+	API_RETURN(objectPtr ret);
+}
+
 DECLARE_API(NPC, Spawn, objectPtr npc)
 {
 	bool ret = Runtime::Instance().GetOMPAPI()->NPC.Spawn(npc);
